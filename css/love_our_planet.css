@@ -1,0 +1,246 @@
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/Poppins-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Poppins Bold';
+    src: url('../fonts/Poppins-Bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Lemon Milk';
+    src: url('../fonts/LemonMilk.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0px;
+    font-family: 'Poppins';
+    background-color: rgb(255, 255, 255);
+}
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 50px;
+}
+.overlay {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bg-image-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.overlay-text {
+    padding: 100px;
+    color: transparent; 
+    font-size: 50px;
+    text-align: center;
+    font-family: 'Lemon Milk';
+    opacity: 0; 
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease, color 0.8s ease;
+}
+
+.bg-image-wrapper:hover .overlay-text {
+    color: white; 
+    opacity: 1; 
+    transform: translateY(0);
+}
+
+#options {
+    padding: 50px 0;
+    background-image: url('../image/travel.png');
+    background-size: cover;
+    background-position: center;
+    color: rgb(0, 0, 0);
+}
+
+.option-column {
+    cursor: pointer;
+}
+
+.option {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    background-color: #fff;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.option:hover {
+    transform: translateY(-5px);
+}
+
+.bg-image {
+    width: 100%;
+    height: 180px;
+    background-size: cover;
+    background-position: center;
+}
+
+.icon {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: #3498db;
+    color: #fff;
+    padding: 10px;
+    border-radius: 50%;
+}
+
+h2 {
+    margin: 0;
+    padding: 20px;
+    font-size: 20px;
+    color: #333;
+    text-align: center;
+    font-family: 'Poppins Bold';
+}
+
+
+/* things to bring */
+#thing-to-bring{
+    padding: 70px;
+    background-image: url('../image/mountain.png');
+}
+.section-title h1{
+    font-size: 60px;
+    color: #ffffff;
+    text-align: center;
+    font-family: 'Lemon Milk';
+}
+.slider-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 90px;
+}
+
+.slider {
+    display: flex;
+    justify-content: space-between;
+}
+
+.slide {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.slide-image {
+    flex: 1;
+    height: 450px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 10%;
+}
+
+.slide-details {
+    flex: 1;
+    padding: 20px;
+    /* background-color: #fff; */
+    border-radius: 8px;
+    /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); */
+}
+
+h3 {
+    font-size: 50px;
+    margin-top: 0;
+    font-family: 'Lemon Milk';
+    color: #ffffff;
+}
+
+.facebook-button {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #1877F2;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.slick-initialized .slick-slide {
+    display: flex;
+}
+
+#what-to-avoid {
+    padding: 70px;
+    background-image: url('../image/forest.png');
+}
+
+#stuff-to-remember {
+    padding: 70px;
+    background-image: url('../image/train.png');
+}
+
+@media screen and (max-width: 768px) {
+   
+    .overlay-text{
+        font-size: 20px;
+    }
+    .section-title h1{
+        font-size: 20px;
+    }
+    .slick-initialized .slick-slide {
+        display: block;
+    }
+    .slider-container {
+        padding: 5px;
+    }
+    .slider-container slide-image {
+        padding: 100px;
+        justify-content: center;
+        align-content: center;
+    }
+    .slide-details h3{
+        font-size: 20px;
+    }
+    .container{
+        display: flow-root;
+    }
+  }
+  @media screen and (max-width: 315px) {
+    .overlay-text{
+        font-size: 20px;
+    }
+    .section-title h1{
+        font-size: 20px;
+    }
+    .slick-initialized .slick-slide {
+        display: block;
+    }
+    .slider-container {
+        padding: 25px;
+    }
+    .slide-image {
+        width: 250px;
+        height: 250px;
+    }
+    .slide-details h3{
+        font-size: 20px;
+    }
+    .container{
+        display: flow-root;
+    }
+    
+  }

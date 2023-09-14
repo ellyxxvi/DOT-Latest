@@ -1,0 +1,384 @@
+
+
+body{
+  background: rgb(22, 22, 22);
+}
+
+section {
+  height: 100vh;
+  width: 100%;
+  display: grid;
+  place-items: center;
+} 
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-left: 50px;
+}
+.column {
+  width: 100%;
+  text-align: center;
+}
+.card {
+  width: 100%;
+  height: 100%;
+  padding: 2em 1.5em;
+  background-size: 100% 200%;
+  background-position: 0 2.5%;
+  box-shadow: 0 0 35px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  transition: 0.5s;
+  position: relative;
+}
+
+.background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  filter: brightness(0.3); /* Default brightness */
+  z-index: -1;
+  transition: filter 0.5s; /* Transition for brightness change */
+}
+
+.card:hover .background-image {
+  filter: brightness(0.5); /* Brighten the image on hover */
+}
+
+.card-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Add this to your existing CSS stylesheet */
+a {
+  text-decoration: none; /* Remove underlines from all anchor tags */
+}
+
+/* Style the links in the card */
+.card-link {
+  text-decoration: none;
+  color: inherit; /* Use the parent element's color for links */
+}
+
+
+
+h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff;
+  margin: 1em 0;
+}
+p {
+  color: #fff;
+  font-size: 15px;
+  line-height: 1.6;
+  letter-spacing: 0.03em;
+}
+.icon-wrapper {
+  position: relative;
+  margin: auto;
+  font-size: 30px;
+  height: 2.5em;
+  width: 2.5em;
+  color: #ffffff;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  transition: 0.5s;
+}
+.card:hover {
+  background-position: 0 100%;
+}
+.card:hover .icon-wrapper {
+  color: #fff;
+}
+.card:hover h3 {
+  color: #ffffff;
+}
+.card:hover p {
+  color: #f0f0f0;
+}
+@media screen and (min-width: 768px) {
+  section {
+    padding: 0 2em;
+  }
+  .column {
+    flex: 0 50%;
+    max-width: 50%;
+  }
+}
+@media screen and (min-width: 992px) {
+  section {
+    padding: 1em 3em;
+  }
+  .column {
+    flex: 0 0 33.33%;
+    max-width: 33.33%;
+  }
+}
+/* 
+.container {
+  display: flex;
+  flex-direction: column; 
+  height: 100vh;
+}  */
+
+
+.content {
+  flex: 1;
+  display: flex;
+  padding: 0px; /* Adjust padding as needed */
+}
+
+.head {
+  flex: 1;
+  height: 50vh;
+  background: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+h1{
+  font-size: 40px;
+  color: #f0f0f0;
+  align-items: center;
+  justify-content: center;
+}
+
+.iframe-container{
+  overflow: hidden;
+  height: 30vh;
+  flex: auto;
+}
+
+.content{
+  margin-top: 0px;
+  place-items: start;
+  text-align: start;
+  z-index: 10000;
+}
+
+.content h1{
+  font-size: 90px;
+  color: #fff;
+  font-weight: 600;
+  padding: 50px;
+  margin-bottom: 0;
+  text-decoration: underline;
+  text-decoration-skip-ink: none; /* Prevents ink gaps for better control */
+  text-underline-offset: 25px; 
+}
+
+.additional-section {
+  flex: 0 0 250px; /* Adjust the width as needed */
+  background-color: #1f194c;
+  padding: 20px;
+}
+
+.side-nav{
+  width: 100px;
+  flex: 0 0 290px; 
+  background-color: transparent;
+  color: white;
+  justify-content: center;
+}
+
+
+.services-content {
+  padding-top: 35px;
+  flex: 1;
+  padding-left: 10px; /* Add padding to separate content from sidebar */
+}
+
+.services {
+  display: flex;
+  flex: 1;
+  align-items: stretch;
+}
+
+.nav-links {
+  list-style: none;
+  position: relative;
+}
+
+.nav-links li {
+  padding: 5px 0;
+}
+
+.nav-links li a {
+  color: #fff;
+  text-decoration: none;
+  padding: 25px;
+  height: 65px;
+  width: 260px;
+  display: flex;
+  align-items: center;
+  border: transparent;
+}
+
+.nav-links li a i{
+  font-size: 22px;
+  margin-right: 20px;
+}
+
+.nav-links header{
+  color: white;
+  font-size: 40px;
+  font-weight: 500;
+  align-items: center;
+}
+
+
+.nav-links li:hover ~ .active {
+  display: block;
+}
+
+.background-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Adjust the opacity as needed */
+}
+
+
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+  padding-bottom: 20px;
+}
+
+.load-btn {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: transparent;
+  border: 2px solid #fff;
+  border-radius: 10px;
+  color: #fff;
+  text-decoration: none;
+  font-family: "Poppins";
+  font-size: 16px;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.load-btn:hover {
+  background-color: #fff;
+  color: #000;
+}
+
+@media only screen and (max-width: 700px) {
+  .side-nav{    
+  flex: 0 0 100px; 
+  justify-content: center;
+  padding-left: -20;
+  }
+  .nav-links li a p {
+    display: none;
+  }
+  .nav-links li a i {
+    margin-right: 0;
+  }
+  .nav-links li a{
+    justify-content: center;
+    width: 65px;
+  }
+  .nav-links h1{
+    display: none;
+  }
+  .services-content {
+    padding-left: 0px; 
+    padding-top: 0;
+  }
+  .content h1{
+    font-size: 50px;
+  }
+  .iframe-container{
+    height: 30vh;
+  }
+  .row{
+    padding-top: 0;
+    padding-right: 50px;
+  }
+}
+
+
+.swim-beaches {
+  background-color: #FF5733;
+  border-radius: 10px;  /* Example color for Swim and Beaches */
+}
+
+.nature-trip {
+  background-color: #66BB6A;
+  border-radius: 10px;  /* Example color for Nature Trip */
+}
+
+.tourist-spots {
+  background-color: #2196F3;
+  border-radius: 10px;  /* Example color for Tourist Spots */
+}
+
+.hotel {
+  background-color: #FFC107;
+  border-radius: 10px;  /* Example color for Hotel */
+}
+
+.churches {
+  background-color: #9C27B0;
+  border-radius: 10px;  /* Example color for Churches */
+}
+
+.events-culture {
+  background-color: #FF5722;
+  border-radius: 10px;  /* Example color for Events and Culture */
+}
+
+.see-all {
+  background-color: #795548;
+  border-radius: 10px; /* Example color for See All */
+}
+
+
+.swim-beaches:hover {
+  background-color: #FF8750; /* Brightened color for Swim and Beaches */
+}
+
+.nature-trip:hover {
+  background-color: #88fd84; /* Brightened color for Swim and Beaches */
+}
+
+.tourist-spots:hover {
+  background-color: #84bcfd; /* Brightened color for Swim and Beaches */
+}
+
+.hotel:hover {
+  background-color: #e3fd84; /* Brightened color for Swim and Beaches */
+}
+
+.churches:hover {
+  background-color: #fd84fd; /* Brightened color for Swim and Beaches */
+}
+
+.events-culture:hover {
+  background-color: #fd8484; /* Brightened color for Swim and Beaches */
+}
+
+.see-all:hover {
+  background-color: #e9bcbc; /* Brightened color for Swim and Beaches */
+}
+
+.nav-links li a.active {
+  border: 2px solid rgb(66, 66, 66) !important; /* Add border to active link */
+}
+
+.iframe-container {
+  overflow: hidden;
+}

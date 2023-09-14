@@ -1,0 +1,69 @@
+/* LEARN MORE */
+.learnmore-item {
+    background-color: #fff;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.learnmore-image {
+    height: 400px;
+    overflow: hidden;
+    position: relative;
+}
+
+.learnmore-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.learnmore-banner {
+    width: 100%;
+    height: 100px;
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+}
+
+.banner-logo {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 100%;
+    width: 150px;
+    height: 150%;
+}
+
+.learnmore-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 15px;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+
+.learnmore-item:hover .learnmore-content {
+    opacity: 1;
+}
+
+.learnmore-text {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+@media only screen and (max-width: 600px) {
+    .learnmore-text {
+        font-size: 10px;
+    }
+}

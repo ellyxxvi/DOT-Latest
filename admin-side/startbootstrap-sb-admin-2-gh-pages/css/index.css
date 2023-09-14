@@ -1,0 +1,257 @@
+.no-bullet {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.bold-rank {
+    font-weight: bold;
+}
+.dashboard-title{
+  font-size: 30px;
+  color: #505458;
+}
+.card__wrapper{
+margin-bottom: 50px;
+}
+
+.card{
+  &__title{
+    font-weight: bold;
+    text-transform: uppercase;
+    padding-bottom: 5px;
+    border-bottom: 2px solid stroke;
+    margin-bottom: 15px;
+  }
+  &--grey{
+    background:tint(grey, 97%);
+    border:1px solid stroke;
+    padding:10px;
+    margin-bottom: 15px;
+    .card__title{
+      border-bottom: none;
+      margin-bottom: 5px;
+      >a{
+        margin-left: 10px;
+      }
+    }
+    @media(min-width:991px){
+      /* min-height:300px; */
+    }
+  }
+}
+
+.top-list{
+  list-style:none;
+  padding:0;
+  .progress{
+    margin-top: 2px;
+  }
+}
+
+.progress-bar-blue>.progress-bar{
+  background: #81BBDE;
+}
+
+.chart-progress-indicator{
+  font-weight: bold;
+  float:right;
+  color:tint(grey, 30%);
+  
+  &__number{
+    padding:0 10px;
+  }
+  &--increase{
+    &:before{
+      content:"\f148";
+      font-family: 'FontAwesome';
+    }
+    & .chart-progress-indicator__number{
+      background: #FFBDBD;
+    }
+  }
+}
+
+.rank{
+  position: relative;
+  padding-left: 40px;
+  &__number{
+    position: absolute;
+    left:0;
+    top:0;
+    display:inline-block;
+    text-align: center;
+    background:#99CBED;
+    width: 35px;
+    font-size: 10px;
+    padding:0.6em 0;
+    border-radius:50%;
+    &:first-letter{
+      font-size: 14px;
+      font-weight: 800;
+    }
+  }
+  &__person{
+    font-size: 14px;
+  }
+  &__position{
+    font-size: 12px;
+    color:tint( grey,50%);
+    margin-top: -5px;
+    margin-bottom: 5px;
+  }
+  &__record{
+    font-size: 12px;
+    font-weight: bold;
+    &__label{
+      font-weight: 600;
+      margin-bottom: -5px;
+      color:tint( grey,50%);
+    }
+    &__time{
+      font-weight: normal;
+      color:tint( grey,50%);
+      span{
+        color: grey;
+      }
+    }
+    &__stats{
+      i{
+        color:tint( grey,50%);
+      }
+    }
+  }
+}
+.rank--rest{
+  display:inline-block;
+  padding:0;
+  list-style:none;
+  vertical-align: top;
+}
+.rank--top{
+  display:inline-block;
+  padding-right: 10px;
+  .rank__person{
+    font-size: 18px;
+  }
+  .rank__position{
+    font-size: 12px;
+    color:tint(grey,50%);
+    margin-top: -5px;
+    margin-bottom: 5px;
+  }
+  .rank__record{
+    font-size: 18px;
+    font-weight: bold;
+    .rank__record__label{
+      font-size: 11px;
+      color:grey;
+      font-weight: 600;
+      margin-bottom: -5px;
+    }
+    .rank__record__time{
+      font-size: 11px;
+      font-weight: 200;
+      span{
+        font-size: 18px;
+      }
+    }
+  }
+}
+
+/* RECENT ACTIVITY */
+.padding {
+    padding: 3rem !important;
+  }
+  body {
+    background-color: #f9f9fa;
+  }
+  .card {
+    border-radius: 5px;
+    -webkit-box-shadow: 0 1px 20px 0 rgba(69, 90, 100, 0.08);
+    box-shadow: 0 1px 20px 0 rgba(69, 90, 100, 0.08);
+    border: none;
+    margin-bottom: 30px;
+  }
+  .card .card-header {
+    background-color: transparent;
+    border-bottom: none;
+    padding: 25px 20px;
+  }
+  .card-block {
+    padding: 1.25rem;
+    margin-top: -40px;
+  }
+  .card .card-header h5 {
+    margin-bottom: 0;
+    color: #505458;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-block;
+    margin-right: 10px;
+    line-height: 1.4;
+  }
+  .text-muted {
+    margin-bottom: 0px;
+  }
+  .user-activity-card .u-img .cover-img {
+    width: 60px;
+    height: 60px;
+  }
+  .m-b-25 {
+    margin-top: 20px;
+  }
+  .user-activity-card .u-img .profile-img {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    bottom: -5px;
+    right: -5px;
+  }
+  .img-radius {
+    border-radius: 5px;
+  }
+  .user-activity-card .u-img {
+    position: relative;
+  }
+  .m-b-5 {
+    margin-bottom: 5px;
+  }
+  h6 {
+    font-size: 14px;
+  }
+  .card .card-block p {
+    line-height: 25px;
+  }
+  .text-muted {
+    color: #919aa3 !important;
+  }
+  .card .card-block p {
+    line-height: 25px;
+  }
+  .text-muted {
+    color: #919aa3 !important;
+  }
+  .m-r-10 {
+    margin-right: 4px;
+  }
+  .feather {
+    font-family: "feather" !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  .text-center {
+    margin-top: 15px;
+  }
+  .text-pink {
+    color: rgb(255, 40, 76) !important; /* You can adjust the shade of pink */
+}
+
+.border-left-pink {
+    border-left: 4px solid rgb(255, 40, 76) !important; /* You can adjust the shade of pink and border width */
+}

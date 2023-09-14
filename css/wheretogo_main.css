@@ -1,0 +1,103 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background: rgb(22, 22, 22);
+}
+
+.row{
+  width: 100%;
+}
+
+.column {
+  width: 100%; /* Cards take full width */
+  margin: 0; /* Remove margin to eliminate extra spacing */
+}
+
+.card {
+  width: 100%;
+  height: 100%; /* Allow cards to adjust in height */
+  padding: 1.5em;
+  background-size: 100% 200%;
+  background-position: 0 2.5%;
+  box-shadow: 0 0 35px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  transition: 0.5s;
+  position: relative;
+  align-items: center;
+  text-align: center;
+}
+
+.background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  filter: brightness(0.3); /* Default brightness */
+  z-index: -1;
+  transition: filter 0.5s; /* Transition for brightness change */
+}
+
+.card:hover .background-image {
+  filter: brightness(0.5); /* Brighten the image on hover */
+}
+
+.card-content {
+  position: relative;
+  z-index: 1;
+}
+
+h3 {
+  font-size: 30px;
+  font-weight: 600;
+  color: #fff;
+  margin: 20px;
+  align-items: center;
+  text-transform: uppercase;
+}
+
+.card:hover {
+  background-position: 0 100%;
+}
+
+.card:hover h3 {
+  color: #ffffff;
+}
+
+@media screen and (min-width: 668px) {
+  h3 {
+    font-size: 60px;
+    margin: 40px;
+  }
+}
+
+
+.content{
+  place-items: start;
+  text-align: start;
+}
+
+
+.services-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Add this line */
+  width: 100%; /* Add this line to make the section take the full viewport height */
+}
+
+.services {
+  display: flex;
+  justify-content: center; /* Add this line to center the cards horizontally */
+}
+
+a {
+  text-decoration: none; /* Remove underline from all anchor links */
+}
+
