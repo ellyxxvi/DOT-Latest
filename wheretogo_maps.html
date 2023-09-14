@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tagaytay City Map</title>
+    <style>
+        body {
+            margin: 40;
+            font-family: Arial, sans-serif;
+            background-color: #383838;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 20px;
+            background: yellow;
+            width: 200px;
+            height: 50px;
+            align-items: start;
+            text-align: center;
+            padding-top: 10px;
+            justify-content: start;
+            position: fixed; /* Set the position to fixed */
+            top: 0;
+            left: 0;
+            margin-left: 10px; /* Align to the left */
+            margin: 0; /* Remove default margin */
+        }
+
+
+        .map-container {
+            background-color: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 80%;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            margin: 0 auto; /* Center the container */
+        }
+
+        @media (max-width: 768px) {
+            .map-container {
+                width: 100%; /* Full width on small screens */
+            }
+        }
+
+        #map {
+            height: 400px;
+            width: 100%;
+            transition: transform 0.3s ease;
+            z-index: -1;
+        }
+
+        #map:hover {
+            transform: scale(1.1);
+        }
+
+        .map-header {
+            padding: 20px;
+            text-align: center;
+            background-color: #ff5e00;
+            color: #fff;
+            z-index: 10;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .map-header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="map-container" id="mapContainer">
+        <div class="map-header">
+            <h2>Explore the Philippines</h2>
+        </div>
+        <div id="map"></div>
+    </div>
+
+    <script>
+        function initMap() {
+            var map = L.map('map').setView([14.1153, 120.9629], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+            }).addTo(map);
+
+            var marker = L.marker([14.1153, 120.9629]).addTo(map);
+            marker.bindPopup("Philippines");
+
+            // Show the map container with animation
+            document.getElementById('mapContainer').style.opacity = 1;
+            document.getElementById('mapContainer').style.transform = 'translateY(0)';
+        }
+    </script>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <script>
+        window.onload = function () {
+            initMap();
+        };
+    </script>
+</body>
+</html>
