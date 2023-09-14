@@ -18,13 +18,6 @@
 </head>
 <body>
 
-<?php
-$category = $_GET['category'];
-echo "Received category: $category";  // For debugging
-?>
-
-
-
   <div>
   <div class="iframe-container">
     <div class="content" style="background: url('image/banig.jpg')">
@@ -61,8 +54,6 @@ echo "Received category: $category";  // For debugging
     </div>
       
   </section>
-
-  
   <script src="js/explore_main.js"></script>
 </body>
 

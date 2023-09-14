@@ -74,7 +74,7 @@
         </div>
         <div class="row">
           <div class="card6">
-            <a href="explore_main.php?category=events">
+            <a href="calendar.php?category=events">
             <div class="icon-wrapper6">
               <i class="fa-solid fa-calendar-days"></i>
             </div>
@@ -111,7 +111,7 @@
   <div class="iframe">
     <iframe src="home_most_viewed.html" width="100%" height="585" frameborder="0" background="transparent"></iframe>
   </div>
-
+  
   <script src="js/home_main.js"></script>
   <?php include 'footer.php'; ?>
 </body>

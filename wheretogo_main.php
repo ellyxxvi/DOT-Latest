@@ -21,7 +21,7 @@
       <!-- The dynamic service cards will be inserted here -->
     </div>
   </div>
-  <?php include 'footer.php'; ?>
+
   <script src="https://kit.fontawesome.com/e173e574d6.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src=" https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js	"></script>

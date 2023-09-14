@@ -23,36 +23,84 @@
                <i id="right" class="fa-solid fa-angle-right"></i>
           </div>
           <script>
-               const cardData = [{
-                         name: "Blanche Pearson",
-                         role: "Sales Manager",
-                         iconClass: "fas fa-building",
-                         backgroundImage: "image/places/churches.png"
-                    }, {
-                         name: "Joenas Brauers",
-                         role: "Web Developer",
-                         iconClass: "fas fa-laptop-code",
-                         backgroundImage: "image/places/touristspots.png"
-                    },
-                    // Add more card data here...
-               ];
-               const carousel = document.querySelector(".carousel");
-               // Generate card elements dynamically
-               cardData.forEach(card => {
-                    const cardElement = document.createElement("li");
-                    cardElement.className = "card";
-                    cardElement.style.backgroundImage = `url('${card.backgroundImage}')`;
-                    cardElement.innerHTML = `
-    
-							<div class="icon card-icon ${card.iconClass}"></div>
-							<h2>${card.name}</h2>
-							<span>${card.role}</span>
-              `;
-                    if (card.shouldHaveFilteredBackground) {
-                         cardElement.classList.add("filtered-background");
-                    }
-                    carousel.appendChild(cardElement);
-               });
+        // Function to fetch places data from localhost:3000/places
+        async function fetchPlacesData() {
+            try {
+                const response = await fetch('http://localhost:3000/places');
+                const data = await response.json();
+                return Array.isArray(data) ? data : [];
+            } catch (error) {
+                console.error('Error fetching places data:', error);
+                return [];
+            }
+        }
+
+        // Function to fetch ratings data from localhost:3000/itinerary_visited
+        async function fetchRatingsData() {
+            try {
+                const response = await fetch('http://localhost:3000/itinerary_visited');
+                const data = await response.json();
+                return Array.isArray(data) ? data : [];
+            } catch (error) {
+                console.error('Error fetching ratings data:', error);
+                return [];
+            }
+        }
+
+        // Function to calculate average rating
+        function calculateAverageRating(ratings) {
+            if (ratings.length === 0) return 0;
+            const sum = ratings.reduce((total, rating) => total + rating, 0);
+            return (sum / ratings.length).toFixed(1);
+        }
+
+        // Function to populate the carousel with cards
+        async function populateCarousel() {
+            const carousel = document.querySelector(".carousel");
+
+            // Fetch places and ratings data
+            const placesData = await fetchPlacesData();
+            const ratingsData = await fetchRatingsData();
+
+            // Create a map to store ratings for each place
+            const placeRatingsMap = new Map();
+
+            // Populate the placeRatingsMap with ratings data
+            ratingsData.forEach(user => {
+                const placeId = user.place_id;
+                const rating = user.rating;
+                if (!placeRatingsMap.has(placeId)) {
+                    placeRatingsMap.set(placeId, [rating]);
+                } else {
+                    placeRatingsMap.get(placeId).push(rating);
+                }
+            });
+
+            // Sort places by average rating
+            placesData.sort((a, b) => {
+                const ratingsA = placeRatingsMap.get(a.id) || [];
+                const ratingsB = placeRatingsMap.get(b.id) || [];
+                const averageRatingA = calculateAverageRating(ratingsA);
+                const averageRatingB = calculateAverageRating(ratingsB);
+                return averageRatingB - averageRatingA;
+            });
+
+            // Generate card elements dynamically
+            placesData.slice(0, 5).forEach(place => {
+                const cardElement = document.createElement("li");
+                cardElement.className = "card";
+                cardElement.style.backgroundImage = `url('${place.image}')`;
+                cardElement.innerHTML = `
+                    <div class="icon card-icon ${place.iconClass}"></div>
+                    <h2>${place.title}</h2>
+                    <span>${place.category}</span>
+                `;
+                carousel.appendChild(cardElement);
+            });
+        }
+
+        // Call the function to populate the carousel
+        populateCarousel();
                const wrapper = document.querySelector(".wrapper");
                const firstCardWidth = carousel.querySelector(".card").offsetWidth;
                const arrowBtns = document.querySelectorAll(".wrapper i");
@@ -60,21 +108,18 @@
                let isDragging = false,
                     isAutoPlay = true,
                     startX, startScrollLeft, timeoutId;
-               // Get the number of cards that can fit in the carousel at once
+
                let cardPerView = Math.round(carousel.offsetWidth / firstCardWidth);
-               // Insert copies of the last few cards to beginning of carousel for infinite scrolling
+
                carouselChildrens.slice(-cardPerView).reverse().forEach(card => {
                     carousel.insertAdjacentHTML("afterbegin", card.outerHTML);
                });
-               // Insert copies of the first few cards to end of carousel for infinite scrolling
                carouselChildrens.slice(0, cardPerView).forEach(card => {
                     carousel.insertAdjacentHTML("beforeend", card.outerHTML);
                });
-               // Scroll the carousel at appropriate postition to hide first few duplicate cards on Firefox
                carousel.classList.add("no-transition");
                carousel.scrollLeft = carousel.offsetWidth;
                carousel.classList.remove("no-transition");
-               // Add event listeners for the arrow buttons to scroll the carousel left and right
                arrowBtns.forEach(btn => {
                     btn.addEventListener("click", () => {
                          carousel.scrollLeft += btn.id == "left" ? -firstCardWidth : firstCardWidth;
@@ -83,13 +128,11 @@
                const dragStart = (e) => {
                     isDragging = true;
                     carousel.classList.add("dragging");
-                    // Records the initial cursor and scroll position of the carousel
                     startX = e.pageX;
                     startScrollLeft = carousel.scrollLeft;
                }
                const dragging = (e) => {
-                    if (!isDragging) return; // if isDragging is false return from here
-                    // Updates the scroll position of the carousel based on the cursor movement
+                    if (!isDragging) return; 
                     carousel.scrollLeft = startScrollLeft - (e.pageX - startX);
                }
                const dragStop = () => {
@@ -97,25 +140,21 @@
                     carousel.classList.remove("dragging");
                }
                const infiniteScroll = () => {
-                    // If the carousel is at the beginning, scroll to the end
                     if (carousel.scrollLeft === 0) {
                          carousel.classList.add("no-transition");
                          carousel.scrollLeft = carousel.scrollWidth - (2 * carousel.offsetWidth);
                          carousel.classList.remove("no-transition");
                     }
-                    // If the carousel is at the end, scroll to the beginning
                     else if (Math.ceil(carousel.scrollLeft) === carousel.scrollWidth - carousel.offsetWidth) {
                          carousel.classList.add("no-transition");
                          carousel.scrollLeft = carousel.offsetWidth;
                          carousel.classList.remove("no-transition");
                     }
-                    // Clear existing timeout & start autoplay if mouse is not hovering over carousel
                     clearTimeout(timeoutId);
                     if (!wrapper.matches(":hover")) autoPlay();
                }
                const autoPlay = () => {
-                    if (window.innerWidth < 800 || !isAutoPlay) return; // Return if window is smaller than 800 or isAutoPlay is false
-                    // Autoplay the carousel after every 2500 ms
+                    if (window.innerWidth < 800 || !isAutoPlay) return;
                     timeoutId = setTimeout(() => carousel.scrollLeft += firstCardWidth, 2500);
                }
                autoPlay();
