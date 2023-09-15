@@ -8,7 +8,6 @@
       outline: none;
       border: none;
       text-decoration: none;
-      text-transform: capitalize;
       transition: all .2s linear;
     }
   
@@ -19,7 +18,6 @@
     .container {
       max-width: 1200px;
       margin: 0 auto;
-      text-align: center;
       padding: 25px 20px;
     }
   
@@ -392,7 +390,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100px;
+  min-height: 100px;
 }
 
 .navbar-nav {
@@ -432,6 +430,18 @@
   100% {
      opacity: 1;
      transform: translateY(0);
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .nav-bar {
+    height: 200px !important;
+  }
+  .slider-content h2 {
+    font-size: 20px;
+  }
+  .slider-content p {
+    font-size: 16px;
   }
 }
 

@@ -392,7 +392,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100px;
+  min-height: 100px;
 }
 
 .navbar-nav {
@@ -439,6 +439,17 @@
 @media (min-width: 768px) {
   .nav-bar {
     width: 100000px;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .nav-bar {
+    height: 200px !important;
+  }
+  .slider-content h2 {
+    font-size: 20px;
+  }
+  .slider-content p {
+    font-size: 16px;
   }
 }
 

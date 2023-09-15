@@ -73,8 +73,9 @@ const resortsData = [];
 
 function calculateAverageRating(ratings) {
     if (ratings.length === 0) return 0;
-    const sum = ratings.reduce((total, rating) => total + rating, 0);
-    return (sum / ratings.length).toFixed(1);
+    const sum = ratings.reduce((total, rating) => total + parseFloat(rating), 0);
+    const average = (sum / ratings.length).toFixed(1);
+    return average;
 }
 
 function fetchResortNames() {
@@ -119,7 +120,7 @@ async function populateAndSortResorts() {
                         resortsData.push(resort);
                     }
                 });
-
+                console.log("Resorts Data: " + JSON.stringify(resortsData))
                 resortsData.sort((a, b) => calculateAverageRating(b.ratings) - calculateAverageRating(a.ratings));
 
                 resortList.innerHTML = "";

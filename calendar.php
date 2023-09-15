@@ -3,19 +3,20 @@
 <?php include 'header.php'; ?>
 
 <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calendar of Activities</title>
     <script src="https://kit.fontawesome.com/83c0f4a797.js" crossorigin="anonymous"></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
-    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet"> -->
-
     <link href="css/calendar.css" rel="stylesheet">
 </head>
 
 <body>
 
 
-    <div class="bg-image" style="background-image: url('image/calendar_bg.png'); height: 100%; height: 450px; background-repeat: no-repeat; background-size: cover;">
+    <div class="bg-image" style="background-image: url('image/banig.jpg'); height: 100%; height: 450px; background-repeat: no-repeat; background-size: cover;">
         <div class="overlay">
             <h1 class="overlay-text">FESTIVALS</h1>
         </div>
@@ -57,29 +58,29 @@
     </section>
 
     <section id="incoming-festival" class="pt-5 pb-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-6">
-                <h3 class="mb-3" style="color: black;">INCOMING FESTIVAL</h3>
-            </div>
-            <div class="col-6 text-right">
-                <a class="btn btn-primary mb-3 mr-1" href="#carouselExampleIndicators2" role="button" data-slide="prev">
-                    <i class="fa fa-arrow-left"></i>
-                </a>
-                <a class="btn btn-primary mb-3 " href="#carouselExampleIndicators2" role="button" data-slide="next">
-                    <i class="fa fa-arrow-right"></i>
-                </a>
-            </div>
-            <div class="col-12">
-                <div id="carouselExampleIndicators2" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner">
-                        <!-- Slides will be dynamically generated here -->
+        <div class="container">
+            <div class="row">
+                <div class="col-6">
+                    <h3 class="mb-3" style="color: black;">INCOMING FESTIVAL</h3>
+                </div>
+                <div class="col-6 text-right">
+                    <a class="btn btn-primary mb-3 mr-1" href="#carouselExampleIndicators2" role="button" data-slide="prev">
+                        <i class="fa fa-arrow-left"></i>
+                    </a>
+                    <a class="btn btn-primary mb-3 " href="#carouselExampleIndicators2" role="button" data-slide="next">
+                        <i class="fa fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="col-12">
+                    <div id="carouselExampleIndicators2" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner">
+                            <!-- Slides will be dynamically generated here -->
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
 
     <?php include 'footer.php'; ?>

@@ -14,8 +14,8 @@
 }
 
 @font-face {
-    font-family: 'Lemon Milk';
-    src: url('../fonts/LemonMilk.otf') format('opentype');
+    font-family: 'Batangas';
+    src: url('../fonts/Batangas.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
 }
@@ -42,9 +42,9 @@ body {
 
 .overlay-text {
     color: white;
-    font-size: 70px;
+    font-size: 100px;
     text-align: center;
-    font-family: 'Lemon Milk';
+    font-family: 'Batangas';
 }
 
 #calendar-gallery {
@@ -116,7 +116,7 @@ body {
 }
 
 .item-overlay h3 {
-    font-family: 'Lemon Milk';
+    font-family: 'Batangas';
     font-size: 30px;
     margin-bottom: 5px;
 }
@@ -181,7 +181,7 @@ body {
 }
 .card-title{
     font-size: 20px;
-    font-family: 'Lemon Milk';
+    font-family: 'Batangas';
     color: #fff;
 }
 .card-text{
@@ -224,7 +224,7 @@ body {
 @media screen and (max-width: 895px) {
    
     .overlay-text{
-        font-size: 20px;
+        font-size: 70px;
     }
     .image-gallery {
         grid-template-columns: repeat(1, 1fr);

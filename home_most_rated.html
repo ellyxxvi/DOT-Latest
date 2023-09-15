@@ -1,106 +1,114 @@
 <!DOCTYPE html>
 <!-- Coding By CodingNepal - youtube.com/codingnepal -->
 <html lang="en" dir="ltr">
-    
 
-     <head>
-          <meta charset="utf-8">
-          <title>Infinite Card Slider JavaScript | CodingNepal</title>
-          <link rel="stylesheet" href="css/home_most_rated.css">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <!-- Fontawesome Link for Icons -->
-          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
-     </head>
-     <body>
-          <div>
-               <h1>MOST RATED</h1>
-          </div>
-          <div class="wrapper">
-               <i id="left" class="fa-solid fa-angle-left"></i>
-               <ul class="carousel">
-                    <!-- Cards will be generated dynamically here -->
-               </ul>
-               <i id="right" class="fa-solid fa-angle-right"></i>
-          </div>
-          <script>
-        // Function to fetch places data from localhost:3000/places
-        async function fetchPlacesData() {
-            try {
-                const response = await fetch('http://localhost:3000/places');
-                const data = await response.json();
-                return Array.isArray(data) ? data : [];
-            } catch (error) {
-                console.error('Error fetching places data:', error);
-                return [];
-            }
-        }
 
-        // Function to fetch ratings data from localhost:3000/itinerary_visited
-        async function fetchRatingsData() {
-            try {
-                const response = await fetch('http://localhost:3000/itinerary_visited');
-                const data = await response.json();
-                return Array.isArray(data) ? data : [];
-            } catch (error) {
-                console.error('Error fetching ratings data:', error);
-                return [];
-            }
-        }
+<head>
+     <meta charset="utf-8">
+     <title>Infinite Card Slider JavaScript | CodingNepal</title>
+     <link rel="stylesheet" href="css/home_most_rated.css">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <!-- Fontawesome Link for Icons -->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+</head>
 
-        // Function to calculate average rating
-        function calculateAverageRating(ratings) {
-            if (ratings.length === 0) return 0;
-            const sum = ratings.reduce((total, rating) => total + rating, 0);
-            return (sum / ratings.length).toFixed(1);
-        }
+<body>
+     <div>
+          <h1>MOST RATED</h1>
+     </div>
+     <div class="wrapper">
+          <i id="left" class="fa-solid fa-angle-left"></i>
+          <ul class="carousel">
+               <!-- Cards will be generated dynamically here -->
+          </ul>
+          <i id="right" class="fa-solid fa-angle-right"></i>
+     </div>
+     <script>
+          let carousel; 
 
-        // Function to populate the carousel with cards
-        async function populateCarousel() {
-            const carousel = document.querySelector(".carousel");
+          async function fetchPlacesData() {
+               try {
+                    const response = await fetch('http://localhost:3000/places');
+                    const data = await response.json();
+                    return Array.isArray(data) ? data : [];
+               } catch (error) {
+                    console.error('Error fetching places data:', error);
+                    return [];
+               }
+          }
 
-            // Fetch places and ratings data
-            const placesData = await fetchPlacesData();
-            const ratingsData = await fetchRatingsData();
+          async function fetchRatingsData() {
+               try {
+                    const response = await fetch('http://localhost:3000/itinerary_visited');
+                    const data = await response.json();
+                    return Array.isArray(data) ? data : [];
+               } catch (error) {
+                    console.error('Error fetching ratings data:', error);
+                    return [];
+               }
+          }
+          function calculateAverageRating(ratings) {
+               if (ratings.length === 0) return 0;
+               const sum = ratings.reduce((total, rating) => total + parseFloat(rating), 0);
+               const average = (sum / ratings.length).toFixed(1);
+               return average;
+               }
 
-            // Create a map to store ratings for each place
-            const placeRatingsMap = new Map();
 
-            // Populate the placeRatingsMap with ratings data
-            ratingsData.forEach(user => {
-                const placeId = user.place_id;
-                const rating = user.rating;
-                if (!placeRatingsMap.has(placeId)) {
-                    placeRatingsMap.set(placeId, [rating]);
-                } else {
-                    placeRatingsMap.get(placeId).push(rating);
-                }
-            });
+          async function populateCarousel() {
+               carousel = document.querySelector(".carousel");
 
-            // Sort places by average rating
-            placesData.sort((a, b) => {
-                const ratingsA = placeRatingsMap.get(a.id) || [];
-                const ratingsB = placeRatingsMap.get(b.id) || [];
-                const averageRatingA = calculateAverageRating(ratingsA);
-                const averageRatingB = calculateAverageRating(ratingsB);
-                return averageRatingB - averageRatingA;
-            });
+               // Fetch places and ratings data
+               const placesData = await fetchPlacesData();
+               const ratingsData = await fetchRatingsData();
 
-            // Generate card elements dynamically
-            placesData.slice(0, 5).forEach(place => {
-                const cardElement = document.createElement("li");
-                cardElement.className = "card";
-                cardElement.style.backgroundImage = `url('${place.image}')`;
-                cardElement.innerHTML = `
-                    <div class="icon card-icon ${place.iconClass}"></div>
-                    <h2>${place.title}</h2>
-                    <span>${place.category}</span>
-                `;
-                carousel.appendChild(cardElement);
-            });
-        }
+               // Create a map to store ratings for each place
+               const placeRatingsMap = new Map();
 
-        // Call the function to populate the carousel
-        populateCarousel();
+               // Populate the placeRatingsMap with ratings data
+               ratingsData.forEach(rating => {
+                    const placeId = parseInt(rating.place_id);
+                    const ratingValue = parseInt(rating.ratings); 
+                    console.log("Rating: " + ratingValue);
+                    console.log("ID: "+ placeId + " " + placeRatingsMap.has(placeId));
+                    if (!placeRatingsMap.has(placeId)) {
+                         placeRatingsMap.set(placeId, [ratingValue]);
+                    } else {
+                         placeRatingsMap.get(placeId).push(ratingValue);
+                    }
+                    console.log("ID2 GET: "+ placeId + " " + placeRatingsMap.get(placeId));
+               });
+
+               // Calculate average ratings for each place
+               const placesWithRatings = placesData.map(place => {
+                    const ratings = placeRatingsMap.get(place.id) || [];
+                    const averageRating = calculateAverageRating(ratings);
+                    return { ...place, averageRating };
+               });
+
+               // Sort places by average rating in descending order
+               placesWithRatings.sort((a, b) => b.averageRating - a.averageRating);
+
+               // Slice the top 5 places
+               const top5Places = placesWithRatings.slice(0, 5);
+
+               // Generate card elements dynamically
+               top5Places.forEach(place => {
+                    const cardElement = document.createElement("li");
+                    cardElement.className = "card";
+                    cardElement.style.backgroundImage = `url('${place.image}')`;
+                    cardElement.innerHTML = `
+                <div class="icon card-icon ${place.iconClass}"></div>
+                <h2>${place.title}</h2>
+                <span>Average Rating: ${place.averageRating}</span>
+            `;
+                    cardElement.addEventListener("click", () => {
+                         window.top.location.href = `explore_cardcontent.php?id=${place.id}`;
+                    });
+                    carousel.appendChild(cardElement);
+               });
+
+               // Calculate card width, set initial positions, and add event listeners
                const wrapper = document.querySelector(".wrapper");
                const firstCardWidth = carousel.querySelector(".card").offsetWidth;
                const arrowBtns = document.querySelectorAll(".wrapper i");
@@ -110,29 +118,34 @@
                     startX, startScrollLeft, timeoutId;
 
                let cardPerView = Math.round(carousel.offsetWidth / firstCardWidth);
-
                carouselChildrens.slice(-cardPerView).reverse().forEach(card => {
                     carousel.insertAdjacentHTML("afterbegin", card.outerHTML);
                });
+
                carouselChildrens.slice(0, cardPerView).forEach(card => {
                     carousel.insertAdjacentHTML("beforeend", card.outerHTML);
                });
+
                carousel.classList.add("no-transition");
                carousel.scrollLeft = carousel.offsetWidth;
                carousel.classList.remove("no-transition");
+
                arrowBtns.forEach(btn => {
                     btn.addEventListener("click", () => {
                          carousel.scrollLeft += btn.id == "left" ? -firstCardWidth : firstCardWidth;
                     });
                });
+
                const dragStart = (e) => {
                     isDragging = true;
                     carousel.classList.add("dragging");
+
                     startX = e.pageX;
                     startScrollLeft = carousel.scrollLeft;
                }
                const dragging = (e) => {
-                    if (!isDragging) return; 
+                    if (!isDragging) return;
+
                     carousel.scrollLeft = startScrollLeft - (e.pageX - startX);
                }
                const dragStop = () => {
@@ -140,16 +153,19 @@
                     carousel.classList.remove("dragging");
                }
                const infiniteScroll = () => {
+
                     if (carousel.scrollLeft === 0) {
                          carousel.classList.add("no-transition");
                          carousel.scrollLeft = carousel.scrollWidth - (2 * carousel.offsetWidth);
                          carousel.classList.remove("no-transition");
                     }
+
                     else if (Math.ceil(carousel.scrollLeft) === carousel.scrollWidth - carousel.offsetWidth) {
                          carousel.classList.add("no-transition");
                          carousel.scrollLeft = carousel.offsetWidth;
                          carousel.classList.remove("no-transition");
                     }
+
                     clearTimeout(timeoutId);
                     if (!wrapper.matches(":hover")) autoPlay();
                }
@@ -164,6 +180,12 @@
                carousel.addEventListener("scroll", infiniteScroll);
                wrapper.addEventListener("mouseenter", () => clearTimeout(timeoutId));
                wrapper.addEventListener("mouseleave", autoPlay);
-          </script>
-     </body>
+          }
+
+          populateCarousel();
+     </script>
+
+
+</body>
+
 </html>

@@ -13,8 +13,8 @@
 }
 
 @font-face {
-    font-family: 'Lemon Milk';
-    src: url('../fonts/LemonMilk.otf') format('opentype');
+    font-family: 'Batangas';
+    src: url('../fonts/Batangas.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
 }
@@ -52,9 +52,9 @@ body {
 .overlay-text {
     padding: 100px;
     color: transparent; 
-    font-size: 50px;
+    font-size: 70px;
     text-align: center;
-    font-family: 'Lemon Milk';
+    font-family: 'Batangas';
     opacity: 0; 
     transform: translateY(20px);
     transition: opacity 0.8s ease, transform 0.8s ease, color 0.8s ease;
@@ -128,7 +128,7 @@ h2 {
     font-size: 60px;
     color: #ffffff;
     text-align: center;
-    font-family: 'Lemon Milk';
+    font-family: 'Batangas';
 }
 .slider-container {
     max-width: 1200px;
@@ -166,7 +166,7 @@ h2 {
 h3 {
     font-size: 50px;
     margin-top: 0;
-    font-family: 'Lemon Milk';
+    font-family: 'Batangas';
     color: #ffffff;
 }
 

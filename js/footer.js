@@ -7,21 +7,21 @@ const footerSections = [
     {
         title: "Categories",
         links: [
-            { title: "Dive", url: "#" },
-            { title: "Nature", url: "#" },
-            { title: "Beach", url: "#" },
-            { title: "Adventure", url: "#" },
+            { title: "Dive", url: "explore_main.php" },
+            { title: "Nature", url: "explore_main.php" },
+            { title: "Beach", url: "explore_main.php" },
+            { title: "Adventure", url: "#explore_main.php" },
             { title: "Festival", url: "calendar.php" }
         ]
     },
     {
         title: "Quick Links",
         links: [
-            { title: "Let's Explore", url: "#" },
-            { title: "Where to Go", url: "#" },
+            { title: "Let's Explore", url: "explore_main.php" },
+            { title: "Where to Go", url: "wheretogo_main.php" },
             { title: "Calendar of Activities", url: "calendar.php" },
             { title: "Love Our Planet", url: "love_our_planet.php" },
-            { title: "Favorites", url: "#" }
+            { title: "Favorites", url: "itinerary_favorites.php" }
         ]
     }
 ];

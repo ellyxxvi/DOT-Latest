@@ -24,7 +24,7 @@ window.addEventListener('scroll', function() {
 // www.bytewebster.com
 	// www.bytewebster.com
 	// www.bytewebster.com
-console.clear();
+// console.clear();
 
 const { gsap, imagesLoaded } = window;
 

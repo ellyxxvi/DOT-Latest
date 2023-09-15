@@ -18,9 +18,9 @@
     },
     {
       "id": 2,
-      "existingImage": "http://localhost:3001/images/81fd1dc1bac0a3de3f246de762931067",
-      "image": "http://localhost:3001/images/423c41a77f0ed65e0bfece3de499e516",
-      "first_name": "Mikkay4",
+      "existingImage": "http://localhost:3001/images/423c41a77f0ed65e0bfece3de499e516",
+      "image": "http://localhost:3001/images/10292b3bc2d914ec2786f7c8979cddda",
+      "first_name": "Mikkay",
       "last_name": "Gabinete",
       "gender": "Female",
       "email": "mikkay@gmail.com",
@@ -30,7 +30,33 @@
       "current_city": "test",
       "current_baranggay": "test",
       "created_at": "",
-      "updated_at": "14-09-2023"
+      "updated_at": ""
+    }
+  ],
+  "preference": [
+    {
+      "user_id": 1,
+      "id": 1,
+      "preferences": [
+        {
+          "category": "hotels"
+        },
+        {
+          "category": "swim"
+        }
+      ]
+    },
+    {
+      "user_id": 2,
+      "id": 2,
+      "preferences": [
+        {
+          "category": "church"
+        },
+        {
+          "category": "swim"
+        }
+      ]
     }
   ],
   "admin": [
@@ -140,6 +166,45 @@
       "website": "www.casitaysabel.co",
       "created_at": "07-09-2023",
       "updated_at": "14-09-2023"
+    },
+    {
+      "title": "dfgfdfd",
+      "description": "gfdg",
+      "category": "hotels",
+      "province": "fdgfdd",
+      "city": "gfdfg",
+      "barangay": "dfgfdfd",
+      "contact": "gfd",
+      "website": "fdggfd",
+      "image": "http://localhost:3001/images/b8d0993126bf62241734fb6b534c7c20",
+      "created_at": "16-09-2023",
+      "id": 7
+    },
+    {
+      "title": "gdfgddf",
+      "description": "gdfg",
+      "category": "tourists",
+      "province": "gdffdg",
+      "city": "fdgfd",
+      "barangay": "fdgfd",
+      "contact": "gfd",
+      "website": "gfdgd",
+      "image": "http://localhost:3001/images/aaeaced3a95494c4d691ab8e869182c5",
+      "created_at": "16-09-2023",
+      "id": 8
+    },
+    {
+      "title": "gfdgfdfd",
+      "description": "gdgd",
+      "category": "nature",
+      "province": "fgdfd",
+      "city": "gfdgf",
+      "barangay": "gdg",
+      "contact": "gdfd",
+      "website": "fgfd",
+      "image": "http://localhost:3001/images/684c08dbd64792acd5e17513f1667fd2",
+      "created_at": "16-09-2023",
+      "id": 9
     }
   ],
   "places_cities": [
@@ -196,6 +261,13 @@
       "description": "Great Place",
       "created_at": "14-09-2023",
       "updated_at": "14-09-2023"
+    },
+    {
+      "city": "Mabini",
+      "description": "Great Place",
+      "image": "http://localhost:3001/images/efecb576f7f1d580c935526ce80fbbd7",
+      "created_at": "15-09-2023",
+      "id": 9
     }
   ],
   "festival": [
@@ -308,22 +380,7 @@
       "updated_at": "14-09-2023"
     }
   ],
-  "itinerary_favorites": [
-    {
-      "id": 8,
-      "place_id": 8,
-      "user_id": 1,
-      "created_at": "30-08-2023",
-      "updated_at": "30-08-2023"
-    },
-    {
-      "id": 7,
-      "place_id": 7,
-      "user_id": 1,
-      "created_at": "30-08-2023",
-      "updated_at": "30-08-2023"
-    }
-  ],
+  "itinerary_favorites": [],
   "itinerary_visited": [
     {
       "place_id": "1",

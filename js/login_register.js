@@ -87,69 +87,64 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(response => response.json())
         .then(data => {
             console.log('User added:', data);
-            // Assuming a successful registration, you can now set the user_id in local storage
-            localStorage.setItem('user_id', data.id);
+            localStorage.setItem('user_id', parseInt(data.id));
+            alert('New user added, please proceed in logging in your account');
         })
         .catch(error => console.error('Error adding user:', error));
     });
 
     // Event listener for saving preferences
     savePreferencesButton.addEventListener('click', () => {
-        const userId = localStorage.getItem('user_id'); // Get the user's ID
+        const userId = parseInt(localStorage.getItem('user_id')); // Get the user's ID
 
         if (!userId) {
             console.error('User ID not found in local storage');
             return; // Abort if user ID is not found
         }
 
-        const selectedPreferences = [];
+        const selectedPreferences = collectSelectedPreferences();
 
-        // Check which preferences are selected and add them to the array
-        const preferenceSwim = document.getElementById('preferenceSwim');
-        const preferenceNature = document.getElementById('preferenceNature');
-        const preferenceChurches = document.getElementById('preferenceChurches');
-        const preferenceEvents = document.getElementById('preferenceEvents');
-        const preferenceHotel = document.getElementById('preferenceHotel');
-        const preferenceTouristSpots = document.getElementById('preferenceTouristSpots');
-
-        if (preferenceSwim.classList.contains('selected')) {
-            selectedPreferences.push({ category: preferenceSwim.getAttribute('value') });
-        }
-        if (preferenceNature.classList.contains('selected')) {
-            selectedPreferences.push({ category: preferenceNature.getAttribute('value') });
-        }
-        if (preferenceChurches.classList.contains('selected')) {
-            selectedPreferences.push({ category: preferenceChurches.getAttribute('value') });
-        }
-        if (preferenceEvents.classList.contains('selected')) {
-            selectedPreferences.push({ category: preferenceEvents.getAttribute('value') });
-        }
-        if (preferenceHotel.classList.contains('selected')) {
-            selectedPreferences.push({ category: preferenceHotel.getAttribute('value') });
-        }
-        if (preferenceTouristSpots.classList.contains('selected')) {
-            selectedPreferences.push({ category: preferenceTouristSpots.getAttribute('value') });
-        }
-
-        // Update the user's preferences in the database
-        fetch(`http://localhost:3000/users/${userId}`, {
-            method: 'PATCH', // Use PATCH to update existing user data
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ preferences: selectedPreferences }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('User preferences updated:', data);
-            // Close the modal after saving preferences
-            $('#preferenceModal').modal('hide');
-        })
-        .catch(error => console.error('Error updating preferences:', error));
+        // Save user preferences to localhost:3000/preference
+        saveUserPreferences(userId, selectedPreferences);
     });
 });
 
+// Function to collect selected preferences
+function collectSelectedPreferences() {
+    const selectedPreferences = [];
+    const preferenceButtons = document.querySelectorAll(".preference-button");
 
+    preferenceButtons.forEach((button) => {
+        if (button.classList.contains('selected')) {
+            selectedPreferences.push({ category: button.getAttribute('value') });
+        }
+    });
+
+    return selectedPreferences;
+}
+
+// Function to save user preferences to localhost:3000/preference
+function saveUserPreferences(userId, selectedPreferences) {
+    const userPreference = {
+        user_id: userId,
+        preferences: selectedPreferences
+    };
+
+    fetch('http://localhost:3000/preference', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userPreference)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('User preferences saved:', data);
+        window.location.reload();
+        preferenceModal.hide();
+    })
+    .catch(error => console.error('Error saving preferences:', error));
+}
 
 // login
 document.addEventListener('DOMContentLoaded', () => {

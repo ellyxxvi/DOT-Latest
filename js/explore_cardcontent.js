@@ -15,24 +15,32 @@ document.addEventListener("DOMContentLoaded", function () {
         commentCards = document.querySelectorAll(".comment-card");
     }
 
-
     facebookIconBtn.addEventListener("click", function () {
         const desiredService = dynamicData.find(service => service.id === desiredServiceId);
         if (desiredService && desiredService.website) {
             const externalLink = desiredService.website;
-            window.open(externalLink, "_blank"); // Open external link in a new tab
+            window.open(externalLink, "_blank"); 
         } else {
             console.log("Website URL not available for this service.");
         }
     });
 
-    if (isServiceFavorited === "true") {
-        addToFavoritesBtn.classList.add("added");
-        addToFavoritesBtn.innerHTML = '<i class="fas fa-check"></i> Added to Favorites';
+    // Check if the user is logged in
+    const isLoggedIn = localStorage.getItem('access_token') !== null;
+
+    // Check if the user is logged in and set the button accordingly
+    if (isLoggedIn) {
+        addToFavoritesBtn.style.visibility = "visible"; 
+        if (isServiceFavorited === "true") {
+            addToFavoritesBtn.classList.add("added");
+            addToFavoritesBtn.innerHTML = '<i class="fas fa-check"></i> Added to Favorites';
+        }
+    } else {
+        addToFavoritesBtn.style.visibility = "hidden"; 
     }
 
-    let addItemCounter = 1; // Initialize counter for adding items
-    let deleteItemCounter = 1; // Initialize counter for deleting items
+    let addItemCounter = 1; 
+    let deleteItemCounter = 1; 
 
     addToFavoritesBtn.addEventListener("click", function () {
         addToFavoritesBtn.classList.toggle("added");
@@ -42,9 +50,9 @@ document.addEventListener("DOMContentLoaded", function () {
             localStorage.setItem("favoriteService_" + desiredServiceId, "true");
 
             const favoriteData = {
-                id: desiredServiceId, // Use the counter for adding items
+                id: desiredServiceId, 
                 place_id: desiredServiceId,
-                user_id: 1, // Replace with the actual user ID if available
+                user_id: 1, 
                 created_at: getCurrentDate(),
                 updated_at: getCurrentDate(),
             };
@@ -73,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             // Use the counter for deleting items
             const deleteItemId = deleteItemCounter;
-            deleteItemCounter++; // Increment the counter for the next deleted item
+            deleteItemCounter++; 
 
             // Remove the service from favorites
             fetch(`http://localhost:3000/itinerary_favorites/${desiredServiceId}`, {
@@ -88,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         localStorage.removeItem("favoriteService_" + desiredServiceId);
                         alert('Removed from favorites successfully');
                     } else {
-                        return response.json();  // Parse response body as JSON for detailed error
+                        return response.json();
                     }
                 })
                 .then(data => {
@@ -101,7 +109,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
         }
     });
-
 
     function getCurrentDate() {
         const now = new Date();
@@ -152,7 +159,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         return stars.join("");
     }
-
 
 
     function processData() {

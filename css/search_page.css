@@ -13,8 +13,8 @@
 }
 
 @font-face {
-    font-family: 'Lemon Milk';
-    src: url('../fonts/LemonMilk.otf') format('opentype');
+    font-family: 'Batangas';
+    src: url('../fonts/Batangas.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
 }
@@ -142,7 +142,7 @@ body {
 }
 
 .item-overlay h3 {
-    font-family: 'Lemon Milk';
+    font-family: 'Batangas';
     font-size: 30px;
     margin-bottom: 5px;
 }

@@ -64,7 +64,6 @@ document.addEventListener("DOMContentLoaded", function () {
             current_baranggay: document.getElementById('current_baranggay').value,
             created_at: document.getElementById('created_at').value,
             updated_at: document.getElementById('updated_at').value,
-            preferences: document.getElementById('preferences').value,
         };
 
         fetch(`http://localhost:3000/users/${userId}`, {
@@ -143,8 +142,8 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.json())
             .then(data => {
                 console.log('Profile updated:', data);
+                window.location.reload();
                 editModal.hide();
-                // window.location.reload();
             })
             .catch(error => {
                 console.error('Error updating profile:', error);
@@ -383,45 +382,58 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// user profile
+// USER PROFILE
+// Function to fetch user data
+function fetchUserData(userId) {
+    return fetch(`http://localhost:3000/users/${userId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error fetching user data: ${response.status}`);
+            }
+            return response.json();
+        });
+}
+
+// Function to fetch preference data
+function fetchPreferenceData() {
+    return fetch('http://localhost:3000/preference')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error fetching preference data: ${response.status}`);
+            }
+            return response.json();
+        });
+}
+
+// Function to update the user profile
 function updateProfile() {
     const isLoggedIn = localStorage.getItem('access_token') !== null;
-    let userData;
+    const userData = JSON.parse(localStorage.getItem('user_data'));
 
+    // Fetch user data
+    fetchUserData(userData.id)
+        .then(user => {
+            fetchPreferenceData()
+                .then(preferenceData => {
+                    const userPreferences = preferenceData.find(preference => preference.user_id === user.id);
 
-    userData = JSON.parse(localStorage.getItem('user_data'));
-    //populateUserData(userData);
-    // Fetch user data along with preferences
-    fetch('http://localhost:3000/users')
-        .then(response => response.json())
-        .then(data => {
-
-            if (data && data.length > 0 && data[0].preferences) {
-                populateUserData(userData);
-            } else {
-                console.error('User preferences not found in data.');
-            }
+                    if (userPreferences && userPreferences.preferences && userPreferences.preferences.length > 0) {
+                        populateUserData(user, userPreferences.preferences);
+                    } else {
+                        console.error('User preferences not found in data.');
+                    }
+                })
+                .catch(preferenceError => {
+                    console.error('Error fetching preference data:', preferenceError);
+                });
         })
         .catch(error => {
             console.error('Error fetching user data:', error);
         });
 }
 
-
-// Function to populate user data on the page
-function populateUserData(userData) {
-    var user= '';
-    // console.log(JSON.stringify(userData)+' '+userData.id);
-    fetch(`http://localhost:3000/users/${userData.id}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-            .then(response => response.json())
-            .then(data => {
-                 user= data;
-                 const nameHolder = document.querySelector(".nameHolder");
+function populateUserData(user, preferences) {
+    const nameHolder = document.querySelector(".nameHolder");
     if (nameHolder) {
         nameHolder.textContent = `${user.first_name} ${user.last_name}`;
     } else {
@@ -435,27 +447,27 @@ function populateUserData(userData) {
         console.error("profile-img img element not found.");
     }
 
-    const preferences = document.querySelector(".profile-work");
-    if (preferences) {
-        // Clear existing preferences
-        preferences.innerHTML = "";
+    const preferencesElement = document.querySelector(".profile-work");
+    if (preferencesElement) {
 
-        // Check if user has preferences
-        if (user.preferences && user.preferences.length > 0) {
+        preferencesElement.innerHTML = "";
+
+
+        if (preferences && preferences.length > 0) {
             const preferenceTitle = document.createElement("p");
             preferenceTitle.textContent = "Preferences:";
-            preferences.appendChild(preferenceTitle);
+            preferencesElement.appendChild(preferenceTitle);
 
-            // Create a list of preferences
+
             const preferenceList = document.createElement("ul");
 
-            user.preferences.forEach((preference) => {
+            preferences.forEach((preference) => {
                 const preferenceItem = document.createElement("li");
                 preferenceItem.textContent = preference.category;
                 preferenceList.appendChild(preferenceItem);
             });
 
-            preferences.appendChild(preferenceList);
+            preferencesElement.appendChild(preferenceList);
         }
     } else {
         console.error("profile-work element not found.");
@@ -475,6 +487,7 @@ function populateUserData(userData) {
             { label: "City:", value: user.current_city },
             { label: "Baranggay:", value: user.current_baranggay },
         ];
+
         userData.forEach((item) => {
             const row = document.createElement("tr");
             const labelCell = document.createElement("th");
@@ -488,14 +501,9 @@ function populateUserData(userData) {
     } else {
         console.error("table element not found.");
     }
-            })
-            .catch(error => {
-                console.error('Error updating profile:', error);
-            });
-
-    
 }
 
 updateProfile();
+
 
 
