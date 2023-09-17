@@ -34,9 +34,11 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-                <div class="sidebar-brand-text mx-3">Go Explore</div>
-            </a>
+                <div class="nav-logo d-flex align-items-center justify-content-center">
+                    <a href="index.html">
+                        <img src="image/LOGO (5).png" alt="Go Explore Logo" class="logo-image mx-3 d-none d-md-block" style="width: 150px; height: auto; object-fit: cover; justify-content: center; align-items: center;">
+                    </a>
+                </div>
 
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
@@ -309,6 +311,7 @@
                         <div class="modal-body">
                             <form id="edit-user-form" enctype="multipart/form-data">
                                 <input type="hidden" name="id" id="edit-id">
+                                <img id="edit-image-preview" src="" alt="Image Preview" class="img-thumbnail" width="100px">
                                 <input type="hidden" name="existingImage" id="existingImage">
                                 <div class="mb-3">
                                     <label for="eventImage" class="form-label">Profile Picture</label>

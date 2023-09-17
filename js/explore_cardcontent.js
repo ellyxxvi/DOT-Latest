@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const desiredService = dynamicData.find(service => service.id === desiredServiceId);
         if (desiredService && desiredService.website) {
             const externalLink = desiredService.website;
-            window.open(externalLink, "_blank"); 
+            window.open(externalLink, "_blank");
         } else {
             console.log("Website URL not available for this service.");
         }
@@ -30,17 +30,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Check if the user is logged in and set the button accordingly
     if (isLoggedIn) {
-        addToFavoritesBtn.style.visibility = "visible"; 
+        addToFavoritesBtn.style.visibility = "visible";
         if (isServiceFavorited === "true") {
             addToFavoritesBtn.classList.add("added");
             addToFavoritesBtn.innerHTML = '<i class="fas fa-check"></i> Added to Favorites';
         }
     } else {
-        addToFavoritesBtn.style.visibility = "hidden"; 
+        addToFavoritesBtn.style.visibility = "hidden";
     }
 
-    let addItemCounter = 1; 
-    let deleteItemCounter = 1; 
+    let addItemCounter = 1;
+    let deleteItemCounter = 1;
 
     addToFavoritesBtn.addEventListener("click", function () {
         addToFavoritesBtn.classList.toggle("added");
@@ -50,9 +50,9 @@ document.addEventListener("DOMContentLoaded", function () {
             localStorage.setItem("favoriteService_" + desiredServiceId, "true");
 
             const favoriteData = {
-                id: desiredServiceId, 
+                id: desiredServiceId,
                 place_id: desiredServiceId,
-                user_id: getUserId(), 
+                user_id: getUserId(),
                 created_at: getCurrentDate(),
                 updated_at: getCurrentDate(),
             };
@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             // Use the counter for deleting items
             const deleteItemId = deleteItemCounter;
-            deleteItemCounter++; 
+            deleteItemCounter++;
 
             // Remove the service from favorites
             fetch(`http://localhost:3000/itinerary_favorites/${desiredServiceId}`, {
@@ -199,7 +199,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     commentCard.innerHTML = `
                         <div class="comment-content">
-                            <h4>${comment.user_id}</h4>
                             <div class="rating">
                                 ${generateStars(comment.ratings)}
                             </div>
@@ -208,7 +207,6 @@ document.addEventListener("DOMContentLoaded", function () {
                             <p class="comment-date">${comment.created_at}</p>
                         </div>
                     `;
-
                     commentCardsContainer.appendChild(commentCard);
                 });
             })
@@ -325,10 +323,10 @@ document.addEventListener("DOMContentLoaded", function () {
         //console.log("ID: " + userData);
         const userData = JSON.parse(localStorage.getItem('user_data'));
         if (userData && userData.id) {
-          return userData.id;
+            return userData.id;
         } else {
-          console.error('User data is missing or incomplete in localStorage.');
-          return null;
+            console.error('User data is missing or incomplete in localStorage.');
+            return null;
         }
-      }
+    }
 });

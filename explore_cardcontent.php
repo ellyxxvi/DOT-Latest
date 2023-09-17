@@ -83,6 +83,7 @@
     </section>
     <?php include 'footer.php'; ?>
     <script src="js/explore_cardcontent.js"></script>
+    <!-- <script src="/DOT-Latest/admin-side/startbootstrap-sb-admin-2-gh-pages/js/demo/index.js"></script> -->
 </body>
 
    

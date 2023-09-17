@@ -16,6 +16,17 @@ document.addEventListener('DOMContentLoaded', function () {
   const searchButton = document.getElementById('searchButton');
   const searchInput = document.getElementById('searchInput');
 
+  // Initial population of the table with all data
+  populateTable();
+
+  // Function to handle errors
+  function handleErrors(response) {
+    if (!response.ok) {
+      throw new Error('Network response was not ok.');
+    }
+    return response.json();
+  }
+
   function populateTable(searchKeyword = '') {
     const accessToken = getAccessTokenFromLocalStorage();
     let searchUrl = 'http://localhost:3000/users';
@@ -25,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
         'Authorization': `Bearer ${accessToken}`
       }
     })
-      .then(response => response.json())
+      .then(handleErrors)
       .then(data => {
         const filteredData = data.filter(user => {
           return (
@@ -90,11 +101,10 @@ document.addEventListener('DOMContentLoaded', function () {
           button.addEventListener('click', editRow);
         });
       })
-      .catch(error => console.error('Error fetching data:', error));
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
   }
-
-  // Initial population of the table with all data
-  populateTable();
 
   searchButton.addEventListener('click', () => {
     const searchKeyword = searchInput.value.trim();
@@ -110,16 +120,17 @@ document.addEventListener('DOMContentLoaded', function () {
     const button = event.target;
     const row = button.closest('tr');
     const userId = row.querySelector('td:first-child').textContent;
-
+  
+    // Fetch user data including the current image URL
     fetch(`http://localhost:3000/users/${userId}`)
-      .then(response => response.json())
+      .then(handleErrors)
       .then(user => {
         const date = new Date();
         let currentDay = String(date.getDate()).padStart(2, '0');
-        let currentMonth = String(date.getMonth() + 1).padStart(2, "0");
+        let currentMonth = String(date.getMonth() + 1).padStart(2, '0');
         let currentYear = date.getFullYear();
         let updated_at = `${currentDay}-${currentMonth}-${currentYear}`;
-
+  
         editForm.elements.id.value = user.id;
         editForm.elements.first_name.value = user.first_name;
         editForm.elements.last_name.value = user.last_name;
@@ -132,15 +143,19 @@ document.addEventListener('DOMContentLoaded', function () {
         editForm.elements.current_baranggay.value = user.current_baranggay;
         editForm.elements.created_at.value = user.created_at;
         editForm.elements.updated_at.value = updated_at;
-
-        const existingImageCell = row.querySelector('td:nth-child(2)');
-        const existingImageURL = existingImageCell.querySelector('img').getAttribute('src');
-        editForm.elements.existingImage.value = existingImageURL;
+  
+        // Display the existing image URL
+        const existingImageURL = user.image; // Get the current image URL from the fetched data
+        const imagePreview = document.getElementById('edit-image-preview');
+        imagePreview.src = existingImageURL;
+  
         editModal.show();
       })
-      .catch(error => console.error('Error fetching user data:', error));
+      .catch(error => {
+        console.error('Error fetching user data:', error);
+      });
   }
-
+  
   // Handle edit form submission
   editForm.addEventListener('submit', event => {
     event.preventDefault();
@@ -149,63 +164,59 @@ document.addEventListener('DOMContentLoaded', function () {
     formData.forEach((value, key) => {
       updatedUser[key] = value;
     });
-
+  
     const imageInput = editForm.querySelector('input[type="file"]');
     const imageFile = imageInput.files[0];
-
+  
     if (imageFile) {
       var formData2 = new FormData();
       formData2.append('image', imageFile);
-
+  
       fetch('http://localhost:3001/images', {
         method: 'POST',
         body: formData2
       })
-        .then(response => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            throw new Error('Network response was not ok.');
-          }
-        })
+        .then(handleErrors)
         .then(data => {
           console.log('Uploaded image URL:', data.url);
-
+  
           updatedUser.image = data.url;
-
           sendEditRequest(updatedUser);
         })
         .catch(error => {
           console.error('There was a problem with the fetch operation:', error);
         });
     } else {
-
+      // No new image selected, keep the existing image URL
+      updatedUser.image = editForm.elements.existingImage.value;
       sendEditRequest(updatedUser);
     }
   });
-
+  
   // Function to send the PUT request to update user data
   function sendEditRequest(updatedUser) {
     fetch(`http://localhost:3000/users/${updatedUser.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(updatedUser)
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updatedUser)
     })
-      .then(response => response.json())
+      .then(handleErrors)
       .then(data => {
         editForm.reset();
         editModal.hide();
         populateTable();
       })
-      .catch(error => console.error('Error updating item data:', error));
+      .catch(error => {
+        console.error('Error updating item data:', error);
+      });
   }
-
+  
   addButton.addEventListener('click', () => {
     addModal.show();
   });
-
+  
   addAccountButton.addEventListener('click', () => {
     const form = document.getElementById('add-user-form');
     const formData = new FormData(form);
@@ -215,38 +226,32 @@ document.addEventListener('DOMContentLoaded', function () {
       formData.delete('image');
       formData.append('image', imageFile);
     }
-
+  
     var formData2 = new FormData();
     formData2.append('image', imageFile);
-
+  
     fetch('http://localhost:3001/images', {
       method: 'POST',
       body: formData2
     })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error('Network response was not ok.');
-        }
-      })
+      .then(handleErrors)
       .then(data => {
         console.log('Uploaded image URL:', data.url);
         const imageDataUrl = data.url;
-
+  
         const date = new Date();
         let currentDay = String(date.getDate()).padStart(2, '0');
         let currentMonth = String(date.getMonth() + 1).padStart(2, "0");
         let currentYear = date.getFullYear();
         let currentDate = `${currentDay}-${currentMonth}-${currentYear}`;
-
+  
         // Include the image data URL in the user object
         const user = {
           ...Object.fromEntries(formData.entries()),
           image: imageDataUrl,
           created_at: currentDate
         };
-
+  
         // Send POST request to JSON server
         fetch('http://localhost:3000/users', {
           method: 'POST',
@@ -255,36 +260,37 @@ document.addEventListener('DOMContentLoaded', function () {
           },
           body: JSON.stringify(user)
         })
-          .then(response => response.json())
+          .then(handleErrors)
           .then(data => {
             form.reset();
-            this.location.reload();
             populateTable();
           })
-          .catch(error => console.error('Error adding user:', error));
+          .catch(error => {
+            console.error('Error adding user:', error);
+          });
       });
   });
-
+  
   // handle delete button
   function deleteRow(event) {
     const button = event.target;
     const row = button.closest('tr');
     const userId = row.querySelector('td:first-child').textContent;
-
+  
     fetch(`http://localhost:3000/users/${userId}`, {
       method: 'DELETE'
     })
-      .then(response => response.json())
+      .then(handleErrors)
       .then(() => {
         row.remove();
       })
-      .catch(error => console.error('Error deleting user:', error));
+      .catch(error => {
+        console.error('Error deleting user:', error);
+      });
   }
-
-  // Populate the table on page load
-  populateTable();
+  
+  // Function to mask password
+  function maskPassword(password) {
+    return '*'.repeat(password.length);
+  }
 });
-
-function maskPassword(password) {
-  return '*'.repeat(password.length);
-}
