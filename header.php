@@ -16,8 +16,10 @@
         <div class="nav">
             <input type="checkbox" id="nav-check">
             <div class="nav-header">
-                <div class="nav-title">
-                    <a href="home_main.php" style="text-decoration: none; color: white; ">Go Explore</a>
+                <div class="nav-logo">
+                    <a href="home_main.php">
+                        <img src="image/LOGO (5).png" alt="Go Explore Logo" class="logo-image">
+                    </a>
                 </div>
             </div>
             <div class="nav-btn">

@@ -46,17 +46,17 @@ body {
   width: 100%;
   height: 100%;
   background-size: cover;
-  filter: brightness(0.3); /* Default brightness */
+  filter: brightness(0.3); 
   z-index: -1;
-  transition: filter 0.5s; /* Transition for brightness change */
+  transition: filter 0.5s; 
 }
 
 .card:hover .background-image {
-  filter: brightness(0.5); /* Brighten the image on hover */
+  filter: brightness(0.5);
 }
 
 .card-content {
-  position: relative;
+  /* position: relative; */
   z-index: 1;
 }
 

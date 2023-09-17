@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const favoriteData = {
                 id: desiredServiceId, 
                 place_id: desiredServiceId,
-                user_id: 1, 
+                user_id: getUserId(), 
                 created_at: getCurrentDate(),
                 updated_at: getCurrentDate(),
             };
@@ -320,4 +320,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     fetchServicesData();
+
+    function getUserId() {
+        //console.log("ID: " + userData);
+        const userData = JSON.parse(localStorage.getItem('user_data'));
+        if (userData && userData.id) {
+          return userData.id;
+        } else {
+          console.error('User data is missing or incomplete in localStorage.');
+          return null;
+        }
+      }
 });

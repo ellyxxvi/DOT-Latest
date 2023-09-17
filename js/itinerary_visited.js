@@ -35,11 +35,27 @@ document.addEventListener("DOMContentLoaded", function () {
     carouselItem.appendChild(image);
     carouselInner.appendChild(carouselItem);
   });
+// Check if the user is logged in
+const isLoggedIn = localStorage.getItem('access_token') !== null;
+
+if (isLoggedIn) {
+  // Function to get the user ID from localStorage
+  function getUserId() {
+    const userData = JSON.parse(localStorage.getItem('user_data'));
+    if (userData && userData.id) {
+      return userData.id; // Access the user ID directly
+    } else {
+      console.error('User data is missing or incomplete in localStorage.');
+      return null;
+    }
+  }
+  // Get the user ID of the logged-in user
+  const userId = getUserId();
 
   // Fetch data from both endpoints
   Promise.all([
     fetch('http://localhost:3000/places'),
-    fetch('http://localhost:3000/itinerary_visited')
+    fetch(`http://localhost:3000/itinerary_visited?user_id=${userId}`)
   ])
   .then(responses => Promise.all(responses.map(response => response.json())))
   .then(([placesData, visitedData]) => {
@@ -87,4 +103,6 @@ document.addEventListener("DOMContentLoaded", function () {
   .catch(error => {
     console.error('Error fetching data:', error);
   });
+
+}
 });

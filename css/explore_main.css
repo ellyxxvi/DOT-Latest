@@ -50,7 +50,7 @@ section {
 }
 
 .card-content {
-  position: relative;
+  /* position: relative; */
   z-index: 1;
 }
 

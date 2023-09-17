@@ -48,7 +48,7 @@ section {
   height: 100%;
   background-size: cover;
   filter: brightness(0.8);
-  z-index: 1;
+  /* z-index: 1; */
   transition: filter 0.5s;
 }
 
@@ -56,7 +56,8 @@ section {
   font-size: 100px;
   color: #fff;
   padding: 20px;
-  z-index: 2;
+  position: absolute;
+  /* z-index: 2; */
   margin: 0;
 }
 
