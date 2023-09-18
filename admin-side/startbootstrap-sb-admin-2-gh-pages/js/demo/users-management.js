@@ -149,6 +149,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const imagePreview = document.getElementById('edit-image-preview');
         imagePreview.src = existingImageURL;
   
+        // Store the existing image URL in a hidden input field
+        editForm.elements.existingImage.value = existingImageURL;
+  
         editModal.show();
       })
       .catch(error => {
@@ -157,41 +160,42 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   
   // Handle edit form submission
-  editForm.addEventListener('submit', event => {
-    event.preventDefault();
-    const formData = new FormData(editForm);
-    const updatedUser = {};
-    formData.forEach((value, key) => {
-      updatedUser[key] = value;
-    });
-  
-    const imageInput = editForm.querySelector('input[type="file"]');
-    const imageFile = imageInput.files[0];
-  
-    if (imageFile) {
-      var formData2 = new FormData();
-      formData2.append('image', imageFile);
-  
-      fetch('http://localhost:3001/images', {
-        method: 'POST',
-        body: formData2
-      })
-        .then(handleErrors)
-        .then(data => {
-          console.log('Uploaded image URL:', data.url);
-  
-          updatedUser.image = data.url;
-          sendEditRequest(updatedUser);
-        })
-        .catch(error => {
-          console.error('There was a problem with the fetch operation:', error);
-        });
-    } else {
-      // No new image selected, keep the existing image URL
-      updatedUser.image = editForm.elements.existingImage.value;
-      sendEditRequest(updatedUser);
-    }
+editForm.addEventListener('submit', event => {
+  event.preventDefault();
+  const formData = new FormData(editForm);
+  const updatedUser = {};
+  formData.forEach((value, key) => {
+    updatedUser[key] = value;
   });
+
+  const imageInput = editForm.querySelector('input[type="file"]');
+  const imageFile = imageInput.files[0];
+
+  if (!imageFile) {
+    // No new image selected, preserve the existing image URL
+    updatedUser.image = editForm.elements.existingImage.value;
+    sendEditRequest(updatedUser);
+  } else {
+    var formData2 = new FormData();
+    formData2.append('image', imageFile);
+
+    fetch('http://localhost:3001/images', {
+      method: 'POST',
+      body: formData2
+    })
+      .then(handleErrors)
+      .then(data => {
+        console.log('Uploaded image URL:', data.url);
+
+        updatedUser.image = data.url;
+        sendEditRequest(updatedUser);
+      })
+      .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
+  }
+});
+
   
   // Function to send the PUT request to update user data
   function sendEditRequest(updatedUser) {
@@ -216,6 +220,7 @@ document.addEventListener('DOMContentLoaded', function () {
   addButton.addEventListener('click', () => {
     addModal.show();
   });
+  
   
   addAccountButton.addEventListener('click', () => {
     const form = document.getElementById('add-user-form');

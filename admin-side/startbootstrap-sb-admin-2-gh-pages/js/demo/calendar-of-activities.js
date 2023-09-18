@@ -15,7 +15,14 @@ document.addEventListener('DOMContentLoaded', function () {
   const editForm = document.getElementById('edit-user-form');
   const searchButton = document.getElementById('searchButton');
   const searchInput = document.getElementById('searchInput');
-
+  
+  // Function to handle errors
+  function handleErrors(response) {
+    if (!response.ok) {
+      throw new Error('Network response was not ok.');
+    }
+    return response.json();
+  }
 
   function populateTable(searchKeyword = '') {
     let searchUrl = 'http://localhost:3000/festival';
@@ -114,9 +121,13 @@ document.addEventListener('DOMContentLoaded', function () {
         editForm.elements.created_at.value = user.created_at;
         editForm.elements.updated_at.value = updated_at;
 
-        const existingImageCell = row.querySelector('td:nth-child(2)');
-        const existingImageURL = existingImageCell.querySelector('img').getAttribute('src');
-        editForm.elements.existingImage.value = existingImageURL;
+       // Display the existing image URL
+       const existingImageURL = user.image; // Get the current image URL from the fetched data
+       const imagePreview = document.getElementById('edit-image-preview');
+       imagePreview.src = existingImageURL;
+
+       // Store the existing image URL in a hidden input field
+       editForm.elements.existingImage.value = existingImageURL;
 
         editModal.show();
       })
@@ -135,7 +146,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const imageInput = editForm.querySelector('input[type="file"]');
     const imageFile = imageInput.files[0];
 
-    if (imageFile) {
+    if (!imageFile) {
+      // No new image selected, preserve the existing image URL
+      updatedUser.image = editForm.elements.existingImage.value;
+      sendEditRequest(updatedUser);
+    } else {
       var formData2 = new FormData();
       formData2.append('image', imageFile);
 
@@ -143,27 +158,16 @@ document.addEventListener('DOMContentLoaded', function () {
         method: 'POST',
         body: formData2
       })
-        .then(response => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            throw new Error('Network response was not ok.');
-          }
-        })
+        .then(handleErrors)
         .then(data => {
           console.log('Uploaded image URL:', data.url);
 
           updatedUser.image = data.url;
-
-          // Continue with sending the PUT request to update user data
           sendEditRequest(updatedUser);
         })
         .catch(error => {
           console.error('There was a problem with the fetch operation:', error);
         });
-    } else {
-
-      sendEditRequest(updatedUser);
     }
   });
 

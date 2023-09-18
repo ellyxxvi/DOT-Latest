@@ -2,10 +2,10 @@
   "users": [
     {
       "id": 1,
-      "existingImage": "",
-      "image": "http://localhost:3001/images/d428dc975e2afb70c442e96ab5d84663",
-      "first_name": "test1",
-      "last_name": "test",
+      "existingImage": "http://localhost:3001/images/63bda694774202ae772e9402650fc871",
+      "image": "http://localhost:3001/images/b8f4e2142b081ab155ed9813ace7f68f",
+      "first_name": "Kent",
+      "last_name": "Jordan",
       "gender": "Male",
       "email": "test@gmail.com",
       "password": "test",
@@ -18,7 +18,7 @@
     },
     {
       "id": 2,
-      "existingImage": "http://localhost:3001/images/10292b3bc2d914ec2786f7c8979cddda",
+      "existingImage": "http://localhost:3001/images/139d9c117a187d6858485b88ba06af34",
       "image": "http://localhost:3001/images/139d9c117a187d6858485b88ba06af34",
       "first_name": "Mikkay",
       "last_name": "Gabinete",
@@ -30,7 +30,7 @@
       "current_city": "Batangas City",
       "current_baranggay": "test",
       "created_at": "",
-      "updated_at": "17-09-2023"
+      "updated_at": ""
     }
   ],
   "preference": [
@@ -57,24 +57,6 @@
           "category": "swim"
         }
       ]
-    },
-    {
-      "user_id": 5,
-      "preferences": [
-        {
-          "category": "Nature Trip"
-        }
-      ],
-      "id": 3
-    },
-    {
-      "user_id": 3,
-      "preferences": [
-        {
-          "category": "Nature Trip"
-        }
-      ],
-      "id": 4
     }
   ],
   "admin": [
@@ -98,7 +80,7 @@
     {
       "id": 1,
       "image": "http://localhost:3001/images/eb7d09cf3d43402630b3f4d2a6598b41",
-      "existingImage": "http://localhost:3001/images/1536859e30c58efdfaff7fa74ae4a212",
+      "existingImage": "http://localhost:3001/images/eb7d09cf3d43402630b3f4d2a6598b41",
       "title": "Camp Netanya Resort and Spa",
       "description": "Camp Netanya Resort and Spa claims its popularity from its Santorini architecture giving rise to its brilliant blue domes and white wash buildings. Camp Netanya offers 48 guest rooms and villas, dive shop, wellness center and family and friend everyone should enjoy.",
       "category": "hotels",
@@ -108,7 +90,7 @@
       "contact": "09278954092,  09397535074, 09166907269",
       "website": "www.campnetanya.com.ph",
       "created_at": "23-08-2023",
-      "updated_at": "14-09-2023"
+      "updated_at": "18-09-2023"
     },
     {
       "id": 2,
@@ -229,11 +211,11 @@
     {
       "id": 1,
       "image": "http://localhost:3001/images/8d1456ee1acdc4353e3d52f97c55c411",
-      "existingImage": "http://localhost:3001/images/4db8ece5fee776db93351332e2a89dfd",
+      "existingImage": "http://localhost:3001/images/8d1456ee1acdc4353e3d52f97c55c411",
       "city": "Lipa",
       "description": "Great Place",
       "created_at": "31-08-2023",
-      "updated_at": "14-09-2023"
+      "updated_at": "18-09-2023"
     },
     {
       "id": 2,
@@ -291,7 +273,7 @@
   "festival": [
     {
       "id": 1,
-      "existingImage": "http://localhost:3001/images/7108a783d582fa33e79793fcc4bf19d3",
+      "existingImage": "http://localhost:3001/images/5b528992f17712ceac87b29ba2e471c5",
       "image": "http://localhost:3001/images/5b528992f17712ceac87b29ba2e471c5",
       "title": "Sublian Festival",
       "description": "-The Sublian festival, a two weeklong celebration which culminates every year on the 23rd of July, is rooted in the Batangueños’ devotion to the town’s patron: the Holy Cross in Bauan and Agoncillo, and the Sto. Niño in Batangas City. ",
@@ -299,7 +281,7 @@
       "province": "Batangas",
       "city": "Batangas City",
       "created_at": "18-08-2023",
-      "updated_at": "14-09-2023"
+      "updated_at": "18-09-2023"
     },
     {
       "id": 2,
@@ -483,11 +465,11 @@
   "learnmore": [
     {
       "id": 1,
-      "existingImage": "http://localhost:3001/images/b413684dd2e372c6180ebc1d3d042e91",
+      "existingImage": "http://localhost:3001/images/8a00954a1591997ee601732f921dcbf4",
       "image": "http://localhost:3001/images/8a00954a1591997ee601732f921dcbf4",
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip .",
       "created_at": "",
-      "updated_at": "14-09-2023"
+      "updated_at": "18-09-2023"
     },
     {
       "id": 2,
@@ -517,12 +499,12 @@
   "thingstobring": [
     {
       "id": 1,
-      "existingImage": "http://localhost:3001/images/ea67e60b17b99cefc92dbd3ff6485e7b",
+      "existingImage": "http://localhost:3001/images/7fbef6865bd25fcd1df5c8f34249bdec",
       "image": "http://localhost:3001/images/7fbef6865bd25fcd1df5c8f34249bdec",
       "title": "OXYBENZONE-FREE SUNBLOCK",
       "description": "Better reef-safe than sorry: keeping a tube of this stashed in your bag protects not just your skin, but nature as well.",
       "created_at": "",
-      "updated_at": "14-09-2023"
+      "updated_at": "18-09-2023"
     },
     {
       "id": 2,
@@ -591,12 +573,12 @@
   "whattoavoid": [
     {
       "id": 1,
-      "existingImage": "http://localhost:3001/images/82637c94219151b60099506e9c602113",
+      "existingImage": "http://localhost:3001/images/5affd94d41ade1b9252de712cc29a4d5",
       "image": "http://localhost:3001/images/5affd94d41ade1b9252de712cc29a4d5",
       "title": "Overusing Electricity",
       "description": "Too much power usage contributes to our carbon footprint. So why not set down your devices – simply unplug and enjoy your vacation!",
       "created_at": "",
-      "updated_at": "14-09-2023"
+      "updated_at": "18-09-2023"
     },
     {
       "id": 2,
@@ -647,12 +629,12 @@
   "stufftoremember": [
     {
       "id": 1,
-      "existingImage": "http://localhost:3001/images/c4da477720124f711664d590b2e84683",
+      "existingImage": "http://localhost:3001/images/ffe5f792055fdc145835ab5a3b7767f9",
       "image": "http://localhost:3001/images/ffe5f792055fdc145835ab5a3b7767f9",
       "title": "Understanding Every Site’s Rules",
       "description": "Each place has regulations set for a reason. Knowing what these are and respecting them, we get to keep the place fun and enjoyable!",
       "created_at": "27-08-2023",
-      "updated_at": "14-09-2023"
+      "updated_at": "18-09-2023"
     },
     {
       "id": 2,

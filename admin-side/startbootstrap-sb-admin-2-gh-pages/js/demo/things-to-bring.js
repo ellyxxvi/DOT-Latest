@@ -17,6 +17,13 @@ document.addEventListener('DOMContentLoaded', function () {
   const editForm1 = document.getElementById('edit-user-form1');
   const searchButton = document.getElementById('searchButton');
   const searchInput = document.getElementById('searchInput');
+    // Function to handle errors
+    function handleErrors(response) {
+      if (!response.ok) {
+        throw new Error('Network response was not ok.');
+      }
+      return response.json();
+    }
 
   function populateTable(searchKeyword = '') {
     let searchUrl = 'http://localhost:3000/thingstobring';
@@ -103,8 +110,12 @@ document.addEventListener('DOMContentLoaded', function () {
         editForm1.elements.created_at.value = user.created_at;
         editForm1.elements.updated_at.value = updated_at;
 
-        const existingImageCell = row.querySelector('td:nth-child(2)');
-        const existingImageURL = existingImageCell.querySelector('img').getAttribute('src');
+        // Display the existing image URL
+        const existingImageURL = user.image; // Get the current image URL from the fetched data
+        const imagePreview = document.getElementById('edit-image-preview');
+        imagePreview.src = existingImageURL;
+
+        // Store the existing image URL in a hidden input field
         editForm1.elements.existingImage.value = existingImageURL;
 
 
@@ -124,7 +135,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const imageInput = editForm1.querySelector('input[type="file"]');
     const imageFile = imageInput.files[0];
 
-    if (imageFile) {
+    if (!imageFile) {
+      // No new image selected, preserve the existing image URL
+      updatedUser.image = editForm1.elements.existingImage.value;
+      sendEditRequest(updatedUser);
+    } else {
       var formData2 = new FormData();
       formData2.append('image', imageFile);
 
@@ -132,24 +147,16 @@ document.addEventListener('DOMContentLoaded', function () {
         method: 'POST',
         body: formData2
       })
-        .then(response => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            throw new Error('Network response was not ok.');
-          }
-        })
+        .then(handleErrors)
         .then(data => {
           console.log('Uploaded image URL:', data.url);
-          updatedUser.image = data.url;
 
+          updatedUser.image = data.url;
           sendEditRequest(updatedUser);
         })
         .catch(error => {
           console.error('There was a problem with the fetch operation:', error);
         });
-    } else {
-      sendEditRequest(updatedUser);
     }
   });
 

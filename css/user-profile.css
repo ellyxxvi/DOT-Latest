@@ -107,6 +107,12 @@
       .container .box-container .box .content .icons span {
         font-size: 12px;
       }
+      .emp-profile{
+        height: 100% !important;
+        padding: 3%;
+        margin-top: 3%;
+        margin-bottom: 3%;
+      }
     }
 
 #home {
@@ -435,9 +441,15 @@
 }
 
 
-@media (min-width: 768px) {
+@media (max-width: 768px) {
   .nav-bar {
     width: 100000px;
+  }
+  .emp-profile{
+    height: 100% !important;
+    padding: 3%;
+    margin-top: 3%;
+    margin-bottom: 3%;
   }
 }
 @media only screen and (max-width: 600px) {
@@ -450,6 +462,7 @@
   .slider-content p {
     font-size: 16px;
   }
+
 }
 
 .emp-profile{
@@ -458,6 +471,7 @@
     margin-bottom: 3%;
     border-radius: 0.5rem;
     background: #fff;
+    height: 587px;
 }
 .profile-img{
     text-align: center;
