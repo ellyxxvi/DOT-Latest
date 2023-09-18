@@ -193,8 +193,8 @@
                             <input type="text" class="form-control" id="current_city" name="current_city">
                         </div>
                         <div class="mb-3">
-                            <label for="edit-current-baranggay" class="form-label">Baranggay</label>
-                            <input type="text" class="form-control" id="current_baranggay" name="current_baranggay">
+                            <label for="edit-current-barangay" class="form-label">Barangay</label>
+                            <input type="text" class="form-control" id="current_barangay" name="current_barangay">
                         </div>
                         <input type="hidden" name="created_at">
                         <input type="hidden" name="updated_at">

@@ -46,9 +46,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     document.getElementById('from_country').value = user.from_country;
                     document.getElementById('current_province').value = user.current_province;
                     document.getElementById('current_city').value = user.current_city;
-                    document.getElementById('current_baranggay').value = user.current_baranggay;
+                    document.getElementById('current_barangay').value = user.current_barangay;
                     document.getElementById('created_at').value = user.created_at;
-                    document.getElementById('updated_at').value = user.current_baranggay;
+                    document.getElementById('updated_at').value = user.updated_at;
 
                     // Display the existing image URL
                     const existingImageURL = user.image;
@@ -70,6 +70,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById('updateProfileButton').addEventListener('click', function () {
         const userId = document.getElementById('edit-id').value;
+        const date = new Date();
+        let currentDay = String(date.getDate()).padStart(2, '0');
+        let currentMonth = String(date.getMonth() + 1).padStart(2, "0");
+        let currentYear = date.getFullYear();
+        let updated_at = `${currentDay}-${currentMonth}-${currentYear}`;
+        
         const updatedUserData = {
             first_name: document.getElementById('first_name').value,
             last_name: document.getElementById('last_name').value,
@@ -79,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
             from_country: document.getElementById('from_country').value,
             current_province: document.getElementById('current_province').value,
             current_city: document.getElementById('current_city').value,
-            current_baranggay: document.getElementById('current_baranggay').value,
+            current_barangay: document.getElementById('current_barangay').value,
             created_at: document.getElementById('created_at').value,
             updated_at: document.getElementById('updated_at').value,
         };
@@ -299,7 +305,7 @@ function populateUserData(user, preferences) {
             { label: "Country:", value: user.from_country },
             { label: "Province:", value: user.current_province },
             { label: "City:", value: user.current_city },
-            { label: "Baranggay:", value: user.current_baranggay },
+            { label: "Barangay:", value: user.current_barangay },
         ];
 
         userData.forEach((item) => {

@@ -20,7 +20,7 @@
       "id": 2,
       "existingImage": "http://localhost:3001/images/139d9c117a187d6858485b88ba06af34",
       "image": "http://localhost:3001/images/139d9c117a187d6858485b88ba06af34",
-      "first_name": "Mikkay",
+      "first_name": "Mikkay1",
       "last_name": "Gabinete",
       "gender": "Female",
       "email": "mikkay@gmail.com",
@@ -74,6 +74,13 @@
       "password": "server",
       "created_at": "23-08-2023",
       "id": 2
+    },
+    {
+      "user_name": "mikkay",
+      "email": "mikkay@gmail.com",
+      "password": "mikay",
+      "created_at": "18-09-2023",
+      "id": 3
     }
   ],
   "places": [
@@ -279,21 +286,21 @@
       "description": "-The Sublian festival, a two weeklong celebration which culminates every year on the 23rd of July, is rooted in the Batangueños’ devotion to the town’s patron: the Holy Cross in Bauan and Agoncillo, and the Sto. Niño in Batangas City. ",
       "date": "July 23",
       "province": "Batangas",
-      "city": "Batangas City",
+      "city": "Batangas",
       "created_at": "18-08-2023",
       "updated_at": "18-09-2023"
     },
     {
       "id": 2,
-      "existingImage": "http://localhost:3001/images/73765031332f1fb177013bf4700f4780",
+      "existingImage": "http://localhost:3001/images/75f22aa8b9a8cd404327f5c6b90c75b3",
       "image": "http://localhost:3001/images/75f22aa8b9a8cd404327f5c6b90c75b3",
       "title": "Parada ng Lechon",
       "description": "- Balayan town celebrates the feast of St. John the Baptist every June 24th with a parade of roast pig (lechon). In parody of the time-honored ritual of baptism, townsfolk throw water on each other during the parade in the spirit of fun. After the lechon has been blessed, everyone sits down to partake in the feast. ",
       "date": "June 24",
       "province": "Batangas",
-      "city": "Balayan",
+      "city": "Mabini",
       "created_at": "25-08-2023",
-      "updated_at": "14-09-2023"
+      "updated_at": "18-09-2023"
     },
     {
       "id": 3,
@@ -380,7 +387,22 @@
       "updated_at": "14-09-2023"
     }
   ],
-  "itinerary_favorites": [],
+  "itinerary_favorites": [
+    {
+      "id": 1,
+      "place_id": 1,
+      "user_id": 2,
+      "created_at": "19-09-2023",
+      "updated_at": "19-09-2023"
+    },
+    {
+      "id": 8,
+      "place_id": 8,
+      "user_id": 2,
+      "created_at": "19-09-2023",
+      "updated_at": "19-09-2023"
+    }
+  ],
   "itinerary_visited": [
     {
       "place_id": "1",

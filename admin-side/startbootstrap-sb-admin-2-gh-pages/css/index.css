@@ -249,9 +249,9 @@ margin-bottom: 50px;
     margin-top: 15px;
   }
   .text-pink {
-    color: rgb(255, 40, 76) !important; /* You can adjust the shade of pink */
+    color: rgb(255, 40, 76) !important; 
 }
 
 .border-left-pink {
-    border-left: 4px solid rgb(255, 40, 76) !important; /* You can adjust the shade of pink and border width */
+    border-left: 4px solid rgb(255, 40, 76) !important; 
 }
