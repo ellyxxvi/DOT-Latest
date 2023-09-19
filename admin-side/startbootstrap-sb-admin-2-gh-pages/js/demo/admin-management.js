@@ -1,4 +1,3 @@
-
 //modal for add user
 $(document).ready(function () {
   $("#addButton").click(function () {
@@ -28,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
       });
 
       if (!response.ok) {
-        throw new Error('Network response was not ok.');
+        throw new Error(`Network response was not ok. Status: ${response.status}`);
       }
 
       const data = await response.json();
@@ -47,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function () {
           const row = document.createElement('tr');
           row.innerHTML = `
             <td>${user.id}</td>
-            <td>${user.user_name}</td>
             <td>${user.email}</td>
             <td>${maskPassword(user.password)}</td>
             <td>${user.created_at}</td>
@@ -76,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
         button.addEventListener('click', editRow);
       });
     } catch (error) {
-      console.error('Error fetching and populating data:', error);
+      console.error('Error fetching and populating data:', error.message);
     }
   }
 
@@ -98,9 +96,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const row = button.closest('tr');
     const userId = row.querySelector('td:first-child').textContent;
     try {
-      const response = await fetch(`http://localhost:3000/admin/${userId}`);
+      const response = await fetch(`http://13.229.106.142/users/${userId}`);
       if (!response.ok) {
-        throw new Error('Network response was not ok.');
+        throw new Error(`Network response was not ok. Status: ${response.status}`);
       }
       const user = await response.json();
 
@@ -111,7 +109,6 @@ document.addEventListener('DOMContentLoaded', function () {
       let updated_at = `${currentDay}-${currentMonth}-${currentYear}`;
 
       editForm.elements.id.value = user.id;
-      editForm.elements.user_name.value = user.user_name;
       editForm.elements.email.value = user.email;
       editForm.elements.password.value = user.password;
       editForm.elements.created_at.value = user.created_at;
@@ -119,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       editModal.show();
     } catch (error) {
-      console.error('Error fetching user data:', error);
+      console.error('Error fetching user data:', error.message);
     }
   }
 
@@ -133,10 +130,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     try {
-      const response = await fetch(`http://localhost:3000/admin/${updatedUser.id}`, {
+      const response = await fetch(`http://13.229.106.142/users/${updatedUser.id}`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getAccessTokenFromLocalStorage()}`
         },
         body: JSON.stringify(updatedUser)
       });
@@ -149,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.error('Error updating user data:', response.statusText);
       }
     } catch (error) {
-      console.error('Error updating user data:', error);
+      console.error('Error updating user data:', error.message);
     }
   });
 
@@ -175,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const accessToken = getAccessTokenFromLocalStorage();
     try {
-      const response = await fetch('http://localhost:3000/admin', {
+      const response = await fetch('http://13.229.106.142/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -191,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.error('Error adding user:', response.statusText);
       }
     } catch (error) {
-      console.error('Error adding user:', error);
+      console.error('Error adding user:', error.message);
     }
   });
 
@@ -201,7 +199,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const userId = row.querySelector('td:first-child').textContent;
 
     try {
-      const response = await fetch(`http://localhost:3000/admin/${userId}`, {
+      const response = await fetch(`http://13.229.106.142/users/${userId}`, {
         method: 'DELETE'
       });
 
@@ -211,7 +209,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.error('Error deleting user:', response.statusText);
       }
     } catch (error) {
-      console.error('Error deleting user:', error);
+      console.error('Error deleting user:', error.message);
     }
   }
   // Function to mask password

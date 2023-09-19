@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            fetch('http://localhost:3001/auth/admin', {
+            fetch('http://13.229.106.142/auth/login', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',

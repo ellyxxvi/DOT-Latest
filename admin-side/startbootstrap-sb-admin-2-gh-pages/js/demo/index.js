@@ -17,11 +17,38 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Fetch visit data from the server
-    fetch('http://localhost:3000/itinerary_visited')
-        .then(response => response.json())
+    // Define your authentication token or credentials
+    const authToken = 'access_token';
+
+    // Fetch visit data from the server with authentication headers
+    fetch('http://13.229.106.142/analytics/places/most-visited?limit=5', {
+        headers: {
+            'Authorization': `Bearer ${authToken}`,
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(visitData => {
-            // Create a dictionary to store visit counts per place
+
+        })
+        .catch(error => {
+            console.error('Error fetching visit data:', error);
+
+        });
+    // Fetch visit data from the server
+    fetch('http://13.229.106.142/analytics/places/most-visited?limit=5')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(visitData => {
+
             const visitCounts = {};
 
             // Count visits per place
@@ -37,7 +64,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Fetch places data from the server
             fetch('http://localhost:3000/places')
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(placeData => {
                     // Merge visit counts with place data
                     placeData.forEach(place => {
@@ -219,92 +251,165 @@ function populateLocation() {
 populateLocation();
 
 
-
-
-
-// RECENT ACTIVITY
-// Define an empty array to store recent activities
+// Initialize recentActivity as an empty array
 const recentActivity = [];
 
-// Function to update recent activities when a user adds a favorite place
-function updateRecentActivities(userName, placeName) {
-  const timeAgo = 'just now'; // You can customize the timeAgo value
-  recentActivity.unshift({
-    userImage: 'https://i.imgur.com/UIhwGhr.jpg', // Replace with the actual user image URL
-    userName,
-    activityText: `${userName} added ${placeName} to their favorites`,
-    timeAgo,
-  });
-  // Refresh the display of recent activities
-  displayRecentActivity();
-}
-
-// Function to display recent activity
-function displayRecentActivity() {
+document.addEventListener('DOMContentLoaded', function() {
   const card = document.querySelector('.user-activity-card .card-block');
 
-  recentActivity.forEach((item) => {
-    const row = document.createElement('div');
-    row.className = 'row m-b-25';
+  // Function to update the recent activity card
+  function updateRecentActivity() {
+    card.innerHTML = ''; // Clear the existing content
 
-    const col1 = document.createElement('div');
-    col1.className = 'col-auto p-r-0';
+    recentActivity.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'row m-b-25';
 
-    const uImg = document.createElement('div');
-    uImg.className = 'u-img';
-    const coverImg = document.createElement('img');
-    coverImg.src = item.userImage;
-    coverImg.alt = 'user image';
-    coverImg.className = 'img-radius cover-img';
-    const profileImg = document.createElement('img');
-    profileImg.src = 'https://img.icons8.com/office/16/000000/active-state.png';
-    profileImg.alt = 'user image';
-    profileImg.className = 'img-radius profile-img';
+      const col1 = document.createElement('div');
+      col1.className = 'col-auto p-r-0';
 
-    uImg.appendChild(coverImg);
-    uImg.appendChild(profileImg);
-    col1.appendChild(uImg);
+      const uImg = document.createElement('div');
+      uImg.className = 'u-img';
+      const coverImg = document.createElement('img');
+      coverImg.src = item.userImage;
+      coverImg.alt = 'user image';
+      coverImg.className = 'img-radius cover-img';
+      const profileImg = document.createElement('img');
+      profileImg.src = 'https://img.icons8.com/office/16/000000/active-state.png';
+      profileImg.alt = 'user image';
+      profileImg.className = 'img-radius profile-img';
 
-    const col2 = document.createElement('div');
-    col2.className = 'col';
+      uImg.appendChild(coverImg);
+      uImg.appendChild(profileImg);
+      col1.appendChild(uImg);
 
-    const userName = document.createElement('h6');
-    userName.className = 'm-b-5';
-    userName.textContent = item.userName;
+      const col2 = document.createElement('div');
+      col2.className = 'col';
 
-    const activityText = document.createElement('p');
-    activityText.className = 'text-muted m-b-0';
-    activityText.textContent = item.activityText;
+      const userName = document.createElement('h6');
+      userName.className = 'm-b-5';
+      userName.textContent = item.userName; // Set the full name here
 
-    const timeAgo = document.createElement('p');
-    timeAgo.className = 'text-muted m-b-0';
-    const timerIcon = document.createElement('i');
-    timerIcon.className = 'mdi mdi-timer feather icon-clock m-r-10';
-    timeAgo.appendChild(timerIcon);
-    timeAgo.textContent = item.timeAgo;
+      const activityText = document.createElement('p');
+      activityText.className = 'text-muted m-b-0';
+      activityText.textContent = item.activityText;
 
-    col2.appendChild(userName);
-    col2.appendChild(activityText);
-    col2.appendChild(timeAgo);
+      const timeAgo = document.createElement('p');
+      timeAgo.className = 'text-muted m-b-0';
+      const timerIcon = document.createElement('i');
+      timerIcon.className = 'mdi mdi-timer feather icon-clock m-r-10';
+      timeAgo.appendChild(timerIcon);
+      timeAgo.textContent = formatTimeAgo(item.timeAgo); // Update timeAgo here
 
-    row.appendChild(col1);
-    row.appendChild(col2);
+      col2.appendChild(userName);
+      col2.appendChild(activityText);
+      col2.appendChild(timeAgo);
 
-    card.appendChild(row);
-  });
-}
+      row.appendChild(col1);
+      row.appendChild(col2);
 
-// Call the fetchData function when the DOM is loaded
-document.addEventListener('DOMContentLoaded', function () {
-  displayRecentActivity(); // Display initial recent activity
+      card.appendChild(row);
+    });
+
+    // Add a link to view all activities if needed
+    const viewAllLink = document.createElement('div');
+    viewAllLink.className = 'text-center';
+    const viewAllAnchor = document.createElement('a');
+    viewAllAnchor.href = '#!';
+    viewAllAnchor.className = 'b-b-primary text-primary';
+    viewAllAnchor.dataset.abc = 'true';
+    viewAllAnchor.textContent = 'View all Activities';
+    viewAllLink.appendChild(viewAllAnchor);
+
+    card.appendChild(viewAllLink);
+  }
+
+  // Helper function to fetch data from JSON server and handle errors
+  async function fetchData(url) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      return null;
+    }
+  }
+
+  // Helper function to format the time ago text
+  function formatTimeAgo(timeAgo) {
+    const now = new Date();
+    const itemDate = new Date(timeAgo);
+    const elapsed = now - itemDate;
+
+    if (elapsed < 60000) {
+      // Less than 1 minute
+      return 'just now';
+    } else if (elapsed < 3600000) {
+      // Less than 1 hour
+      const minutes = Math.floor(elapsed / 60000);
+      return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+    } else {
+      // More than 1 hour
+      const hours = Math.floor(elapsed / 3600000);
+      return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+    }
+  }
+
+  // Fetch data from the JSON server for users, places, favorites, and visited
+  Promise.all([
+    fetchData('http://localhost:3000/users'),
+    fetchData('http://localhost:3000/places'),
+    fetchData('http://localhost:3000/itinerary_favorites'),
+    fetchData('http://localhost:3000/itinerary_visited')
+  ])
+    .then(([usersData, placesData, favoritesData, visitedData]) => {
+      // Process favoritesData and visitedData here to populate recentActivity
+
+      // Process favoritesData
+      favoritesData.forEach(favorite => {
+        const user = usersData.find(user => user.id === favorite.user_id);
+        const place = placesData.find(place => place.id === favorite.place_id);
+        if (user && place) {
+          const fullName = `${user.first_name} ${user.last_name}`;
+          const userActivity = {
+            userImage: user.image,
+            userName: fullName,
+            activityText: `Added ${place.title} to favorites`,
+            timeAgo: new Date().toISOString(), // Use the actual timestamp
+          };
+          recentActivity.push(userActivity);
+        }
+      });
+
+      // Process visitedData
+      visitedData.forEach(visit => {
+        const user = usersData.find(user => user.id === visit.user_id);
+        const place = placesData.find(place => place.id === visit.place_id);
+        if (user && place) {
+          const fullName = `${user.first_name} ${user.last_name}`;
+          const userActivity = {
+            userImage: user.image,
+            userName: fullName,
+            activityText: `Visited ${place.title}`,
+            timeAgo: new Date().toISOString(), 
+          };
+          recentActivity.push(userActivity);
+        }
+      });
+
+      // Call the updateRecentActivity function to update the UI
+      updateRecentActivity();
+
+      // Refresh the time ago text every minute
+      setInterval(() => {
+        updateRecentActivity();
+      }, 60000);
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    });
 });
 
-// Listen for the custom 'favoriteAdded' event
-document.addEventListener('favoriteAdded', function (event) {
-  const { userName, placeName } = event.detail;
-
-  // Add the new favorite to recent activity
-  updateRecentActivities(userName, placeName);
-});
-
-  

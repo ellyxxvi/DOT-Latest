@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   async function populateTable(searchKeyword = '') {
     const accessToken = getAccessTokenFromLocalStorage();
-    let searchUrl = 'http://13.229.106.142/users';
+    let searchUrl = 'http://13.229.106.142/users?role=REGULAR';
 
     try {
       const response = await fetch(searchUrl, {
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const userId = row.querySelector('td:first-child').textContent;
 
     try {
-      const response = await fetch(`http://13.229.106.142/users`);
+      const response = await fetch(`http://13.229.106.142/users?role=REGULAR`);
       const user = await handleErrors(response);
 
       const date = new Date();
@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Function to send the PUT request to update user data
   async function sendEditRequest(updatedUser) {
     try {
-      const response = await fetch(`http://13.229.106.142/users`, {
+      const response = await fetch(`http://13.229.106.142/users?role=REGULAR`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -251,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function () {
           created_at: currentDate
         };
 
-        const userResponse = await fetch('http://13.229.106.142/users', {
+        const userResponse = await fetch('http://13.229.106.142/users?role=REGULAR', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -275,7 +275,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const userId = row.querySelector('td:first-child').textContent;
 
     try {
-      const response = await fetch(`http://13.229.106.142/users/${userId}`, {
+      const response = await fetch(`http://13.229.106.142/users?role=REGULAR/${userId}`, {
         method: 'DELETE'
       });
       await handleErrors(response);

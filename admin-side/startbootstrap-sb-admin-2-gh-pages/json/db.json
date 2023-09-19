@@ -389,16 +389,30 @@
   ],
   "itinerary_favorites": [
     {
-      "id": 1,
-      "place_id": 1,
+      "id": 7,
+      "place_id": 7,
       "user_id": 2,
       "created_at": "19-09-2023",
       "updated_at": "19-09-2023"
     },
     {
-      "id": 8,
-      "place_id": 8,
+      "id": 9,
+      "place_id": 9,
       "user_id": 2,
+      "created_at": "19-09-2023",
+      "updated_at": "19-09-2023"
+    },
+    {
+      "id": 6,
+      "place_id": 6,
+      "user_id": 1,
+      "created_at": "19-09-2023",
+      "updated_at": "19-09-2023"
+    },
+    {
+      "id": 2,
+      "place_id": 2,
+      "user_id": 1,
       "created_at": "19-09-2023",
       "updated_at": "19-09-2023"
     }
@@ -475,6 +489,51 @@
       "created_at": "17-09-2023",
       "updated_at": "17-09-2023",
       "id": 8
+    },
+    {
+      "place_id": "1",
+      "user_id": 2,
+      "ratings": "0",
+      "comment": "asafd",
+      "created_at": "19-09-2023",
+      "updated_at": "19-09-2023",
+      "id": 9
+    },
+    {
+      "place_id": "8",
+      "user_id": 2,
+      "ratings": "0",
+      "comment": "fgfd",
+      "created_at": "19-09-2023",
+      "updated_at": "19-09-2023",
+      "id": 10
+    },
+    {
+      "place_id": "5",
+      "user_id": 2,
+      "ratings": "0",
+      "comment": "fgdg",
+      "created_at": "19-09-2023",
+      "updated_at": "19-09-2023",
+      "id": 11
+    },
+    {
+      "place_id": "8",
+      "user_id": 2,
+      "ratings": "0",
+      "comment": "fgdgfd",
+      "created_at": "19-09-2023",
+      "updated_at": "19-09-2023",
+      "id": 12
+    },
+    {
+      "place_id": "4",
+      "user_id": 1,
+      "ratings": "0",
+      "comment": "gdfgdfd",
+      "created_at": "19-09-2023",
+      "updated_at": "19-09-2023",
+      "id": 13
     }
   ],
   "footer": [
