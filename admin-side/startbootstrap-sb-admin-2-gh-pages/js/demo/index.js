@@ -1,121 +1,137 @@
+const API_PROTOCOL = 'http';
+const API_HOSTNAME = '13.229.106.142';
+
 // USER STATISTICS
-document.addEventListener('DOMContentLoaded', async function() {
+document.addEventListener('DOMContentLoaded', async function () {
+  try {
+    const accessToken = getAccessTokenFromLocalStorage();
+
+    if (!accessToken) {
+      throw new Error('Access token not found in local storage');
+    }
+
+    const userResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users?role=REGULAR`, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!userResponse.ok) {
+      const responseData = await userResponse.text();
+      console.error(`Error fetching user data: ${userResponse.status} ${userResponse.statusText}`, responseData);
+      throw new Error('Network response for user data was not ok');
+    }
+
+    const rawData = await userResponse.text();
+    console.log('Raw User Data Response:', rawData);
+
+    // Parse the response as JSON
+    const userData = JSON.parse(rawData); // Move the declaration here
+    console.log('User Data Response:', userData);
+
+    const totalUsers = userData.length;
+    const menUsers = userData.filter(user => user.gender === 'male').length;
+    const womenUsers = userData.filter(user => user.gender === 'female').length;
+
+    document.querySelector('#total-users').textContent = totalUsers;
+    document.querySelector('#men-users').textContent = menUsers;
+    document.querySelector('#women-users').textContent = womenUsers;
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+});
+
+
+function getAccessTokenFromLocalStorage() {
+    const accessToken = localStorage.getItem('access_token');
+    return accessToken;
+}
+
+
+
+//MOST VISITED
+document.addEventListener('DOMContentLoaded', async function () {
     try {
-        const response = await fetch('http://localhost:3000/users');
-        const userData = await response.json();
+        const accessToken = getAccessTokenFromLocalStorage();
 
-        const totalUsers = userData.length;
-        const menUsers = userData.filter(user => user.gender === 'Male').length; 
-        const womenUsers = userData.filter(user => user.gender === 'Female').length; 
+        // Fetch visit data from the server with authentication headers
+        const visitResponse = await fetch('http://13.229.106.142/analytics/places/most-visited?limit=5', {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
 
-        document.querySelector('#total-users').textContent = totalUsers;
-        document.querySelector('#men-users').textContent = menUsers;
-        document.querySelector('#women-users').textContent = womenUsers;
+        if (!visitResponse.ok) {
+            throw new Error('Network response for visit data was not ok');
+        }
+
+        const visitData = await visitResponse.json();
+
+        const visitCounts = {};
+
+        // Count visits per place
+        visitData.forEach(visit => {
+            const placeId = visit.place_id;
+            if (visitCounts.hasOwnProperty(placeId)) {
+                visitCounts[placeId]++;
+            } else {
+                visitCounts[placeId] = 1;
+            }
+        });
+
+        // Fetch places data from the server with authentication headers
+        const placeResponse = await fetch('http://13.229.106.142/analytics/places/most-visited?limit=5', {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+            },
+        });
+
+        if (!placeResponse.ok) {
+            throw new Error('Network response for places data was not ok');
+        }
+
+        const placeData = await placeResponse.json();
+
+        // Merge visit counts with place data
+        placeData.forEach(place => {
+            const placeId = place.id;
+            place.visits = visitCounts[placeId] || 0;
+        });
+
+        // // Sort places based on visits
+        // placeData.sort((a, b) => b.visits - a.visits);
+
+        const popularDestinationsContainer = document.getElementById('popular-destinations');
+
+        popularDestinationsContainer.classList.add('wider-container');
+
+        const ulElement = document.createElement('ul');
+        ulElement.className = 'no-bullet';
+
+        // Iterate through the sorted place data and create list items
+        placeData.slice(0, 5).forEach((place, index) => {
+            const liElement = document.createElement('li');
+            liElement.innerHTML = `
+                <span class="chart-progress-indicator chart-progress-indicator--increase">
+                    <span class="chart-progress-indicator__number">${place.visits}</span>
+                </span>
+                <span class="bold-rank">Top ${index + 1}:</span> ${place.title}
+                <div class="progress wds-progress progress-bar-blue">
+                    <div class="progress-bar" style="width: ${place.visits}%;"></div>
+                </div>
+            `;
+
+            ulElement.appendChild(liElement);
+        });
+
+        // Append the created list to the container
+        popularDestinationsContainer.appendChild(ulElement);
     } catch (error) {
         console.error('Error fetching data:', error);
     }
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-    // Define your authentication token or credentials
-    const authToken = 'access_token';
-
-    // Fetch visit data from the server with authentication headers
-    fetch('http://13.229.106.142/analytics/places/most-visited?limit=5', {
-        headers: {
-            'Authorization': `Bearer ${authToken}`,
-        }
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(visitData => {
-
-        })
-        .catch(error => {
-            console.error('Error fetching visit data:', error);
-
-        });
-    // Fetch visit data from the server
-    fetch('http://13.229.106.142/analytics/places/most-visited?limit=5')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(visitData => {
-
-            const visitCounts = {};
-
-            // Count visits per place
-            visitData.forEach(visit => {
-                const placeId = visit.place_id;
-
-                if (visitCounts.hasOwnProperty(placeId)) {
-                    visitCounts[placeId]++;
-                } else {
-                    visitCounts[placeId] = 1;
-                }
-            });
-
-            // Fetch places data from the server
-            fetch('http://localhost:3000/places')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(placeData => {
-                    // Merge visit counts with place data
-                    placeData.forEach(place => {
-                        const placeId = place.id;
-                        place.visits = visitCounts[placeId] || 0;
-                    });
-
-                    // Sort places based on visits
-                    placeData.sort((a, b) => b.visits - a.visits);
-
-                    const top5Places = placeData.slice(0, 5);
-
-                    const destinationsData = top5Places.map((place, index) => ({
-                        name: place.title,
-                        visits: place.visits,
-                        rank: index + 1,
-                    }));
-
-                    const popularDestinationsContainer = document.getElementById('popular-destinations');
-
-                    popularDestinationsContainer.classList.add('wider-container');
-
-                    const ulElement = document.createElement('ul');
-                    ulElement.className = 'no-bullet';
-
-                    destinationsData.forEach(destination => {
-                        const liElement = document.createElement('li');
-                        liElement.innerHTML = `
-                            <span class="chart-progress-indicator chart-progress-indicator--increase">
-                                <span class="chart-progress-indicator__number">${destination.visits}</span>
-                            </span>
-                            <span class="bold-rank">Top ${destination.rank}:</span> ${destination.name}
-                            <div class="progress wds-progress progress-bar-blue">
-                                <div class="progress-bar" style="width: ${destination.visits}%;"></div>
-                            </div>
-                        `;
-
-                        ulElement.appendChild(liElement);
-                    });
-
-                    popularDestinationsContainer.appendChild(ulElement);
-                })
-                .catch(error => console.error('Error fetching places data:', error));
-        })
-        .catch(error => console.error('Error fetching visit data:', error));
-});
 
 // MOST RATED RESORT
 const resortsData = [];
@@ -127,76 +143,113 @@ function calculateAverageRating(ratings) {
     return average;
 }
 
-function fetchResortNames() {
-    return fetch('http://localhost:3000/places')
-        .then(response => response.json())
-        .then(data => {
-            const resortNames = {};
-            if (Array.isArray(data)) {
-                // Filter places with the "hotels" category
-                const hotels = data.filter(place => place.category === "hotels");
-                hotels.forEach(place => {
-                    resortNames[place.id] = place.title;
-                });
+// Function to fetch resort names
+async function fetchResortNames(accessToken) {
+    try {
+        const response = await fetch('http://13.229.106.142/analytics/places/most-rated?category=resort&limit=5', {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
             }
-            return resortNames;
-        })
-        .catch(error => {
-            console.error('Error fetching resort names:', error);
-            return {}; 
         });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Fetched resort data:', data);
+
+        const resortNames = {};
+        if (Array.isArray(data)) {
+            // Filter places with the "hotels" category
+            const resort = data.filter(place => place.category === "resort");
+            resort.forEach(place => {
+                resortNames[place.id] = place.title;
+            });
+        }
+
+        return resortNames;
+    } catch (error) {
+        console.error('Error fetching resort names:', error);
+        return {};
+    }
 }
 
+// Function to calculate average rating
+function calculateAverageRating(ratings) {
+    if (ratings.length === 0) return 0;
+    const sum = ratings.reduce((total, rating) => total + parseFloat(rating), 0);
+    const average = (sum / ratings.length).toFixed(1);
+    return average;
+}
+
+// Function to populate and sort resorts
 async function populateAndSortResorts() {
     const resortList = document.getElementById("resort-list");
 
-    const resortNames = await fetchResortNames();
+    const accessToken = getAccessTokenFromLocalStorage();
 
-    fetch('http://localhost:3000/itinerary_visited')
-        .then(response => response.json())
-        .then(data => {
-            console.log('Fetched data:', data);
-            if (Array.isArray(data)) {
-                resortsData.length = 0;
-                data.forEach(user => {
-                    const resort = {
-                        name: resortNames[user.place_id] || 'Unknown Resort',
-                        ratings: user.ratings.split(',').map(Number)
-                    };
+    if (!accessToken) {
+        console.error('Access token is missing or invalid.');
+        return;
+    }
 
-                    // Filter out resorts with no ratings and not in the "hotels" category
-                    if (resort.ratings.length > 0 && resortNames[user.place_id] !== undefined) {
-                        resortsData.push(resort);
-                    }
-                });
-                console.log("Resorts Data: " + JSON.stringify(resortsData))
-                resortsData.sort((a, b) => calculateAverageRating(b.ratings) - calculateAverageRating(a.ratings));
+    const resortNames = await fetchResortNames(accessToken);
 
-                resortList.innerHTML = "";
-
-                resortsData.slice(0, 5).forEach((resort, index) => {
-                    const averageRating = calculateAverageRating(resort.ratings);
-                    const listItem = document.createElement("li");
-                    listItem.innerHTML = `
-                        <span class="chart-progress-indicator chart-progress-indicator--increase">
-                            <span class="chart-progress-indicator__number">${averageRating}</span>
-                        </span> 
-                        <span class="bold-rank">Top ${index + 1}:</span> ${resort.name}
-                        <div class="progress wds-progress progress-bar-blue">
-                            <div class="progress-bar" style="width: ${averageRating * 20}%;"></div>
-                        </div>
-                    `;
-                    resortList.appendChild(listItem);
-                });
-            } else {
-                console.error('Fetched data is not an array:', data);
+    try {
+        const response = await fetch('http://13.229.106.142/analytics/places/most-rated?category=resort&limit=5', {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
             }
-        })
-        .catch(error => console.error('Error fetching data:', error));
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Fetched resort data:', data);
+
+        if (Array.isArray(data)) {
+            resortsData.length = 0;
+            data.forEach(user => {
+                const resort = {
+                    name: resortNames[user.place_id] || 'Unknown Resort',
+                    ratings: user.ratings ? user.ratings.split(',').map(Number) : []
+                };
+
+                if (resort.ratings.length > 0 && resortNames[user.place_id] !== undefined) {
+                    resortsData.push(resort);
+                }
+            });
+
+            resortsData.sort((a, b) => calculateAverageRating(b.ratings) - calculateAverageRating(a.ratings));
+
+            resortList.innerHTML = "";
+
+            resortsData.slice(0, 5).forEach((resort, index) => {
+                const averageRating = calculateAverageRating(resort.ratings);
+                const listItem = document.createElement("li");
+                listItem.innerHTML = `
+                    <span class="chart-progress-indicator chart-progress-indicator--increase">
+                        <span class="chart-progress-indicator__number">${averageRating}</span>
+                    </span> 
+                    <span class="bold-rank">Top ${index + 1}:</span> ${resort.name}
+                    <div class="progress wds-progress progress-bar-blue">
+                        <div class="progress-bar" style="width: ${averageRating * 20}%;"></div>
+                    </div>
+                `;
+                resortList.appendChild(listItem);
+            });
+        } else {
+            console.error('Fetched data is not an array:', data);
+        }
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
 }
 
 populateAndSortResorts();
-
 
 
 // User Activity Locations
@@ -250,166 +303,172 @@ function populateLocation() {
 
 populateLocation();
 
-
-// Initialize recentActivity as an empty array
+//RECENT ACTIVITY
 const recentActivity = [];
 
-document.addEventListener('DOMContentLoaded', function() {
-  const card = document.querySelector('.user-activity-card .card-block');
+document.addEventListener('DOMContentLoaded', function () {
+    const card = document.querySelector('.user-activity-card .card-block');
 
-  // Function to update the recent activity card
-  function updateRecentActivity() {
-    card.innerHTML = ''; // Clear the existing content
+    function updateRecentActivity() {
+        card.innerHTML = '';
 
-    recentActivity.forEach(item => {
-      const row = document.createElement('div');
-      row.className = 'row m-b-25';
+        recentActivity.forEach(item => {
+            const row = document.createElement('div');
+            row.className = 'row m-b-25';
 
-      const col1 = document.createElement('div');
-      col1.className = 'col-auto p-r-0';
+            const col1 = document.createElement('div');
+            col1.className = 'col-auto p-r-0';
 
-      const uImg = document.createElement('div');
-      uImg.className = 'u-img';
-      const coverImg = document.createElement('img');
-      coverImg.src = item.userImage;
-      coverImg.alt = 'user image';
-      coverImg.className = 'img-radius cover-img';
-      const profileImg = document.createElement('img');
-      profileImg.src = 'https://img.icons8.com/office/16/000000/active-state.png';
-      profileImg.alt = 'user image';
-      profileImg.className = 'img-radius profile-img';
+            const uImg = document.createElement('div');
+            uImg.className = 'u-img';
+            const coverImg = document.createElement('img');
+            coverImg.src = item.userImage;
+            coverImg.alt = 'user image';
+            coverImg.className = 'img-radius cover-img';
+            const profileImg = document.createElement('img');
+            profileImg.src = 'https://img.icons8.com/office/16/000000/active-state.png';
+            profileImg.alt = 'user image';
+            profileImg.className = 'img-radius profile-img';
 
-      uImg.appendChild(coverImg);
-      uImg.appendChild(profileImg);
-      col1.appendChild(uImg);
+            uImg.appendChild(coverImg);
+            uImg.appendChild(profileImg);
+            col1.appendChild(uImg);
 
-      const col2 = document.createElement('div');
-      col2.className = 'col';
+            const col2 = document.createElement('div');
+            col2.className = 'col';
 
-      const userName = document.createElement('h6');
-      userName.className = 'm-b-5';
-      userName.textContent = item.userName; // Set the full name here
+            const userName = document.createElement('h6');
+            userName.className = 'm-b-5';
+            userName.textContent = item.userName;
 
-      const activityText = document.createElement('p');
-      activityText.className = 'text-muted m-b-0';
-      activityText.textContent = item.activityText;
+            const activityText = document.createElement('p');
+            activityText.className = 'text-muted m-b-0';
+            activityText.textContent = item.activityText;
 
-      const timeAgo = document.createElement('p');
-      timeAgo.className = 'text-muted m-b-0';
-      const timerIcon = document.createElement('i');
-      timerIcon.className = 'mdi mdi-timer feather icon-clock m-r-10';
-      timeAgo.appendChild(timerIcon);
-      timeAgo.textContent = formatTimeAgo(item.timeAgo); // Update timeAgo here
+            const timeAgo = document.createElement('p');
+            timeAgo.className = 'text-muted m-b-0';
+            const timerIcon = document.createElement('i');
+            timerIcon.className = 'mdi mdi-timer feather icon-clock m-r-10';
+            timeAgo.appendChild(timerIcon);
+            timeAgo.textContent = formatTimeAgo(item.timestamp);
 
-      col2.appendChild(userName);
-      col2.appendChild(activityText);
-      col2.appendChild(timeAgo);
+            col2.appendChild(userName);
+            col2.appendChild(activityText);
+            col2.appendChild(timeAgo);
 
-      row.appendChild(col1);
-      row.appendChild(col2);
+            row.appendChild(col1);
+            row.appendChild(col2);
 
-      card.appendChild(row);
-    });
-
-    // Add a link to view all activities if needed
-    const viewAllLink = document.createElement('div');
-    viewAllLink.className = 'text-center';
-    const viewAllAnchor = document.createElement('a');
-    viewAllAnchor.href = '#!';
-    viewAllAnchor.className = 'b-b-primary text-primary';
-    viewAllAnchor.dataset.abc = 'true';
-    viewAllAnchor.textContent = 'View all Activities';
-    viewAllLink.appendChild(viewAllAnchor);
-
-    card.appendChild(viewAllLink);
-  }
-
-  // Helper function to fetch data from JSON server and handle errors
-  async function fetchData(url) {
-    try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      return null;
+            card.appendChild(row);
+        });
     }
-  }
 
-  // Helper function to format the time ago text
-  function formatTimeAgo(timeAgo) {
-    const now = new Date();
-    const itemDate = new Date(timeAgo);
-    const elapsed = now - itemDate;
-
-    if (elapsed < 60000) {
-      // Less than 1 minute
-      return 'just now';
-    } else if (elapsed < 3600000) {
-      // Less than 1 hour
-      const minutes = Math.floor(elapsed / 60000);
-      return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
-    } else {
-      // More than 1 hour
-      const hours = Math.floor(elapsed / 3600000);
-      return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+    async function fetchData(url) {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            return null;
+        }
     }
-  }
 
-  // Fetch data from the JSON server for users, places, favorites, and visited
-  Promise.all([
-    fetchData('http://localhost:3000/users'),
-    fetchData('http://localhost:3000/places'),
-    fetchData('http://localhost:3000/itinerary_favorites'),
-    fetchData('http://localhost:3000/itinerary_visited')
-  ])
-    .then(([usersData, placesData, favoritesData, visitedData]) => {
-      // Process favoritesData and visitedData here to populate recentActivity
+    function formatTimeAgo(timeAgo) {
+        const now = new Date();
+        const itemDate = new Date(timeAgo);
+        const elapsed = now - itemDate;
 
-      // Process favoritesData
-      favoritesData.forEach(favorite => {
-        const user = usersData.find(user => user.id === favorite.user_id);
-        const place = placesData.find(place => place.id === favorite.place_id);
-        if (user && place) {
-          const fullName = `${user.first_name} ${user.last_name}`;
-          const userActivity = {
-            userImage: user.image,
-            userName: fullName,
-            activityText: `Added ${place.title} to favorites`,
-            timeAgo: new Date().toISOString(), // Use the actual timestamp
-          };
-          recentActivity.push(userActivity);
+        if (elapsed < 60000) {
+            return 'just now';
+        } else if (elapsed < 3600000) {
+            const minutes = Math.floor(elapsed / 60000);
+            return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+        } else {
+            const hours = Math.floor(elapsed / 3600000);
+            return `${hours} hour${hours > 1 ? 's' : ''} ago`;
         }
-      });
+    }
 
-      // Process visitedData
-      visitedData.forEach(visit => {
-        const user = usersData.find(user => user.id === visit.user_id);
-        const place = placesData.find(place => place.id === visit.place_id);
-        if (user && place) {
-          const fullName = `${user.first_name} ${user.last_name}`;
-          const userActivity = {
-            userImage: user.image,
-            userName: fullName,
-            activityText: `Visited ${place.title}`,
-            timeAgo: new Date().toISOString(), 
-          };
-          recentActivity.push(userActivity);
-        }
-      });
+    function storeTimestamp(key, timestamp) {
+        localStorage.setItem(key, timestamp);
+    }
 
-      // Call the updateRecentActivity function to update the UI
-      updateRecentActivity();
+    function getStoredTimestamp(key) {
+        return localStorage.getItem(key);
+    }
 
-      // Refresh the time ago text every minute
-      setInterval(() => {
-        updateRecentActivity();
-      }, 60000);
-    })
-    .catch(error => {
-      console.error('Error fetching data:', error);
-    });
+    // Fetch data from the JSON server for users, places, favorites, and visited
+    Promise.all([
+        fetchData('http://localhost:3000/users'),
+        fetchData('http://localhost:3000/places'),
+        fetchData('http://localhost:3000/itinerary_favorites'),
+        fetchData('http://localhost:3000/itinerary_visited')
+    ])
+        .then(([usersData, placesData, favoritesData, visitedData]) => {
+            // Process favoritesData
+            favoritesData.forEach(favorite => {
+                const user = usersData.find(user => user.id === favorite.user_id);
+                const place = placesData.find(place => place.id === favorite.place_id);
+
+                if (user && place) {
+                    const fullName = `${user.first_name} ${user.last_name}`;
+                    const timestampKey = `favorite_${favorite.id}_timestamp`;
+                    const storedTimestamp = getStoredTimestamp(timestampKey);
+
+                    const activityText = `Added ${place.title} to favorites`;
+
+                    if (!storedTimestamp) {
+                        const timestamp = new Date().toISOString();
+                        storeTimestamp(timestampKey, timestamp);
+                    }
+
+                    recentActivity.push({
+                        userImage: user.image,
+                        userName: fullName,
+                        activityText: activityText,
+                        timestamp: storedTimestamp || new Date().toISOString(),
+                    });
+                }
+            });
+
+            // Process visitedData
+            visitedData.forEach(visit => {
+                const user = usersData.find(user => user.id === visit.user_id);
+                const place = placesData.find(place => place.id === visit.place_id);
+
+                if (user) {
+                    const fullName = `${user.first_name} ${user.last_name}`;
+                    const timestampKey = `visit_${visit.id}_timestamp`;
+                    const storedTimestamp = getStoredTimestamp(timestampKey);
+
+                    const activityText = place ? `Visited ${place.title}` : `Visited a place`;
+
+                    if (!storedTimestamp) {
+                        const timestamp = new Date().toISOString();
+                        storeTimestamp(timestampKey, timestamp);
+                    }
+
+                    recentActivity.push({
+                        userImage: user.image,
+                        userName: fullName,
+                        activityText: activityText,
+                        timestamp: storedTimestamp || new Date().toISOString(),
+                    });
+                }
+            });
+
+            // Update recent activity
+            updateRecentActivity();
+
+            // Refresh recent activity periodically
+            setInterval(updateRecentActivity, 60000);
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+
 });
 

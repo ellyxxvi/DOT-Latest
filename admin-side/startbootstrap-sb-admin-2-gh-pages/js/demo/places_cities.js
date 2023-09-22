@@ -26,10 +26,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Fetch data from JSON server and populate the table
   function populateTable() {
-    fetch('http://localhost:3000/places_cities') // Replace with your JSON server URL
+    fetch('http://13.229.106.142/where-to-go') 
       .then(response => response.json())
       .then(data => {
-        tableBody.innerHTML = ''; // Clear existing table data
+        tableBody.innerHTML = ''; 
         data.forEach(user => {
           const row = document.createElement('tr');
           row.innerHTML = `
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const button = event.target;
     const row = button.closest('tr');
     const userId = row.querySelector('td:first-child').textContent;
-    fetch(`http://localhost:3000/places_cities/${userId}`)
+    fetch(`http://13.229.106.142/where-to-go/${userId}`)
       .then(response => response.json())
       .then(user => {
         const date = new Date();
@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Function to send the PUT request to update user data
   function sendEditRequest(updatedUser) {
-    fetch(`http://localhost:3000/places_cities/${updatedUser.id}`, {
+    fetch(`http://13.229.106.142/where-to-go/${updatedUser.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         // Send POST request to JSON server
-        fetch('http://localhost:3000/places_cities', {
+        fetch('http://13.229.106.142/where-to-go', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const row = button.closest('tr');
     const userId = row.querySelector('td:first-child').textContent;
 
-    fetch(`http://localhost:3000/places_cities/${userId}`, {
+    fetch(`http://13.229.106.142/where-to-go/${userId}`, {
       method: 'DELETE'
     })
       .then(response => response.json())

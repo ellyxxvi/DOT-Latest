@@ -12,7 +12,7 @@
       "from_country": "test",
       "current_province": "test",
       "current_city": "Batangas City",
-      "current_baranggay": "test",
+      "current_barangay": "test",
       "created_at": "",
       "updated_at": "18-09-2023"
     },
@@ -28,7 +28,7 @@
       "from_country": "test",
       "current_province": "test",
       "current_city": "Batangas City",
-      "current_baranggay": "test",
+      "current_barangay": "test",
       "created_at": "",
       "updated_at": ""
     }
@@ -389,158 +389,50 @@
   ],
   "itinerary_favorites": [
     {
-      "id": 7,
-      "place_id": 7,
-      "user_id": 2,
-      "created_at": "19-09-2023",
-      "updated_at": "19-09-2023"
-    },
-    {
-      "id": 9,
-      "place_id": 9,
-      "user_id": 2,
-      "created_at": "19-09-2023",
-      "updated_at": "19-09-2023"
-    },
-    {
-      "id": 6,
-      "place_id": 6,
-      "user_id": 1,
-      "created_at": "19-09-2023",
-      "updated_at": "19-09-2023"
-    },
-    {
       "id": 2,
       "place_id": 2,
       "user_id": 1,
-      "created_at": "19-09-2023",
-      "updated_at": "19-09-2023"
+      "created_at": "21-09-2023",
+      "updated_at": "21-09-2023"
+    },
+    {
+      "id": 3,
+      "place_id": 3,
+      "user_id": 1,
+      "created_at": "21-09-2023",
+      "updated_at": "21-09-2023"
+    },
+    {
+      "id": 7,
+      "place_id": 7,
+      "user_id": 2,
+      "created_at": "21-09-2023",
+      "updated_at": "21-09-2023"
+    },
+    {
+      "id": 8,
+      "place_id": 8,
+      "user_id": 2,
+      "created_at": "21-09-2023",
+      "updated_at": "21-09-2023"
     }
   ],
   "itinerary_visited": [
     {
-      "place_id": "1",
-      "user_id": 2,
-      "ratings": "5",
-      "comment": "nice place",
-      "created_at": "17-09-2023",
-      "updated_at": "17-09-2023",
-      "id": 1
-    },
-    {
-      "place_id": "2",
-      "user_id": 2,
-      "ratings": "3",
-      "comment": "nice service",
-      "created_at": "17-09-2023",
-      "updated_at": "17-09-2023",
-      "id": 2
-    },
-    {
       "place_id": "3",
-      "user_id": 2,
-      "ratings": "2",
-      "comment": "poor service",
-      "created_at": "17-09-2023",
-      "updated_at": "17-09-2023",
-      "id": 3
-    },
-    {
-      "place_id": "4",
-      "user_id": 1,
-      "ratings": "1",
-      "comment": "poor",
-      "created_at": "17-09-2023",
-      "updated_at": "17-09-2023",
-      "id": 4
-    },
-    {
-      "place_id": "5",
-      "user_id": 1,
-      "ratings": "2",
-      "comment": "ewan",
-      "created_at": "17-09-2023",
-      "updated_at": "17-09-2023",
-      "id": 5
-    },
-    {
-      "place_id": "6",
-      "user_id": 1,
-      "ratings": "1",
-      "comment": "baka ganito talaga",
-      "created_at": "17-09-2023",
-      "updated_at": "17-09-2023",
-      "id": 6
-    },
-    {
-      "place_id": "1",
       "user_id": 1,
       "ratings": "0",
-      "comment": "nice nice",
-      "created_at": "17-09-2023",
-      "updated_at": "17-09-2023",
-      "id": 7
-    },
-    {
-      "place_id": "2",
-      "user_id": 1,
-      "ratings": "0",
-      "comment": "nice nice pretty",
-      "created_at": "17-09-2023",
-      "updated_at": "17-09-2023",
-      "id": 8
-    },
-    {
-      "place_id": "1",
-      "user_id": 2,
-      "ratings": "0",
-      "comment": "asafd",
-      "created_at": "19-09-2023",
-      "updated_at": "19-09-2023",
-      "id": 9
-    },
-    {
-      "place_id": "8",
-      "user_id": 2,
-      "ratings": "0",
-      "comment": "fgfd",
-      "created_at": "19-09-2023",
-      "updated_at": "19-09-2023",
-      "id": 10
-    },
-    {
-      "place_id": "5",
-      "user_id": 2,
-      "ratings": "0",
-      "comment": "fgdg",
-      "created_at": "19-09-2023",
-      "updated_at": "19-09-2023",
-      "id": 11
-    },
-    {
-      "place_id": "8",
-      "user_id": 2,
-      "ratings": "0",
-      "comment": "fgdgfd",
-      "created_at": "19-09-2023",
-      "updated_at": "19-09-2023",
-      "id": 12
-    },
-    {
-      "place_id": "4",
-      "user_id": 1,
-      "ratings": "0",
-      "comment": "gdfgdfd",
-      "created_at": "19-09-2023",
-      "updated_at": "19-09-2023",
-      "id": 13
+      "comment": "dsfds",
+      "created_at": "21-09-2023",
+      "updated_at": "21-09-2023",
+      "id": 1
     }
   ],
   "footer": [
     {
       "id": 1,
-      "about": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\"",
-      "updated_at": "19-08-2023"
+      "description": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\"",
+      "updated_at": "22-09-2023"
     }
   ],
   "learnmore": [

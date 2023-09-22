@@ -1,8 +1,9 @@
+
 // FOOTER DYNAMIC CONTENTS
 const footerSections = [
     {
         title: "About",
-        about:""
+        description:""
     },
     {
         title: "Categories",
@@ -25,6 +26,8 @@ const footerSections = [
         ]
     }
 ];
+const API_PROTOCOL = 'http';
+const API_HOSTNAME = '13.229.106.142';
 
 // Function to generate dynamic content for the footer
 function generateFooterContent() {
@@ -44,11 +47,11 @@ function generateFooterContent() {
 
         col.appendChild(sectionTitle);
 
-        if (section.about !== undefined) {
+        if (section.description !== undefined) {
             const sectionContent = document.createElement("p");
             sectionContent.classList.add("text-justify");
-            sectionContent.id = "about"; 
-            sectionContent.textContent = section.about;
+            sectionContent.id = "description"; 
+            sectionContent.textContent = section.description;
             col.appendChild(sectionContent);
         }
 
@@ -73,23 +76,20 @@ function generateFooterContent() {
 }
 
 // Function to update the "About" content
-function updateFooterAboutContent(about) {
-    const aboutElement = document.getElementById('about');
-    aboutElement.textContent = about;
+function updateFooterAboutContent(description) {
+    const aboutElement = document.getElementById('description');
+    aboutElement.textContent = description;
 
     // Update the about value in the footerSections array
-    footerSections[0].about = about;
+    footerSections[0].description = description;
 }
 
 // Fetch the JSON data from your server
-fetch('http://localhost:3000/footer')
+fetch(`${API_PROTOCOL}://${API_HOSTNAME}/footer`)
   .then(response => response.json())
   .then(data => {
-
-    const about = data[0].about;
-    
-    updateFooterAboutContent(about);
-
+    const description = data[0].description;
+    updateFooterAboutContent(description);
   })
   .catch(error => {
     console.error('Error fetching data:', error);

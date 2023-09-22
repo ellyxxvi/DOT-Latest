@@ -25,8 +25,13 @@ document.addEventListener('DOMContentLoaded', function () {
       return response.json();
     }
 
+    function getAccessTokenFromLocalStorage() {
+      const accessToken = localStorage.getItem('access_token');
+      return accessToken;
+  }
+
   function populateTable(searchKeyword = '') {
-    let searchUrl = 'http://localhost:3000/places';
+    let searchUrl = 'http://13.229.106.142/places';
 
     fetch(searchUrl)
       .then(response => response.json())
@@ -101,10 +106,37 @@ document.addEventListener('DOMContentLoaded', function () {
     const button = event.target;
     const row = button.closest('tr');
     const userId = row.querySelector('td:first-child').textContent;
+    const accessToken = getAccessTokenFromLocalStorage();
 
-    fetch(`http://localhost:3000/places/${userId}`)
-      .then(response => response.json())
-      .then(user => {
+    fetch(`http://13.229.106.142/places/${userId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            if (response.status === 401) {
+                // Handle unauthorized access here (e.g., redirect to login)
+                console.error('Unauthorized access.');
+            } else {
+                // Handle other errors (e.g., display an error message)
+                console.error('Error fetching user data:', response.status, response.statusText);
+            }
+            throw new Error('Network response was not ok.');
+        }
+
+        // Check the response content type
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+            return response.json();
+        } else {
+            // Handle non-JSON response (e.g., display an error message)
+            console.error('Invalid response content type:', contentType);
+            throw new Error('Invalid response content type.');
+        }
+    })
+    .then(user => {
         const date = new Date();
         let currentDay = String(date.getDate()).padStart(2, '0');
         let currentMonth = String(date.getMonth() + 1).padStart(2, "0");
@@ -132,50 +164,56 @@ document.addEventListener('DOMContentLoaded', function () {
         editForm.elements.existingImage.value = existingImageURL;
 
         editModal.show();
-      })
-      .catch(error => console.error('Error fetching user data:', error));
-  }
+    })
+    .catch(error => console.error('Error fetching user data:', error));
+}
+
 
   // Handle edit form submission
-  editForm.addEventListener('submit', event => {
-    event.preventDefault();
-    const formData = new FormData(editForm);
-    const updatedUser = {};
-    formData.forEach((value, key) => {
+editForm.addEventListener('submit', event => {
+  event.preventDefault();
+  const formData = new FormData(editForm);
+  const updatedUser = {};
+  formData.forEach((value, key) => {
       updatedUser[key] = value;
-    });
+  });
+  const accessToken = getAccessTokenFromLocalStorage();
+  const imageInput = editForm.querySelector('input[type="file"]');
+  const imageFile = imageInput.files[0];
 
-    const imageInput = editForm.querySelector('input[type="file"]');
-    const imageFile = imageInput.files[0];
-
-    if (!imageFile) {
+  if (!imageFile) {
       // No new image selected, preserve the existing image URL
       updatedUser.image = editForm.elements.existingImage.value;
       sendEditRequest(updatedUser);
-    } else {
+  } else {
       var formData2 = new FormData();
       formData2.append('image', imageFile);
 
-      fetch('http://localhost:3001/images', {
-        method: 'POST',
-        body: formData2
+      // Include the access token in the headers
+      fetch('http://13.229.106.142/images', {
+          method: 'POST',
+          headers: {
+              'Authorization': `Bearer ${accessToken}`,
+          },
+          body: formData2
       })
-        .then(handleErrors)
-        .then(data => {
-          console.log('Uploaded image URL:', data.url);
+          .then(handleErrors)
+          .then(data => {
+              console.log('Uploaded image URL:', data.url);
 
-          updatedUser.image = data.url;
-          sendEditRequest(updatedUser);
-        })
-        .catch(error => {
-          console.error('There was a problem with the fetch operation:', error);
-        });
-    }
-  });
+              updatedUser.image = data.url;
+              sendEditRequest(updatedUser);
+          })
+          .catch(error => {
+              console.error('There was a problem with the fetch operation:', error);
+          });
+  }
+});
+
 
   // Function to send the PUT request to update user data
   function sendEditRequest(updatedUser) {
-    fetch(`http://localhost:3000/places/${updatedUser.id}`, {
+    fetch(`http://13.229.106.142/places/${updatedUser.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -198,86 +236,109 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // Handle form submission and add new item
-  addAccountButton.addEventListener('click', () => {
-    const form = document.getElementById('add-user-form');
-    const formData = new FormData(form);
-    const imageInput = addForm.querySelector('input[type="file"]');
-    const imageFile = imageInput.files[0];
+addAccountButton.addEventListener('click', () => {
+  const form = document.getElementById('add-user-form');
+  const formData = new FormData(form);
+  const imageInput = addForm.querySelector('input[type="file"]');
+  const imageFile = imageInput.files[0];
+  const accessToken = getAccessTokenFromLocalStorage();
 
-    if (imageFile) {
+  if (imageFile) {
       formData.delete('image');
       formData.append('image', imageFile);
-    }
-
-    var formData2 = new FormData();
-    formData2.append('image', imageFile);
-
-    fetch('http://localhost:3001/images', {
-      method: 'POST',
-      body: formData2
-    })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error('Network response was not ok.');
-        }
-      })
-      .then(data => {
-        console.log('Uploaded image URL:', data.url);
-
-        // Declare and define the currentDate variable here
-        const date = new Date();
-        let currentDay = String(date.getDate()).padStart(2, '0');
-        let currentMonth = String(date.getMonth() + 1).padStart(2, '0');
-        let currentYear = date.getFullYear();
-        let currentDate = `${currentDay}-${currentMonth}-${currentYear}`;
-
-        // Include the image data URL in the user object
-        const user = {
-          ...Object.fromEntries(formData.entries()),
-          image: data.url,
-          created_at: currentDate
-        };
-
-        // Send POST request to JSON server
-        fetch('http://localhost:3000/places', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(user)
-        })
-          .then(response => response.json())
-          .then(data => {
-            form.reset();
-            this.location.reload();
-            populateTable();
-          })
-          .catch(error => console.error('Error adding item:', error));
-      })
-      .catch(error => {
-        console.error('There was a problem with the fetch operation:', error);
-      });
-  });
-
-  // handle delete button
-  function deleteRow(event) {
-    const button = event.target;
-    const row = button.closest('tr');
-    const userId = row.querySelector('td:first-child').textContent;
-
-    fetch(`http://localhost:3000/places/${userId}`, {
-      method: 'DELETE'
-    })
-      .then(response => response.json())
-      .then(() => {
-        row.remove();
-      })
-      .catch(error => console.error('Error deleting user:', error));
   }
 
-  // Populate the table on page load
-  populateTable();
+  var formData2 = new FormData();
+  formData2.append('image', imageFile);
+
+  // Upload the image first
+  fetch('http://13.229.106.142/images', {
+      method: 'POST',
+      headers: {
+          'Authorization': `Bearer ${accessToken}`,
+      },
+      body: formData2
+  })
+      .then(response => {
+          if (response.ok) {
+              return response.json();
+          } else {
+              throw new Error('Network response was not ok.');
+          }
+      })
+      .then(data => {
+          console.log('Uploaded image URL:', data.url);
+
+          // Declare and define the currentDate variable here
+          const date = new Date();
+          let currentDay = String(date.getDate()).padStart(2, '0');
+          let currentMonth = String(date.getMonth() + 1).padStart(2, '0');
+          let currentYear = date.getFullYear();
+          let currentDate = `${currentDay}-${currentMonth}-${currentYear}`;
+
+          // Include the image data URL in the user object
+          const user = {
+              ...Object.fromEntries(formData.entries()),
+              image: data.url,
+              created_at: currentDate
+          };
+
+          // Send POST request to create a new item with the Bearer token in the Authorization header
+          fetch('http://13.229.106.142/places', {
+              method: 'POST',
+              headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(user)
+          })
+              .then(response => {
+                  if (response.ok) {
+                      return response.json();
+                  } else {
+                      throw new Error('Network response was not ok.');
+                  }
+              })
+              .then(data => {
+                  form.reset();
+                  this.location.reload();
+                  populateTable();
+              })
+              .catch(error => console.error('Error adding item:', error));
+      })
+      .catch(error => {
+          console.error('There was a problem with the fetch operation:', error);
+      });
+});
+
+
+// handle delete button
+function deleteRow(event) {
+  const button = event.target;
+  const row = button.closest('tr');
+  const userId = row.querySelector('td:first-child').textContent;
+  const accessToken = getAccessTokenFromLocalStorage(); // Retrieve the access token
+
+  fetch(`http://13.229.106.142/places/${userId}`, {
+      method: 'DELETE',
+      headers: {
+          'Authorization': `Bearer ${accessToken}`,
+      },
+  })
+      .then(response => {
+          if (response.ok) {
+              return response.json();
+          } else {
+              throw new Error('Network response was not ok.');
+          }
+      })
+      .then(() => {
+          row.remove();
+      })
+      .catch(error => console.error('Error deleting user:', error));
+}
+
+// Populate the table on page load
+populateTable();
 
 });  

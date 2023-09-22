@@ -32,12 +32,28 @@ function generateLearnmoreItem(imageSrc, text) {
     learnmoreContainer.appendChild(divCol);
 }
 
+// const API_PROTOCOL = 'http';
+// const API_HOSTNAME = '13.229.106.142';
+
 // Fetch data from the admin side and generate content
-fetch('http://localhost:3000/learnmore')
-    .then(response => response.json())
-    .then(data => {
-        data.forEach(item => {
-            generateLearnmoreItem(item.image, item.description);
-        });
-    })
-    .catch(error => console.error('Error fetching data:', error));
+fetch(`${API_PROTOCOL}://${API_HOSTNAME}/learn-more`)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    // Check the content type of the response
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      throw new Error('Response is not in JSON format.');
+    }
+    return response.json();
+  })
+  .then(data => {
+    data.forEach(item => {
+      generateLearnmoreItem(item.images, item.description);
+    });
+  })
+  .catch(error => {
+    console.error('Error fetching or processing data:', error.message);
+    // Handle the error gracefully, e.g., by displaying an error message to the user
+  });

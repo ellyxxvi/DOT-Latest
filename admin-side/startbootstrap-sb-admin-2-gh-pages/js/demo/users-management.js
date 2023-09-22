@@ -4,6 +4,8 @@ $(document).ready(function () {
     $("#addModal").modal("show");
   });
 });
+const API_PROTOCOL = 'http'
+const API_HOSTNAME = '13.229.106.142'
 
 // User Management Data
 document.addEventListener('DOMContentLoaded', function () {
@@ -29,15 +31,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
   async function populateTable(searchKeyword = '') {
     const accessToken = getAccessTokenFromLocalStorage();
-    let searchUrl = 'http://13.229.106.142/users?role=REGULAR';
+    let searchUrl = `${API_PROTOCOL}://${API_HOSTNAME}/users?role=REGULAR`;
 
     try {
       const response = await fetch(searchUrl, {
         headers: {
-          'Authorization': `Bearer ${accessToken}`
+          'Authorization': `Bearer ${accessToken}`,
+          'Access-Control-Allow-Origin': '*'
         }
       });
-      const data = await handleErrors(response);
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok.');
+      }
+
+      const data = await response.json();
 
       const filteredData = data.filter(user => {
         const keywords = [
@@ -66,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
           const row = document.createElement('tr');
           row.innerHTML = `
             <td>${user.id}</td>
-            <td><img src=${user.image} alt=""
+            <td><img src=${user.profile_photo} alt=""
               class="img-thumbnail" width="100px"></td>
             <td>${user.first_name}</td>
             <td>${user.last_name}</td>
@@ -90,7 +98,6 @@ document.addEventListener('DOMContentLoaded', function () {
             </td>
           `;
           tableBody.appendChild(row);
-          console.log(filteredData);
         });
       }
 
@@ -108,6 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+
   searchButton.addEventListener('click', () => {
     const searchKeyword = searchInput.value.trim();
     populateTable(searchKeyword);
@@ -124,14 +132,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const userId = row.querySelector('td:first-child').textContent;
 
     try {
-      const response = await fetch(`http://13.229.106.142/users?role=REGULAR`);
+      const accessToken = getAccessTokenFromLocalStorage();
+      const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users/${userId}?role=REGULAR`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        }
+      });
       const user = await handleErrors(response);
 
-      const date = new Date();
-      let currentDay = String(date.getDate()).padStart(2, '0');
-      let currentMonth = String(date.getMonth() + 1).padStart(2, '0');
-      let currentYear = date.getFullYear();
-      let updated_at = `${currentDay}-${currentMonth}-${currentYear}`;
+      // const date = new Date();
+      // let currentDay = String(date.getDate()).padStart(2, '0');
+      // let currentMonth = String(date.getMonth() + 1).padStart(2, '0');
+      // let currentYear = date.getFullYear();
+      // let updated_at = `${currentDay}-${currentMonth}-${currentYear}`;
 
       editForm.elements.id.value = user.id;
       editForm.elements.first_name.value = user.first_name;
@@ -143,12 +157,15 @@ document.addEventListener('DOMContentLoaded', function () {
       editForm.elements.current_province.value = user.current_province;
       editForm.elements.current_city.value = user.current_city;
       editForm.elements.current_barangay.value = user.current_barangay;
-      editForm.elements.created_at.value = user.created_at;
-      editForm.elements.updated_at.value = updated_at;
+      // editForm.elements.created_at.value = user.created_at;
+      // editForm.elements.updated_at.value = updated_at;
 
-      const existingImageURL = user.image;
+
+      const existingImageURL = user.profile_photo;
       const imagePreview = document.getElementById('edit-image-preview');
       imagePreview.src = existingImageURL;
+
+      editForm.elements.existingImage.value = existingImageURL;
 
       editModal.show();
     } catch (error) {
@@ -165,52 +182,88 @@ document.addEventListener('DOMContentLoaded', function () {
       updatedUser[key] = value;
     });
 
-    const imageInput = editForm.querySelector('input[type="file"]');
+    const imageInput = editForm.querySelector('#profile_photo');
     const imageFile = imageInput.files[0];
 
     try {
+      const accessToken = getAccessTokenFromLocalStorage();
       if (imageFile) {
         var formData2 = new FormData();
-        formData2.append('image', imageFile);
+        formData2.append('photo', imageFile);
 
-        const imageResponse = await fetch('http://localhost:3001/images', {
+        const imageResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/images`, {
           method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+          },
           body: formData2
         });
         const imageData = await handleErrors(imageResponse);
 
-        console.log('Uploaded image URL:', imageData.url);
 
-        updatedUser.image = imageData.url;
-        await sendEditRequest(updatedUser);
+        updatedUser.profile_photo = imageData.http_img_url;
+        await sendEditRequest(updatedUser, accessToken);
       } else {
-        updatedUser.image = editForm.elements.existingImage.value;
-        await sendEditRequest(updatedUser);
+        updatedUser.profile_photo = editForm.elements.existingImage.value;
+        await sendEditRequest(updatedUser, accessToken);
       }
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
+
     }
   });
 
-  // Function to send the PUT request to update user data
-  async function sendEditRequest(updatedUser) {
+  async function sendEditRequest(updatedUser, accessToken) {
     try {
-      const response = await fetch(`http://13.229.106.142/users?role=REGULAR`, {
+      // Check if updatedUser has a valid 'id' property
+      if (!updatedUser.id) {
+        console.error('Missing user ID in the updatedUser object');
+        return;
+      }
+  
+      const apiUrl = `${API_PROTOCOL}://${API_HOSTNAME}/users/${updatedUser.id}`;
+  
+      // Create a clean user object with only the relevant fields
+      const cleanUser = {
+        first_name: updatedUser.first_name,
+        last_name: updatedUser.last_name,
+        email: updatedUser.email,
+        password: updatedUser.password,
+        from_country: updatedUser.from_country,
+        current_province: updatedUser.current_province,
+        current_city: updatedUser.current_city,
+        current_barangay: updatedUser.current_barangay,
+        profile_photo: updatedUser.profile_photo, // Ensure this key matches the server's expectation
+        // Add any other relevant fields here
+      };
+  
+  
+      const response = await fetch(apiUrl, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json'
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(updatedUser)
+        body: JSON.stringify(cleanUser),
       });
-      await handleErrors(response);
-
-      editForm.reset();
-      editModal.hide();
-      populateTable();
+  
+  
+      // Check for a successful response (HTTP status code 2xx)
+      if (response.ok) {
+        editForm.reset();
+        editModal.hide();
+        populateTable();
+      } else {
+        // Handle any errors returned by the server
+        const errorResponse = await response.json();
+        console.error('Server Error Response:', JSON.stringify(errorResponse, null, 2));
+        throw new Error(`Error updating user data: ${errorResponse.message}`);
+      }
     } catch (error) {
-      console.error('Error updating item data:', error);
+      console.error('Error updating user data:', error);
     }
   }
+
 
   addButton.addEventListener('click', () => {
     addModal.show();
@@ -219,51 +272,58 @@ document.addEventListener('DOMContentLoaded', function () {
   addAccountButton.addEventListener('click', async () => {
     const form = document.getElementById('add-user-form');
     const formData = new FormData(form);
-    const imageInput = form.querySelector('input[type="file"]');
+    const imageInput = form.querySelector("#profile_photo");
     const imageFile = imageInput.files[0];
+    const accessToken = getAccessTokenFromLocalStorage();
 
     if (imageFile) {
-      formData.delete('image');
-      formData.append('image', imageFile);
+      formData.delete('photo');
+      formData.append('photo', imageFile);
 
       var formData2 = new FormData();
-      formData2.append('image', imageFile);
+      formData2.append('photo', imageFile);
 
       try {
-        const imageResponse = await fetch('http://localhost:3001/images', {
-          method: 'POST',
-          body: formData2
-        });
-        const imageData = await handleErrors(imageResponse);
-
-        console.log('Uploaded image URL:', imageData.url);
-        const imageDataUrl = imageData.url;
-
-        const date = new Date();
-        let currentDay = String(date.getDate()).padStart(2, '0');
-        let currentMonth = String(date.getMonth() + 1).padStart(2, "0");
-        let currentYear = date.getFullYear();
-        let currentDate = `${currentDay}-${currentMonth}-${currentYear}`;
-
-        const user = {
-          ...Object.fromEntries(formData.entries()),
-          image: imageDataUrl,
-          created_at: currentDate
-        };
-
-        const userResponse = await fetch('http://13.229.106.142/users?role=REGULAR', {
+        const imageResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/images`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Authorization': `Bearer ${accessToken}`,
           },
-          body: JSON.stringify(user)
+          body: formData2,
         });
-        await handleErrors(userResponse);
 
+        if (!imageResponse.ok) {
+          throw new Error('Image upload failed.');
+        }
+
+        const imageData = await imageResponse.json();
+        const imageDataUrl = imageData.http_img_url;
+
+        formData.delete('photo');
+        const user = {
+          ...Object.fromEntries(formData.entries()),
+          profile_photo: imageDataUrl,
+          role: "REGULAR"
+        };
+
+        const userResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify(user),
+        });
+
+        if (!userResponse.ok) {
+          throw new Error('User creation failed.');
+        }
+
+        this.location.reload();
         form.reset();
         populateTable();
       } catch (error) {
-        console.error('Error adding user:', error);
+        alert('Password must be at least 9 characters long and email must be in correct format.');
       }
     }
   });
@@ -275,16 +335,26 @@ document.addEventListener('DOMContentLoaded', function () {
     const userId = row.querySelector('td:first-child').textContent;
 
     try {
-      const response = await fetch(`http://13.229.106.142/users?role=REGULAR/${userId}`, {
-        method: 'DELETE'
+      const accessToken = getAccessTokenFromLocalStorage();
+      const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users/${userId}?role=REGULAR`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
       });
-      await handleErrors(response);
 
-      row.remove();
+      if (response.ok) {
+        row.remove();
+      } else {
+        const responseData = await response.text();
+        console.error(`Error deleting user: ${response.status} ${response.statusText}`, responseData);
+      }
     } catch (error) {
-      console.error('Error deleting user:', error);
+      console.error('Error deleting user:', error.message);
     }
   }
+
 
   // Function to mask password
   function maskPassword(password) {
