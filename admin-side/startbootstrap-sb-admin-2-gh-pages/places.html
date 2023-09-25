@@ -210,7 +210,7 @@
                                             <th>City</th>
                                             <th>Barangay</th>
                                             <th>Contact</th>
-                                            <th>Website</th>
+                                            <th>Social Links</th>
                                             <th>Date Created</th>
                                             <th>Date Updated</th>
                                             <th>Actions</th>
@@ -240,8 +240,8 @@
                                 <form id="add-user-form" enctype="multipart/form-data">
                                     <div class="mb-3">
                                         <label for="eventImage" class="form-label">Places Image</label>
-                                        <input type="file" class="form-control" id="PlaceImage" name="image"
-                                            accept="image/*">
+                                        <input type="file" class="form-control" id="photos" name="photos"
+                                            accept="photos/*">
                                     </div>
                                     <div class="mb-3">
                                         <label for="eventTitle" class="form-label">Title</label>
@@ -282,12 +282,12 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="eventCity" class="form-label">Contact</label>
-                                        <input type="text" class="form-control" id="PlacesContact" name="contact"
+                                        <input type="text" class="form-control" id="contact" name="contact"
                                             required>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="eventCity" class="form-label">Website</label>
-                                        <input type="text" class="form-control" id="PlacesWebsite" name="website"
+                                        <label for="eventCity" class="form-label">Social Links</label>
+                                        <input type="text" class="form-control" id="social_links" name="social_links"
                                             required>
                                     </div>
                                 </form>
@@ -317,8 +317,8 @@
                                 <div class="mb-3">
                                     <label class="form-label">Image</label>
                                     <div class="input-group">
-                                        <input type="file" class="form-control" id="PlaceImage" name="image"
-                                            accept="image/*">
+                                        <input type="file" class="form-control" id="photos" name="photos"
+                                            accept="photos/*">
                                         <input type="text" class="form-control" id="PlacesExistingImage"
                                             name="existingImage" placeholder="Existing Image URL">
                                     </div>
@@ -362,11 +362,11 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="eventCity" class="form-label">Contact</label>
-                                    <input type="text" class="form-control" id="PlacesContact" name="contact" required>
+                                    <input type="text" class="form-control" id="contact" name="contact" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="eventCity" class="form-label">Website</label>
-                                    <input type="text" class="form-control" id="PlacesWebsite" name="website" required>
+                                    <label for="eventCity" class="form-label">Social Links</label>
+                                    <input type="text" class="form-control" id="social_links" name="social_links" required>
                                 </div>
                                 <input type="hidden" name="created_at">
                                 <input type="hidden" name="updated_at">
@@ -374,16 +374,6 @@
                             </form>
                         </div>
                         <!-- End of Main Content -->
-
-                        <!-- Footer -->
-                        <footer class="sticky-footer bg-white">
-                            <div class="container my-auto">
-                                <div class="copyright text-center my-auto">
-                                    <span>Copyright &copy; Your Website 2020</span>
-                                </div>
-                            </div>
-                        </footer>
-                        <!-- End of Footer -->
 
                     </div>
                     <!-- End of Content Wrapper -->

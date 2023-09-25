@@ -26,8 +26,6 @@ const footerSections = [
         ]
     }
 ];
-const API_PROTOCOL = 'http';
-const API_HOSTNAME = '13.229.106.142';
 
 // Function to generate dynamic content for the footer
 function generateFooterContent() {

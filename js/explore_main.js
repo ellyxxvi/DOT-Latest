@@ -13,7 +13,7 @@ const iconMappings = {
   'swim': 'fas fa-water',
   'nature': 'fas fa-leaf',
   'tourist': 'fas fa-location-dot',
-  'hotels': 'fas fa-hotel',
+  'resort': 'fas fa-hotel',
   'churches': 'fas fa-church',
   'events': 'fas fa-calendar-days',
 };
@@ -46,9 +46,8 @@ function generateServiceCard(service) {
 }
 
 
-
 function fetchServicesData() {
-  fetch('http://localhost:3000/places')
+  fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places`)
     .then(response => response.json())
     .then(data => {
       // Map the fetched data to match the required structure
@@ -58,13 +57,12 @@ function fetchServicesData() {
           category: user.category,
           title: user.title,
           description: user.description,
-          backgroundImage: user.image,
+          backgroundImage: user.photos,
         };
       });
 
       servicesData.push(...mappedData);
       displayServiceCards(servicesData.slice(0, initialItems));
-
     })
     .catch(error => console.error('Error fetching data:', error));
 }

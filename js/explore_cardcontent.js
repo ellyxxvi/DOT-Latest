@@ -170,7 +170,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const titleElement = document.querySelector("h3");
         const paragraphElement = document.querySelector(".dynamic-paragraph");
 
-        backgroundElement.style.backgroundImage = `url('${desiredService.image}')`;
+        backgroundElement.style.backgroundImage = `url('${desiredService.photos}')`;
         titleElement.textContent = desiredService.title;
         paragraphElement.textContent = desiredService.description;
 
@@ -254,7 +254,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const contactInfo = document.getElementById("contactInfo");
 
     function fetchContactInfo(placeId) {
-        return fetch(`http://localhost:3000/places/${placeId}`)
+        return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places/${placeId}`)
             .then(response => response.json())
             .then(data => data.contact)
             .catch(error => {
@@ -296,27 +296,28 @@ document.addEventListener("DOMContentLoaded", function () {
     const dynamicData = [];
 
     function fetchServicesData() {
-        fetch('http://localhost:3000/places')
-            .then(response => response.json())
-            .then(data => {
-                const mappedData = data.map(user => {
-                    return {
-                        id: user.id,
-                        category: user.category,
-                        title: user.title,
-                        description: user.description,
-                        image: user.image,
-                        website: user.website
-                    };
-                });
-
-                console.log(mappedData);
-
-                dynamicData.push(...mappedData);
-                processData();
-            })
-    }
-
+        fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places`)
+          .then(response => response.json())
+          .then(data => {
+            const mappedData = data.map(user => {
+              return {
+                id: user.id,
+                category: user.category,
+                title: user.title,
+                description: user.description,
+                photos: user.photos[0], // Assuming photos is an array, take the first image
+                website: user.social_links ? user.social_links.links : null // Check if social_links exists
+              };
+            });
+      
+            console.log(mappedData);
+      
+            dynamicData.push(...mappedData);
+            processData();
+          })
+          .catch(error => console.error('Error fetching data:', error));
+      }
+      
     fetchServicesData();
 
     function getUserId() {

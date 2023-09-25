@@ -2,7 +2,6 @@ $(document).ready(function () {
     const itemsPerPage = 6;
     let startIndex = 0;
     let data;
-    let filteredData;
 
     const galleryContainer = $('.image-gallery');
     const loadMoreButton = $('.load-more');
@@ -12,13 +11,13 @@ $(document).ready(function () {
     function handleGalleryItemClick(event, itemId) {
         event.preventDefault();
 
-        // Find the matching festival data using item's id
+        // Find the matching festival data using the item's id
         const clickedFestival = data.find(festival => festival.id === itemId);
 
         if (clickedFestival) {
             // Update the template with the clicked item's details
             populateElements({
-                imageSrc: clickedFestival.image,
+                imageSrc: clickedFestival.images,
                 overlayTitle: clickedFestival.title,
                 festivalTitle: clickedFestival.title,
                 festivalDescription: clickedFestival.description,
@@ -32,25 +31,33 @@ $(document).ready(function () {
     }
 
     function loadGalleryItems() {
-        fetch('http://localhost:3000/festival')
-            .then(response => response.json())
+        fetch(`${API_PROTOCOL}://${API_HOSTNAME}/events`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(responseData => {
                 data = responseData;
     
                 const galleryItems = data.slice(startIndex, startIndex + itemsPerPage);
     
                 galleryItems.forEach(item => {
+                    // Format the date using formatDateToMonthAndDay function
+                    const formattedDate = formatDateToMonthAndDay(item.date);
+    
                     // Build and append gallery item HTML
                     const itemHtml = `
                         <a href="festival_content.php?item_id=${item.id}" class="gallery-item-link" data-item-id="${item.id}">
                             <div class="gallery-item">
                                 <div class="image-wrapper">
-                                    <img src="${item.image}" alt="Image ${item.id}">
+                                    <img src="${item.images}" alt="Image ${item.id}">
                                 </div>
                                 <div class="item-overlay">
                                     <div class="calendar-icon">
                                         <i class="fas fa-calendar"></i>
-                                        <span class="month">${item.date}</span>
+                                        <span class="month">${formattedDate}</span>
                                     </div>
                                     <h3>${item.title}</h3>
                                     <p>${item.city}</p>
@@ -70,15 +77,21 @@ $(document).ready(function () {
                 }
     
                 galleryItemLinks.forEach(link => {
-                    link.addEventListener('click', event => {
-                        event.preventDefault();
-                        const itemId = parseInt(link.getAttribute('data-item-id'));
-                        window.location.href = `festival_content.php?item_id=${itemId}`;
+                    $(link).on('click', function (event) {
+                        handleGalleryItemClick(event, parseInt($(this).data('item-id')));
                     });
                 });
             })
             .catch(error => console.error('Error fetching data:', error));
     }
+    
+    // Function to format a date to "Month Day" format
+    function formatDateToMonthAndDay(dateString) {
+        const date = new Date(dateString);
+        const options = { month: 'long', day: 'numeric' };
+        return date.toLocaleDateString(undefined, options);
+    }
+    
 
     // Load more button click event
     loadMoreButton.click(function () {
@@ -96,42 +109,46 @@ $(document).ready(function () {
 
     function updateCalendar(month) {
         galleryContainer.empty();
-
-        let festivalsToRender = (month === 'all') ? data : data.filter(festival => {
-            const festivalMonth = getMonthFromDateString(festival.date);
-            return festivalMonth === parseInt(month);
-        });
-
-        const currentlyDisplayedItems = galleryContainer.find('.gallery-item').length;
-        startIndex = currentlyDisplayedItems;
-
-        // startIndex = 0;
-        loadMoreButton.show();
-        
-        festivalsToRender.slice(startIndex, startIndex + itemsPerPage).forEach(item => {
-            const itemHtml = `
-                <a href="festival_content.php?item_id=${item.id}" class="gallery-item-link" data-item-id="${item.id}">
-                    <div class="gallery-item">
-                        <div class="image-wrapper">
-                            <img src="${item.image}" alt="Image ${item.id}">
-                        </div>
-                        <div class="item-overlay">
-                            <div class="calendar-icon">
-                                <i class="fas fa-calendar"></i>
-                                <span class="month">${item.date}</span>
+    
+        // Ensure data is defined and not null before filtering
+        if (data) {
+            let festivalsToRender = (month === 'all') ? data : data.filter(festival => {
+                const festivalMonth = getMonthFromDateString(festival.date);
+                return festivalMonth === parseInt(month);
+            });
+    
+            const currentlyDisplayedItems = galleryContainer.find('.gallery-item').length;
+            startIndex = currentlyDisplayedItems;
+    
+            loadMoreButton.show();
+    
+            festivalsToRender.slice(startIndex, startIndex + itemsPerPage).forEach(item => {
+                const formattedDate = formatDateToMonthAndDay(item.date); // Format the date here
+                const itemHtml = `
+                    <a href="festival_content.php?item_id=${item.id}" class="gallery-item-link" data-item-id="${item.id}">
+                        <div class="gallery-item">
+                            <div class="image-wrapper">
+                                <img src="${item.images}" alt="Image ${item.id}">
                             </div>
-                            <h3>${item.title}</h3>
-                            <p>${item.city}</p>
+                            <div class="item-overlay">
+                                <div class="calendar-icon">
+                                    <i class="fas fa-calendar"></i>
+                                    <span class="month">${formattedDate}</span>
+                                </div>
+                                <h3>${item.title}</h3>
+                                <p>${item.city}</p>
+                            </div>
                         </div>
-                    </div>
-                </a>
-            `;
-            galleryContainer.append(itemHtml);
-        });
-        
-        startIndex += itemsPerPage;
-        if (startIndex >= festivalsToRender.length) {
-            loadMoreButton.hide();
+                    </a>
+                `;
+                galleryContainer.append(itemHtml);
+            });
+    
+            startIndex += itemsPerPage;
+    
+            if (startIndex >= festivalsToRender.length) {
+                loadMoreButton.hide();
+            }
         }
     }
 
@@ -148,8 +165,13 @@ $(document).ready(function () {
 const carouselInner = document.querySelector('.carousel-inner');
 
 function populateCarousel() {
-    fetch('http://localhost:3000/festival')
-        .then(response => response.json())
+    fetch(`${API_PROTOCOL}://${API_HOSTNAME}/events`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             const currentDate = new Date();
             const incomingFestivals = data.filter(festival => {
@@ -182,7 +204,7 @@ function populateCarousel() {
                     const img = document.createElement('img');
                     img.classList.add('img-fluid');
                     img.alt = '100%x280';
-                    img.src = incomingFestivals[j].image;
+                    img.src = incomingFestivals[j].images;
 
                     const cardBody = document.createElement('div');
                     cardBody.classList.add('card-body');

@@ -1,11 +1,25 @@
+
+
 // Function to fetch dynamic data from the server
 function fetchDynamicData() {
-  return fetch('http://localhost:3000/places_cities')
+    // Get the 'id' parameter from the URL query string
+  const queryParams = new URLSearchParams(window.location.search);
+  const cityId = queryParams.get('id');
+  const url = `${API_PROTOCOL}://${API_HOSTNAME}/where-to-go/${cityId}`;
+
+
+ return fetch(url)
     .then(function(response) {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
+      // Use response.json() to parse the JSON data
       return response.json();
+    })
+    .then(function(data) {
+      // Now 'data' is a JavaScript object containing the JSON response
+      console.log("Response Data: ", data);
+      updateDynamicElements(data);
     })
     .catch(function(error) {
       console.error('Error fetching data:', error);
@@ -13,29 +27,22 @@ function fetchDynamicData() {
     });
 }
 
-// Function to update dynamic elements with selected data
+// Function to update dynamic elements on the webpage
 function updateDynamicElements(selectedData) {
   const backgroundElement = document.querySelector(".background-image");
   const titleElement = document.querySelector("h3");
   const paragraphElement = document.querySelector(".dynamic-paragraph");
 
-  backgroundElement.style.backgroundImage = `url('${selectedData.image}')`;
-  titleElement.textContent = selectedData.city;
-  paragraphElement.textContent = selectedData.description;
+  // Check if selectedData is not null or undefined
+  if (selectedData) {
+    backgroundElement.style.backgroundImage = `url('${selectedData.images}')`;
+    titleElement.textContent = selectedData.title;
+    paragraphElement.textContent = selectedData.description;
+  } else {
+    // Handle the case when selectedData is not found
+    console.error('Selected data not found.');
+  }
 }
 
-// Get the id from the query string
-const queryParams = new URLSearchParams(window.location.search);
-const id = parseInt(queryParams.get('id'));
 
-// Fetch dynamic data and update elements with the selected data
-// Fetch dynamic data and update elements with the selected data
-fetchDynamicData().then(function(dynamicData) {
-    // ... existing code
-  const selectedData = dynamicData.find(item => item.id === id);
-  updateDynamicElements(selectedData);
-
-  // Store the selected city in local storage
-  localStorage.setItem('selectedCity', selectedData.city);
-
-});
+fetchDynamicData();

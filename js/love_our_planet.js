@@ -1,22 +1,5 @@
 
 
-// $(document).ready(function () {
-//     $('.slider').slick({
-//         dots: true,
-//         arrows: false,
-//         autoplay: true,
-//         autoplaySpeed: 5000,
-//         responsive: [
-//             {
-//                 breakpoint: 768,
-//                 settings: {
-//                     slidesToShow: 1,
-//                 }
-//             }
-//         ]
-//     });
-// });
-
 const dynamicImages = [
     {
         image: 'image/SombreroIsland.png',
@@ -126,16 +109,18 @@ const slider = document.getElementById('slider');
 sectionTitle.innerText = 'THINGS TO BRING'; 
 
 document.addEventListener('DOMContentLoaded', function () {
-  fetch('http://localhost:3000/thingstobring') 
+  fetch(`${API_PROTOCOL}://${API_HOSTNAME}/things-to-bring`)
     .then(response => response.json())
     .then(data => {
+      const slider = document.getElementById('slider'); // Assuming you have an element with id 'slider'
+
       data.forEach(item => {
         const slide = document.createElement('div');
         slide.classList.add('slide');
-        
+
         const slideImage = document.createElement('div');
         slideImage.classList.add('slide-image');
-        slideImage.style.backgroundImage = `url('${item.image}')`;
+        slideImage.style.backgroundImage = `url('${item.images}')`;
 
         const slideDetails = document.createElement('div');
         slideDetails.classList.add('slide-details');
@@ -144,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
         slideTitle.innerText = item.title;
 
         const slideDescription = document.createElement('p');
-        slideDescription.innerText = item.description; 
+        slideDescription.innerText = item.description;
         slideDescription.classList.add('love-our-planet-p');
         slideDescription.style.margin = '10px 0';
         slideDescription.style.color = '#ffffff';
@@ -171,13 +156,13 @@ document.addEventListener('DOMContentLoaded', function () {
         autoplay: true,
         autoplaySpeed: 5000,
         responsive: [
-            {
-                breakpoint: 768,
-                settings: {
-                    slidesToShow: 1,
-                }
-            }
-        ]
+          {
+            breakpoint: 768,
+            settings: {
+              slidesToShow: 1,
+            },
+          },
+        ],
       });
     })
     .catch(error => console.error('Error fetching data:', error));
@@ -191,16 +176,18 @@ const avoidSlider = document.getElementById('avoid-slider');
 avoidSectionTitle.innerText = 'WHAT TO AVOID'; // Set the section title
 
 document.addEventListener('DOMContentLoaded', function () {
-  fetch('http://localhost:3000/whattoavoid') 
+  fetch(`${API_PROTOCOL}://${API_HOSTNAME}/things-to-avoid`)
     .then(response => response.json())
     .then(data => {
+      const slider = document.getElementById('avoid-slider'); // Assuming you have an element with id 'avoid-slider'
+
       data.forEach(item => {
         const slide = document.createElement('div');
         slide.classList.add('slide');
-        
+
         const slideImage = document.createElement('div');
         slideImage.classList.add('slide-image');
-        slideImage.style.backgroundImage = `url('${item.image}')`;
+        slideImage.style.backgroundImage = `url('${item.images}')`;
 
         const slideDetails = document.createElement('div');
         slideDetails.classList.add('slide-details');
@@ -209,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function () {
         slideTitle.innerText = item.title;
 
         const slideDescription = document.createElement('p');
-        slideDescription.innerText = item.description; 
+        slideDescription.innerText = item.description;
         slideDescription.classList.add('love-our-planet-p');
         slideDescription.style.margin = '10px 0';
         slideDescription.style.color = '#ffffff';
@@ -226,8 +213,9 @@ document.addEventListener('DOMContentLoaded', function () {
         slide.appendChild(slideImage);
         slide.appendChild(slideDetails);
 
-        avoidSlider.appendChild(slide);
+        slider.appendChild(slide);
       });
+
       // Initialize Slick slider for the "What to Avoid" section
       $('#avoid-slider').slick({
         dots: true,
@@ -235,13 +223,13 @@ document.addEventListener('DOMContentLoaded', function () {
         autoplay: true,
         autoplaySpeed: 5000,
         responsive: [
-            {
-                breakpoint: 768,
-                settings: {
-                    slidesToShow: 1,
-                }
-            }
-        ]
+          {
+            breakpoint: 768,
+            settings: {
+              slidesToShow: 1,
+            },
+          },
+        ],
       });
     })
     .catch(error => console.error('Error fetching data:', error));
@@ -256,11 +244,11 @@ const rememberSlider = document.getElementById('remember-slider');
 rememberSectionTitle.innerText = 'STUFF TO REMEMBER'; // Set the section title
 
 document.addEventListener('DOMContentLoaded', function () {
-  fetch('http://localhost:3000/stufftoremember')
+  fetch(`${API_PROTOCOL}://${API_HOSTNAME}/things-to-remember`)
     .then(response => response.json())
     .then(data => {
       dynamicRememberSlides.push(...data); // Add fetched data to the array
-      
+
       // Loop through the array and create slides
       dynamicRememberSlides.forEach(item => {
         const slide = document.createElement('div');
@@ -268,7 +256,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const slideImage = document.createElement('div');
         slideImage.classList.add('slide-image');
-        slideImage.style.backgroundImage = `url('${item.image}')`;
+        slideImage.style.backgroundImage = `url('${item.images}')`;
 
         const slideDetails = document.createElement('div');
         slideDetails.classList.add('slide-details');
@@ -281,7 +269,6 @@ document.addEventListener('DOMContentLoaded', function () {
         slideDescription.classList.add('love-our-planet-p');
         slideDescription.style.margin = '10px 0';
         slideDescription.style.color = '#ffffff';
-
 
         const slideLink = document.createElement('a');
         slideLink.href = item.link;
@@ -297,22 +284,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
         rememberSlider.appendChild(slide);
       });
-            // Initialize Slick slider for the "What to Avoid" section
-            $('#remember-slider').slick({
-                dots: true,
-                arrows: false,
-                autoplay: true,
-                autoplaySpeed: 5000,
-                responsive: [
-                    {
-                        breakpoint: 768,
-                        settings: {
-                            slidesToShow: 1,
-                        }
-                    }
-                ]
-              });
+
+      // Initialize Slick slider for the "What to Avoid" section
+      $('#remember-slider').slick({
+        dots: true,
+        arrows: false,
+        autoplay: true,
+        autoplaySpeed: 5000,
+        responsive: [
+          {
+            breakpoint: 768,
+            settings: {
+              slidesToShow: 1,
+            },
+          },
+        ],
+      });
     })
     .catch(error => console.error('Error fetching data:', error));
 });
-

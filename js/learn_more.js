@@ -32,8 +32,6 @@ function generateLearnmoreItem(imageSrc, text) {
     learnmoreContainer.appendChild(divCol);
 }
 
-// const API_PROTOCOL = 'http';
-// const API_HOSTNAME = '13.229.106.142';
 
 // Fetch data from the admin side and generate content
 fetch(`${API_PROTOCOL}://${API_HOSTNAME}/learn-more`)

@@ -5,7 +5,7 @@ const festivalTitle = document.querySelector('.festival-title');
 const festivalDescription = document.querySelector('.festival-description');
 
 function populateElements(data) {
-    bgImage.style.backgroundImage = `url('${data.image}')`; 
+    bgImage.style.backgroundImage = `url('${data.images}')`; 
     overlayTitle.textContent = data.title; 
     festivalTitle.textContent = data.title;
     festivalDescription.textContent = data.description;
@@ -15,23 +15,19 @@ const urlParams = new URLSearchParams(window.location.search);
 const itemId = urlParams.get('item_id');
 
 // Fetch festival data
-fetch(`http://localhost:3000/festival/${itemId}`)
+fetch(`${API_PROTOCOL}://${API_HOSTNAME}/events/${itemId}`)
     .then(response => response.json())
     .then(data => {
-        // Populate festival information
         populateElements(data);
 
-        // Get the city of the clicked festival
         const festivalCity = data.city;
 
-        // Fetch data from the database endpoint for hotels with the same city
-        return fetch(`http://localhost:3000/places?category=hotels&city=${festivalCity}`);
+        return fetch(`${API_PROTOCOL}://${API_HOSTNAME}?category=hotels&city=${festivalCity}`);
     })
     .then(response => response.json())
     .then(nearbyHotelsData => {
         const carouselInner = document.querySelector('.carousel-inner');
 
-        // Loop through nearby hotels data to create carousel items
         for (let i = 0; i < nearbyHotelsData.length; i += 3) {
             const carouselItem = document.createElement('div');
             carouselItem.classList.add('carousel-item');
@@ -54,7 +50,7 @@ fetch(`http://localhost:3000/festival/${itemId}`)
                 const img = document.createElement('img');
                 img.classList.add('img-fluid');
                 img.alt = '100%x280';
-                img.src = nearbyHotelsData[j].image;
+                img.src = nearbyHotelsData[j].images;
 
                 const cardBody = document.createElement('div');
                 cardBody.classList.add('card-body');
