@@ -81,14 +81,14 @@ section {
 }
 
 @media only screen and (max-width: 700px) {
+  .iframe-container {
+    height: 50vh;
+  }
 
   .iframe-container h3 {
     font-size: 40px;
   }
 
-  section {
-    height: 110vh;
-  }
 
   .dynamic-paragraph {
     font-size: 16px;
@@ -237,6 +237,22 @@ section {
   left: 50%;
   transform: translate(-50%, -50%);
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+.close-modal1 {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.close-modal2 {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+  cursor: pointer;
 }
 
 .close-modal {

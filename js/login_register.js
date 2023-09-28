@@ -38,6 +38,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+// Initialize a flag to track registration status
+let registrationSuccessful = false;
+
 // Wait for the DOM to load
 document.addEventListener('DOMContentLoaded', () => {
     const registerButton = document.getElementById('registerButton');
@@ -46,75 +49,96 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listener for registering
     registerButton.addEventListener('click', () => {
         // Collect form data
-        const first_name = document.getElementById('first_name').value;
-        const last_name = document.getElementById('last_name').value;
-        const gender = document.getElementById('gender').value;
-        const email = document.getElementById('emailInput').value;
-        const password = document.getElementById('passwordInput').value;
-        const from_country = document.getElementById('from_country').value;
-        const current_province = document.getElementById('current_province').value;
-        const current_city = document.getElementById('current_city').value;
-        const current_baranggay = document.getElementById('current_baranggay').value;
-
-        // Create an object with the form data
-        const user = {
-            first_name,
-            last_name,
-            gender,
-            email,
-            password,
-            from_country,
-            current_province,
-            current_city,
-            current_baranggay
-        };
-
-        const date = new Date();
-        let currentDay = String(date.getDate()).padStart(2, '0');
-        let currentMonth = String(date.getMonth() + 1).padStart(2, '0');
-        let currentYear = date.getFullYear();
-        let currentDate = `${currentDay}-${currentMonth}-${currentYear}`;
-        user['created_at'] = currentDate;
+        const user = collectUserData();
 
         // Send POST request to JSON server to add the user
-        fetch('http://localhost:3000/users', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(user)
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('User added:', data);
-            localStorage.setItem('user_id', parseInt(data.id));
-            alert('New user added, please proceed in logging in your account');
-        })
-        .catch(error => console.error('Error adding user:', error));
+        registerUser(user);
     });
 
     // Event listener for saving preferences
     savePreferencesButton.addEventListener('click', () => {
-        const userId = parseInt(localStorage.getItem('user_id')); // Get the user's ID
+        // Check if registration was successful before opening the preference modal
+        if (registrationSuccessful) {
+            const selectedPreferences = collectSelectedPreferences();
 
-        if (!userId) {
-            console.error('User ID not found in local storage');
-            return; // Abort if user ID is not found
+            // Save user preferences to the correct URL
+            saveUserPreferences(selectedPreferences);
+        } else {
+            alert('User registration must be successful before saving preferences.');
         }
-
-        const selectedPreferences = collectSelectedPreferences();
-
-        // Save user preferences to localhost:3000/preference
-        saveUserPreferences(userId, selectedPreferences);
     });
 });
+
+// Function to collect user registration data
+function collectUserData() {
+    const first_name = document.getElementById('first_name').value;
+    const last_name = document.getElementById('last_name').value;
+    const gender = document.getElementById('gender').value;
+    const email = document.getElementById('emailInput').value;
+    const password = document.getElementById('passwordInput').value;
+    const from_country = document.getElementById('from_country').value;
+    const current_province = document.getElementById('current_province').value;
+    const current_city = document.getElementById('current_city').value;
+    const current_barangay = document.getElementById('current_barangay').value;
+
+    // Create an object with the user registration data
+    const user = {
+        first_name,
+        last_name,
+        gender,
+        email,
+        password,
+        from_country,
+        current_province,
+        current_city,
+        current_barangay,
+        role: "REGULAR" // Add the role field with the value "REGULAR"
+    };
+
+    return user;
+}
+
+// Function to register a new user
+function registerUser(user) {
+    const apiUrl = `${API_PROTOCOL}://${API_HOSTNAME}/users`;
+
+    fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(user)
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(responseData => {
+                console.error(`Error creating user: ${response.status} ${response.statusText}`);
+                console.error('Server response:', responseData);
+                alert('User registration failed. Please check your input data.');
+                throw new Error('User registration failed.');
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('User created:', data);
+        localStorage.setItem('user_id', parseInt(data.id));
+        alert('New user added. Please proceed to log in to your account.');
+
+        // Set the registrationSuccessful flag to true
+        registrationSuccessful = true;
+    })
+    .catch(error => {
+        console.error('Error creating user:', error);
+    });
+}
 
 // Function to collect selected preferences
 function collectSelectedPreferences() {
     const selectedPreferences = [];
     const preferenceButtons = document.querySelectorAll(".preference-button");
 
-    preferenceButtons.forEach((button) => {
+    preferenceButtons.forEach(button => {
         if (button.classList.contains('selected')) {
             selectedPreferences.push({ category: button.getAttribute('value') });
         }
@@ -123,30 +147,43 @@ function collectSelectedPreferences() {
     return selectedPreferences;
 }
 
-// Function to save user preferences to localhost:3000/preference
-function saveUserPreferences(userId, selectedPreferences) {
+// Function to save user preferences
+function saveUserPreferences(selectedPreferences) {
+    const token = localStorage.getItem('access_token');
+    console.log('Access token:', token);
+
     const userPreference = {
-        user_id: userId,
-        preferences: selectedPreferences
+        preferenced_categories: selectedPreferences.map(pref => pref.category)
     };
 
-    fetch('http://localhost:3000/preference', {
+    fetch(`${API_PROTOCOL}://${API_HOSTNAME}/preferences`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(userPreference)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            console.error(`Error saving preferences: ${response.status} ${response.statusText}`);
+            return response.json().then(responseData => {
+                console.error('Server response:', responseData);
+                throw new Error('User preferences could not be saved.');
+            });
+        }
+        return response.json();
+    })
     .then(data => {
         console.log('User preferences saved:', data);
-        window.location.reload();
-        preferenceModal.hide();
+        // Optionally, handle the response or perform any necessary actions here
     })
     .catch(error => console.error('Error saving preferences:', error));
 }
 
-// login
+
+
+//login
 document.addEventListener('DOMContentLoaded', () => {
     const loginButton = document.getElementById('loginButton');
     const staticBackdropModal = new bootstrap.Modal(document.getElementById('staticBackdrop'));
@@ -157,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            fetch('http://localhost:3001/auth/user', {
+            fetch(`${API_PROTOCOL}://${API_HOSTNAME}/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -189,6 +226,3 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-
-
-

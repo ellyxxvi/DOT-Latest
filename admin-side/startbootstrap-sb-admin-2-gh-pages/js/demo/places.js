@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function () {
                           <td>${user.city}</td>
                           <td>${user.barangay}</td>
                           <td>${user.contact}</td>
-                          <td>${user.social_links.links}</td>
+                          <td>${user.social_links ? user.social_links.links : ''}</td>
                           <td>${user.created_at}</td>
                           <td>${user.updated_at}</td>
                           <td>
@@ -180,8 +180,8 @@ editForm.addEventListener('submit', event => {
   event.preventDefault();
   const formData = new FormData(editForm);
   const updatedUser = {};
-  formData.delete('created_at'); // remove created_at
-  formData.delete('existingImage'); // remove existingImage
+  formData.delete('created_at'); 
+  formData.delete('existingImage'); 
   formData.forEach((value, key) => {
     if (key === 'contact' || key === 'social_links') {
       updatedUser[key] = value.split(',').map(item => item.trim());
@@ -194,9 +194,9 @@ editForm.addEventListener('submit', event => {
   const imageFile = imageInput.files[0];
 
   if (!imageFile) {
-    // No new image selected, preserve the existing image URL
+
     updatedUser.photos = [editForm.elements.existingImage.value];
-    sendEditRequest(updatedUser);
+    sendEditRequest(updatedUser, accessToken); 
   } else {
     const formDataForImage = new FormData();
     formDataForImage.append('photo', imageFile);
@@ -209,24 +209,22 @@ editForm.addEventListener('submit', event => {
       },
       body: formDataForImage,
     })
-    .then(handleErrors)
-    .then(data => {
-      console.log('Uploaded image URL:', data.http_img_url);
+      .then(handleErrors)
+      .then(data => {
+        console.log('Uploaded image URL:', data.http_img_url);
 
-      updatedUser.photos = [data.http_img_url];
-      
-      sendEditRequest(updatedUser);
-    })
-    .catch(error => {
-      console.error('There was a problem with the fetch operation:', error);
-    });
+        updatedUser.photos = [data.http_img_url];
+        
+        sendEditRequest(updatedUser, accessToken);
+      })
+      .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
   }
 });
 
 // Function to send the PUT request to update user data
-function sendEditRequest(updatedUser) {
-  const accessToken = getAccessTokenFromLocalStorage();
-  
+function sendEditRequest(updatedUser, accessToken) {
   fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places/${updatedUser.id}`, {
     method: 'PUT',
     headers: {
@@ -237,20 +235,18 @@ function sendEditRequest(updatedUser) {
   })
     .then(response => response.json())
     .then(data => {
-      editForm.reset();
-      editModal.hide();
+      // editForm.reset();
+      // editModal.hide();
       populateTable();
     })
     .catch(error => {
       console.error('Error updating item data:', error);
 
-      // Log the user inputs and the error response here
       console.log('User Inputs:', updatedUser);
       console.log('Error Response:', error);
       throw error;
     });
 }
-
 
 
   // Handle form submission and add new item

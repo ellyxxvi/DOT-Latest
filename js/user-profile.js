@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // EDIT PROFILE
     editProfileButton.addEventListener('click', function () {
         editModal.show();
-        fetch('http://localhost:3000/users')
+        fetch('${API_PROTOCOL}://${API_HOSTNAME}/users')
             .then(response => response.json())
             .then(data => {
                 const user = JSON.parse(localStorage.getItem('user_data'));
@@ -47,8 +47,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     document.getElementById('current_province').value = user.current_province;
                     document.getElementById('current_city').value = user.current_city;
                     document.getElementById('current_barangay').value = user.current_barangay;
-                    document.getElementById('created_at').value = user.created_at;
-                    document.getElementById('updated_at').value = user.updated_at;
 
                     // Display the existing image URL
                     const existingImageURL = user.image;
@@ -86,11 +84,9 @@ document.addEventListener("DOMContentLoaded", function () {
             current_province: document.getElementById('current_province').value,
             current_city: document.getElementById('current_city').value,
             current_barangay: document.getElementById('current_barangay').value,
-            created_at: document.getElementById('created_at').value,
-            updated_at: document.getElementById('updated_at').value,
         };
 
-        fetch(`http://localhost:3000/users/${userId}`, {
+        fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users/${userId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -127,13 +123,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!imageFile) {
             // No new image selected, preserve the existing image URL
-            updatedUser.image = editForm.elements.existingImage.value;
-            sendEditRequest(updatedUser);
-        } else {
             var formData2 = new FormData();
             formData2.append('image', imageFile);
 
-            fetch('http://localhost:3001/images', {
+            fetch('${API_PROTOCOL}://${API_HOSTNAME}/images', {
                 method: 'POST',
                 body: formData2
             })
@@ -152,7 +145,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function sendEditRequest(updatedUser) {
         const userId = updatedUser.id;
-        fetch(`http://localhost:3000/users/${userId}`, {
+        fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users/${userId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -202,10 +195,10 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// // USER PROFILE
-// // Function to fetch user data
+// USER PROFILE
+// Function to fetch user data
 function fetchUserData(userId) {
-    return fetch(`http://localhost:3000/users/${userId}`)
+    return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users/${userId}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Error fetching user data: ${response.status}`);
@@ -215,32 +208,77 @@ function fetchUserData(userId) {
 }
 
 // Function to fetch preference data
+// Function to fetch preference data as an array
 function fetchPreferenceData() {
-    return fetch('http://localhost:3000/preference')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Error fetching preference data: ${response.status}`);
-            }
-            return response.json();
-        });
+    const token = localStorage.getItem('access_token'); // Assuming you store the access token in localStorage
+    const headers = {
+        'Authorization': `Bearer ${token}`
+    };
+
+    return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/preferences`, {
+        headers: headers
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(`Error fetching preference data: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then((data) => {
+        if (Array.isArray(data)) {
+            return data; // Return the array as is
+        } else if (data) {
+            return [data]; // Convert a single preference entry to an array
+        } else {
+            return []; // Return an empty array if there's no preference data
+        }
+    })
+    .catch((preferenceError) => {
+        console.error('Error fetching preference data:', preferenceError);
+        return []; // Return an empty array in case of an error
+    });
 }
 
+  
+
+// Function to update the user profile
 // Function to update the user profile
 function updateProfile() {
     const isLoggedIn = localStorage.getItem('access_token') !== null;
-    const userData = JSON.parse(localStorage.getItem('user_data'));
+    const accessToken = getAccessTokenFromLocalStorage(); // Use the correct variable name
 
-    // Fetch user data
-    fetchUserData(userData.id)
+    if (!isLoggedIn) {
+        console.error('User is not logged in.');
+        return;
+    }
+
+    // Fetch user data using the access token
+    fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${accessToken}` // Use the correct variable name
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error fetching user data: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(user => {
             fetchPreferenceData()
                 .then(preferenceData => {
-                    const userPreferences = preferenceData.find(preference => preference.user_id === user.id);
+                    if (Array.isArray(preferenceData)) {
+                        // Check if preferenceData is an array before using find
+                        const userPreferences = preferenceData.find(preference => preference.user_id === user.id);
 
-                    if (userPreferences && userPreferences.preferences && userPreferences.preferences.length > 0) {
-                        populateUserData(user, userPreferences.preferences);
+                        if (userPreferences && userPreferences.preferenced_categories && userPreferences.preferenced_categories.length > 0) {
+                            populateUserData(user, userPreferences.preferenced_categories);
+                        } else {
+                            console.error('User preferences not found in data.');
+                        }
                     } else {
-                        console.error('User preferences not found in data.');
+                        console.error('Preference data is not an array.');
                     }
                 })
                 .catch(preferenceError => {
@@ -252,7 +290,16 @@ function updateProfile() {
         });
 }
 
-function populateUserData(user, preferences) {
+
+function getAccessTokenFromLocalStorage() {
+    const accessToken = localStorage.getItem('access_token');
+    return accessToken;
+}
+
+
+
+
+function populateUserData(user, preferenced_categories) {
     const nameHolder = document.querySelector(".nameHolder");
     if (nameHolder) {
         nameHolder.textContent = `${user.first_name} ${user.last_name}`;
@@ -273,7 +320,7 @@ function populateUserData(user, preferences) {
         preferencesElement.innerHTML = "";
 
 
-        if (preferences && preferences.length > 0) {
+        if (preferenced_categories && preferenced_categories.length > 0) {
             const preferenceTitle = document.createElement("p");
             preferenceTitle.textContent = "Preferences:";
             preferencesElement.appendChild(preferenceTitle);
@@ -281,13 +328,13 @@ function populateUserData(user, preferences) {
 
             const preferenceList = document.createElement("ul");
 
-            preferences.forEach((preference) => {
+            preferenced_categories.forEach((preference) => {
                 const preferenceItem = document.createElement("li");
                 preferenceItem.textContent = preference.category;
                 preferenceList.appendChild(preferenceItem);
             });
 
-            preferencesElement.appendChild(preferenceList);
+            preferenced_categories.appendChild(preferenceList);
         }
     } else {
         console.error("profile-work element not found.");

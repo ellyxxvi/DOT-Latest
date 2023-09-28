@@ -29,7 +29,7 @@ function generateServiceCard(service) {
 
   return `
     <div class="column">
-      <a href="explore_cardcontent.php?id=${service.id}" class="card-link">
+      <a href="explore_cardcontent.php?id=${service.id}" class="card-link" service-id="${service.id}">
         <div class="card">
           <div class="background-image" style="background-image: url('${service.backgroundImage}');"></div>
           <div class="icon-wrapper">

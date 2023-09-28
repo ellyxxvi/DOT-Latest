@@ -41,8 +41,8 @@
             <button class="icon-button" id="contact-icon">
                 <i class="fas fa-phone"></i> Contact
             </button>
-            <button class="icon-button" id="facebook-icon">
-                <i class="fab fa-facebook"></i> Facebook
+            <button class="icon-button" id="socialIcon">
+                <i class="fas fa-globe"></i> Social Links
             </button>
             <button class="icon-button" id="address-icon">
                 <i class="fas fa-map-marker-alt"></i> Address
@@ -59,6 +59,20 @@
             <button id="copyButton">
                 <i class="fas fa-copy"></i> Copy
             </button>
+        </div>
+    </div>
+    <div class="modal" id="LinksModal">
+        <div class="modal-content">
+            <span class="close-modal1">&times;</span>
+            <h2>Social Links</h2>
+            <p id="linksInfo"></p>
+        </div>
+    </div>
+    <div class="modal" id="addressModal">
+        <div class="modal-content">
+            <span class="close-modal2">&times;</span>
+            <h2>Address Information</h2>
+            <p id="addressInfo"></p>
         </div>
     </div>
 

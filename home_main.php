@@ -91,7 +91,7 @@
         <h1> GO EXPLORE </h1>
         <br>
         <p class="dynamic-paragraph">Welcome to Batangas, where beautiful smiles are seen everywhere.
-          With the beautiful places <br> and cultures, you'll be blown away! <br>
+          With the beautiful places and cultures, you'll be blown away! 
           Tara sinsay na!
           <br><br>
         </p>

@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(response => {
         if (response.status === 401) {
           console.error('Unauthorized: You may need to refresh the access token.');
-          return null; // Return null to handle the case where there's an authorization issue
+          return null; 
         } else if (response.ok) {
           return response.json();
         } else {
@@ -148,7 +148,6 @@ document.addEventListener('DOMContentLoaded', function () {
       })
       .then(user => {
         if (!user) {
-          // Handle the case where the response was null (e.g., authorization issue)
           return;
         }
   
@@ -156,16 +155,12 @@ document.addEventListener('DOMContentLoaded', function () {
         editForm.elements.title.value = user.title;
         editForm.elements.description.value = user.description;
   
-        // Check if the date string is a valid ISO date
         if (user.date && isValidISODate(user.date)) {
           const formattedDate = formatDateToMonthAndDay(user.date);
-          // Set the valid formatted date
           editForm.elements.date.value = formattedDate;
         } else {
-          // Handle the case where the date is invalid or missing
           console.error('Invalid or missing date format:', user.date);
-          // You can display an error message or set a default value for the date field.
-          editForm.elements.date.value = ''; // Set to empty or default value
+          editForm.elements.date.value = '';
         }
   
         editForm.elements.province.value = user.province;
@@ -186,6 +181,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Display an error message to the user, e.g., using a toast or alert
       });
   }
+  
   
   // Function to check if a date string is a valid ISO date
   function isValidISODate(dateString) {
@@ -333,7 +329,7 @@ addAccountButton.addEventListener('click', () => {
         const user = {
           title: formData.get('title'),
           description: formData.get('description'),
-          date: isoDateString, // Use the ISO date string for server
+          date: isoDateString, 
           province: formData.get('province'),
           city: formData.get('city'),
           images: [imageData.http_img_url],
@@ -404,7 +400,7 @@ addAccountButton.addEventListener('click', () => {
       .then(userData => {
         console.log('User response:', userData);
         form.reset();
-        // location.reload();
+        location.reload();
         populateTable();
       })
       .catch(error => {

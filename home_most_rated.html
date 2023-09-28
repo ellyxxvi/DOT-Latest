@@ -24,11 +24,11 @@
           <i id="right" class="fa-solid fa-angle-right"></i>
      </div>
      <script>
-          let carousel; 
+          let carousel;
 
           async function fetchPlacesData() {
                try {
-                    const response = await fetch('http://localhost:3000/places');
+                    const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places`);
                     const data = await response.json();
                     return Array.isArray(data) ? data : [];
                } catch (error) {
@@ -39,7 +39,7 @@
 
           async function fetchRatingsData() {
                try {
-                    const response = await fetch('http://localhost:3000/itinerary_visited');
+                    const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/itinerary_visited`);
                     const data = await response.json();
                     return Array.isArray(data) ? data : [];
                } catch (error) {
@@ -47,12 +47,13 @@
                     return [];
                }
           }
+
           function calculateAverageRating(ratings) {
                if (ratings.length === 0) return 0;
                const sum = ratings.reduce((total, rating) => total + parseFloat(rating), 0);
                const average = (sum / ratings.length).toFixed(1);
                return average;
-               }
+          }
 
 
           async function populateCarousel() {
@@ -68,15 +69,15 @@
                // Populate the placeRatingsMap with ratings data
                ratingsData.forEach(rating => {
                     const placeId = parseInt(rating.place_id);
-                    const ratingValue = parseInt(rating.ratings); 
+                    const ratingValue = parseInt(rating.ratings);
                     console.log("Rating: " + ratingValue);
-                    console.log("ID: "+ placeId + " " + placeRatingsMap.has(placeId));
+                    console.log("ID: " + placeId + " " + placeRatingsMap.has(placeId));
                     if (!placeRatingsMap.has(placeId)) {
                          placeRatingsMap.set(placeId, [ratingValue]);
                     } else {
                          placeRatingsMap.get(placeId).push(ratingValue);
                     }
-                    console.log("ID2 GET: "+ placeId + " " + placeRatingsMap.get(placeId));
+                    console.log("ID2 GET: " + placeId + " " + placeRatingsMap.get(placeId));
                });
 
                // Calculate average ratings for each place

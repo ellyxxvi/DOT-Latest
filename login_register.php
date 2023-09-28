@@ -58,7 +58,7 @@
                     <input type="text" placeholder="Country" name="from_country" id="from_country" autocomplete="off" required>
                     <input type="text" placeholder="Province" name="current_province" id="current_province" autocomplete="off" required>
                     <input type="text" placeholder="City" name="city" id="current_city" autocomplete="off" required>
-                    <input type="text" placeholder="Baranggay" name="current_baranggay" id="current_baranggay" autocomplete="off" required>
+                    <input type="text" placeholder="Barangay" name="current_barangay" id="current_barangay" autocomplete="off" required>
                     <input type="button" id="registerButton" value="Register" data-toggle="modal" data-target="#preferenceModal">
                     <p id="warning" style="color: red; display: none;">Please fill in all required fields.</p>
                 </div>
@@ -152,7 +152,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Skip</button>
+                    <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Skip</button> -->
                     <button type="button" class="btn btn-primary" id="savePreferences">Save Preferences</button>
                 </div>
             </div>

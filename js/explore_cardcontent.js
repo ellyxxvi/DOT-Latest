@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const filterButtons = document.querySelectorAll(".filter-nav button");
     const commentCardsContainer = document.querySelector(".comment-cards-container");
     const addToFavoritesBtn = document.getElementById("add-to-favorites");
-    const facebookIconBtn = document.getElementById("facebook-icon");
+    const socialIcon = document.getElementById("socialIcon");
     const queryParams = new URLSearchParams(window.location.search);
     const desiredServiceId = parseInt(queryParams.get("id"));
 
@@ -15,7 +15,8 @@ document.addEventListener("DOMContentLoaded", function () {
         commentCards = document.querySelectorAll(".comment-card");
     }
 
-    facebookIconBtn.addEventListener("click", function () {
+
+    socialIcon.addEventListener("click", function () {
         const desiredService = dynamicData.find(service => service.id === desiredServiceId);
         if (desiredService && desiredService.website) {
             const externalLink = desiredService.website;
@@ -163,22 +164,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function processData() {
         const queryParams = new URLSearchParams(window.location.search);
-        const desiredPlaceId = parseInt(queryParams.get("id"));
+        const desiredPlaceId = queryParams.get("id");
+
+        // Find the desired service using the ID
         const desiredService = dynamicData.find(service => service.id === desiredPlaceId);
 
+        if (!desiredService) {
+            console.error("Service not found for ID:", desiredPlaceId);
+            return;
+        }
+
+        // Select DOM elements
         const backgroundElement = document.querySelector(".background-image");
         const titleElement = document.querySelector("h3");
         const paragraphElement = document.querySelector(".dynamic-paragraph");
 
-        backgroundElement.style.backgroundImage = `url('${desiredService.photos}')`;
+        // Set background image, title, and description
+        backgroundElement.style.backgroundImage = `url('${desiredService.photos[0] || ''}')`;
         titleElement.textContent = desiredService.title;
         paragraphElement.textContent = desiredService.description;
 
         // Fetch comments for the desired service from the server
         fetch(`http://localhost:3000/itinerary_visited?place_id=${desiredPlaceId}`)
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error fetching comments: ${response.status} ${response.statusText}`);
+                }
+                return response.json();
+            })
             .then(commentsData => {
-                // Check if the desired place_id is present in the itinerary_visited
+                // Filter comments for the desired place_id
                 const placeComments = commentsData.filter(comment => parseInt(comment.place_id) === desiredPlaceId);
 
                 calculateTotalRating(placeComments);
@@ -188,14 +203,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     return;
                 }
 
-                commentCardsContainer.innerHTML = ""; // Clear existing comment cards
+                // Clear existing comment cards
+                commentCardsContainer.innerHTML = "";
 
+                // Create and append comment cards
                 placeComments.forEach(comment => {
                     const commentCard = document.createElement("div");
                     commentCard.classList.add("comment-card");
                     commentCard.setAttribute("data-rating", comment.ratings);
-                    commentCard.classList.add(`rating-${comment.ratings}`); // Add the rating class
-                    commentCard.setAttribute("data-rating", comment.ratings);
+                    commentCard.classList.add(`rating-${comment.ratings}`);
 
                     commentCard.innerHTML = `
                         <div class="comment-content">
@@ -212,14 +228,22 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch(error => {
                 console.error("Error fetching comments:", error);
+
+                // Log the detailed error response
+                error.response.text().then(text => {
+                    console.error("Detailed error response:", text);
+                });
             });
 
         updateCommentCards();
     }
 
+
+
+
+    // Function to filter comment cards based on selected rating
     filterButtons.forEach(button => {
         button.addEventListener("click", function () {
-
             // Toggle active class on clicked button
             filterButtons.forEach(btn => btn.classList.remove("active"));
             button.classList.add("active");
@@ -242,45 +266,126 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.log("No match found");
                     card.classList.add("none");
                 }
-
             });
+
         });
     });
 
+    //data buttons
     const contactButton = document.getElementById("contact-icon");
     const contactModal = document.getElementById("contactModal");
     const closeModal = document.querySelector(".close-modal");
     const copyButton = document.getElementById("copyButton");
     const contactInfo = document.getElementById("contactInfo");
 
-    function fetchContactInfo(placeId) {
-        return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places/${placeId}`)
-            .then(response => response.json())
-            .then(data => data.contact)
+    const linksButton = document.getElementById("socialIcon");
+    const linksModal = document.getElementById("LinksModal");
+    const linksInfo = document.getElementById("linksInfo");
+    const closeModal1 = document.querySelector(".close-modal1");
+
+    const addressButton = document.getElementById("address-icon");
+    const addressModal = document.getElementById("addressModal");
+    const addressInfo = document.getElementById("addressInfo");
+    const closeModal2 = document.querySelector(".close-modal2");
+
+    function fetchPlaceData(placeId) {
+        const accessToken = getAccessTokenFromLocalStorage();
+        const headers = {
+            'Authorization': `Bearer ${accessToken}`,
+        };
+
+        return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places/${placeId}`, { headers })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error fetching place data: ${response.status} ${response.statusText}`);
+                }
+                return response.json();
+            })
             .catch(error => {
-                console.error("Error fetching contact information:", error);
+                console.error("Error fetching place data:", error);
                 return null;
             });
     }
 
-    // Function to open the modal
+    //social links button
+    linksButton.addEventListener("click", async function () {
+        const desiredPlaceId = queryParams.get("id");
+        const fetchedPlaceData = await fetchPlaceData(desiredPlaceId);
+
+        if (fetchedPlaceData && fetchedPlaceData.social_links && fetchedPlaceData.social_links.links) {
+            linksInfo.innerHTML = ''; 
+
+            const links = Array.isArray(fetchedPlaceData.social_links.links)
+                ? fetchedPlaceData.social_links.links
+                : [fetchedPlaceData.social_links.links]; 
+
+            links.forEach(link => {
+                const linkElement = document.createElement('a');
+                linkElement.href = link.startsWith('http') ? link : `https://${link}`;
+                linkElement.textContent = link;
+                linkElement.target = '_blank'; 
+                linkElement.style.display = 'block'; 
+                linksInfo.appendChild(linkElement);
+            });
+        } else {
+            linksInfo.textContent = "No social links available.";
+        }
+
+        linksModal.style.display = "block";
+    });
+
+
+    // contact button
     contactButton.addEventListener("click", async function () {
-        const desiredPlaceId = parseInt(queryParams.get("id"));
-        const fetchedContact = await fetchContactInfo(desiredPlaceId);
-        // Fetch contact information from itinerary_places
-        contactInfo.textContent = fetchedContact;
+        const desiredPlaceId = queryParams.get("id");
+        const fetchedPlaceData = await fetchPlaceData(desiredPlaceId);
+        if (fetchedPlaceData && fetchedPlaceData.contact) {
+            contactInfo.textContent = fetchedPlaceData.contact;
+        } else {
+            contactInfo.textContent = "Contact information not available.";
+        }
 
         copyButton.innerHTML = '<i class="fas fa-copy"></i> Copy';
-        copyButton.disabled = false; // Enable the button
+        copyButton.disabled = false;
         contactModal.style.display = "block";
     });
 
-    // Function to close the modal
+    //address button
+    addressButton.addEventListener("click", async function () {
+        try {
+            const desiredPlaceId = queryParams.get("id");
+            const fetchedPlaceData = await fetchPlaceData(desiredPlaceId);
+
+            if (fetchedPlaceData && fetchedPlaceData.barangay && fetchedPlaceData.city && fetchedPlaceData.province) {
+                const { barangay, city, province } = fetchedPlaceData;
+                const fullAddress = `${barangay}, ${city}, ${province}`;
+                addressInfo.textContent = fullAddress;
+            } else {
+                addressInfo.textContent = "Address information not available.";
+            }
+            addressModal.style.display = "block";
+        } catch (error) {
+            console.error("Error opening address modal:", error);
+            addressInfo.textContent = "Failed to retrieve address information.";
+        }
+    });
+
+    // Function to close the modal contact
     closeModal.addEventListener("click", function () {
         contactModal.style.display = "none";
     });
+    // Function to close the modal links
+    closeModal1.addEventListener("click", function () {
+        linksModal.style.display = "none";
+    });
+    // Function to close the modal address
+    closeModal2.addEventListener("click", function () {
 
-    // Function to copy contact information to clipboard
+        addressModal.style.display = "none";
+    });
+
+
+    // Function to copy contact information or links to clipboard
     copyButton.addEventListener("click", function () {
         const textToCopy = contactInfo.textContent;
         navigator.clipboard.writeText(textToCopy)
@@ -293,31 +398,50 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     });
 
+
     const dynamicData = [];
 
     function fetchServicesData() {
-        fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places`)
-          .then(response => response.json())
-          .then(data => {
-            const mappedData = data.map(user => {
-              return {
-                id: user.id,
-                category: user.category,
-                title: user.title,
-                description: user.description,
-                photos: user.photos[0], // Assuming photos is an array, take the first image
-                website: user.social_links ? user.social_links.links : null // Check if social_links exists
-              };
-            });
-      
-            console.log(mappedData);
-      
-            dynamicData.push(...mappedData);
-            processData();
-          })
-          .catch(error => console.error('Error fetching data:', error));
-      }
-      
+        const accessToken = getAccessTokenFromLocalStorage(); // Get the access token from your localStorage or wherever you store it
+
+        const url = `${API_PROTOCOL}://${API_HOSTNAME}/places`;
+        // Fetch data using the extracted placeId
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error fetching data: ${response.status} ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const mappedData = data.map(user => {
+                    return {
+                        id: user.id,
+                        category: user.category,
+                        title: user.title,
+                        description: user.description,
+                        photos: [user.photos],
+                        website: user.social_links ? user.social_links.links : null,
+                    };
+                });
+
+                // Log the 'photos' property of each item in the 'mappedData' array
+                mappedData.forEach(item => {
+                    console.log('Photos:', item.photos);
+                });
+
+                dynamicData.push(...mappedData);
+                processData();
+            })
+            .catch(error => console.error(error));
+    }
+
+
     fetchServicesData();
 
     function getUserId() {
@@ -329,5 +453,9 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error('User data is missing or incomplete in localStorage.');
             return null;
         }
+    }
+    function getAccessTokenFromLocalStorage() {
+        const accessToken = localStorage.getItem('access_token');
+        return accessToken;
     }
 });

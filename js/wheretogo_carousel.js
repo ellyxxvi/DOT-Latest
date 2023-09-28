@@ -1,3 +1,6 @@
+const API_PROTOCOL = 'http';
+const API_HOSTNAME = '13.229.106.142';
+
 const categoryToIcon = {
   'swim': 'fas fa-water',
   'nature': 'fas fa-leaf',
@@ -22,14 +25,13 @@ async function fetchAndGenerateCards(url, isFestival = false) {
     cardData.forEach(card => {
       const cardElement = document.createElement("li");
       cardElement.className = "card";
-      cardElement.style.backgroundImage = `url('${card.image}')`;
+      cardElement.style.backgroundImage = `url('${card.images || card.photos}')`;
       cardElement.style.backgroundColor = "rgba(0, 0, 0, 0.9)";
 
       const words = card.description.split(" ");
-      console.log("working");
-      const truncatedDescription = words.length > 10 ? 
-                                   words.slice(0, 10).join(" ") + "..." : 
-                                   card.description;
+      const truncatedDescription = words.length > 10 ?
+        words.slice(0, 10).join(" ") + "..." :
+        card.description;
 
       const iconClass = isFestival ? 'fas fa-calendar-days' : categoryToIcon[card.category];
 
@@ -39,11 +41,14 @@ async function fetchAndGenerateCards(url, isFestival = false) {
         <span>${truncatedDescription}</span>
       `;
 
-      cardElement.dataset.redirectUrl = `explore_cardcontent.php?id=${card.id}`;
+      if (isFestival) {
+        cardElement.dataset.redirectUrl = 'festival_content.php';
+      } else {
+        cardElement.dataset.redirectUrl = `explore_cardcontent.php?id=${card.id}`;
+      }
 
       cardElement.addEventListener("click", () => {
         const redirectUrl = cardElement.dataset.redirectUrl;
-        console.log("Attempting to redirect to:", redirectUrl); // Debugging line
         if (redirectUrl) {
           window.top.location.href = redirectUrl;
         }
@@ -52,7 +57,6 @@ async function fetchAndGenerateCards(url, isFestival = false) {
       carousel.appendChild(cardElement);
     });
 
-    // Calculate firstCardWidth after the cards have been generated
     const firstCardWidth = carousel.querySelector(".card").offsetWidth;
 
     const wrapper = document.querySelector(".wrapper");
@@ -116,8 +120,8 @@ async function fetchAndGenerateCards(url, isFestival = false) {
 // Function to fetch and generate cards dynamically for a specific city
 async function fetchAndGenerateCardsForCity(city) {
   try {
-    const festivalUrl = `http://localhost:3000/festival?city=${city}`;
-    const placesUrl = `http://localhost:3000/places?city=${city}`;
+    const festivalUrl = `${API_PROTOCOL}://${API_HOSTNAME}/events?city=${city}`;
+    const placesUrl = `${API_PROTOCOL}://${API_HOSTNAME}/places?city=${city}`;
 
     await Promise.all([
       fetchAndGenerateCards(festivalUrl, true),
@@ -128,11 +132,10 @@ async function fetchAndGenerateCardsForCity(city) {
   }
 }
 
-
 function refreshContent() {
   // Read the selected city from local storage
   const selectedCity = localStorage.getItem('selectedCity') || 'DefaultCity';
-  console.log("Selected city from local storage:", selectedCity);  // Debugging line
+  console.log("Selected city from local storage:", selectedCity); 
   fetchAndGenerateCardsForCity(selectedCity);
 }
 
@@ -146,24 +149,14 @@ window.addEventListener('storage', (event) => {
   }
 });
 
-// Capture user interaction to select a city (You should implement this part)
-
-// For example, assuming you have a button with the class "city-option" that the user clicks
 const cityOptions = document.querySelectorAll('.city-option');
 
-    cityOptions.forEach(option => {
-      option.addEventListener('click', () => {
-        // ... existing code
-    // Read the selected city from local storage
-        const selectedCity = localStorage.getItem('selectedCity') || 'DefaultCity';
-        fetchAndGenerateCardsForCity(selectedCity);
-
-        // Optionally, listen for changes in local storage (if both scripts run on the same page)
-        window.addEventListener('storage', (event) => {
-          if (event.key === 'selectedCity') {
-            fetchAndGenerateCardsForCity(event.newValue);
-          }
-        });
-        refreshContent();
-      });
-    });
+cityOptions.forEach(option => {
+  option.addEventListener('click', () => {
+    const selectedCity = localStorage.getItem('selectedCity') || 'DefaultCity';
+    // Clear existing cards in the carousel
+    carousel.innerHTML = '';
+    fetchAndGenerateCardsForCity(selectedCity);
+    refreshContent();
+  });
+});

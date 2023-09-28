@@ -284,7 +284,7 @@ h3 {
 }
 
 .video {
-  height: 110vh;
+  /* height: 110vh; */
 }
 
 .hero {
@@ -372,7 +372,7 @@ h3 {
   }
 
   .video {
-    height: 160vh;
+    height: 100vh;
   }
 }
 
@@ -391,7 +391,7 @@ h3 {
   }
 
   .video {
-    height: 160vh;
+    height: 100vh;
   }
 
   .content h1 {
