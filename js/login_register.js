@@ -122,7 +122,8 @@ function registerUser(user) {
     })
     .then(data => {
         console.log('User created:', data);
-        localStorage.setItem('user_id', parseInt(data.id));
+        localStorage.setItem('access_token', (data.access_token));
+        //localStorage.setItem('user_id', (data.id));
         alert('New user added. Please proceed to log in to your account.');
 
         // Set the registrationSuccessful flag to true
@@ -208,9 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Valid login
                         localStorage.setItem('access_token', data.access_token);
                         localStorage.setItem('refresh_token', data.refresh_token);
-
                         localStorage.setItem('user_data', JSON.stringify(data.user_data));
-
                         window.location.href = 'itinerary_favorites.php';
                     } else {
                         // Invalid login

@@ -40,8 +40,8 @@
                 </a>
 
                 <script>
-                    const API_PROTOCOL = 'http'
-                    const API_HOSTNAME = '13.229.106.142'
+                    const API_PROTOCOL = 'https'
+                    const API_HOSTNAME = 'kentjordan.xyz/api'
                     // Function to check if the user is authenticated
                     function checkAuthentication() {
                         var isAuthenticated = localStorage.getItem("access_token");

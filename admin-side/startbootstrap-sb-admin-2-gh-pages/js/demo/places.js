@@ -6,8 +6,8 @@ $(document).ready(function () {
   });
 });
 
-const API_PROTOCOL = 'http'
-const API_HOSTNAME = '13.229.106.142'
+const API_PROTOCOL = 'https'
+const API_HOSTNAME = 'kentjordan.xyz/api'
 
 document.addEventListener('DOMContentLoaded', function () {
   const tableBody = document.getElementById('tableBody');
@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function () {
         editForm.elements.barangay.value = user.barangay;
         editForm.elements.contact.value = user.contact;
         editForm.elements.social_links.value = user.social_links.links;
-
+        
         const existingImageURL = user.photos; 
         const imagePreview = document.getElementById('edit-image-preview');
         imagePreview.src = existingImageURL;
@@ -183,11 +183,15 @@ editForm.addEventListener('submit', event => {
   formData.delete('created_at'); 
   formData.delete('existingImage'); 
   formData.forEach((value, key) => {
-    if (key === 'contact' || key === 'social_links') {
+    if (key === 'contact') {
       updatedUser[key] = value.split(',').map(item => item.trim());
+    } else if(key === 'social_links') {
+      updatedUser[key] = {};
+      updatedUser[key]['links'] = value.split(',').map(item => item.trim());
     } else {
       updatedUser[key] = value;
     }
+    console.log("Updated user: " + JSON.stringify(updatedUser));
   });
   const accessToken = getAccessTokenFromLocalStorage();
   const imageInput = editForm.querySelector('input[type="file"]');
@@ -225,6 +229,7 @@ editForm.addEventListener('submit', event => {
 
 // Function to send the PUT request to update user data
 function sendEditRequest(updatedUser, accessToken) {
+  console.log("EDIT: " + JSON.stringify(updatedUser));
   fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places/${updatedUser.id}`, {
     method: 'PUT',
     headers: {
@@ -235,8 +240,8 @@ function sendEditRequest(updatedUser, accessToken) {
   })
     .then(response => response.json())
     .then(data => {
-      // editForm.reset();
-      // editModal.hide();
+      editForm.reset();
+      editModal.hide();
       populateTable();
     })
     .catch(error => {
@@ -285,15 +290,6 @@ addAccountButton.addEventListener('click', async () => {
 
     const imageUploadData = await imageUploadResponse.json();
     console.log('Uploaded image URL:', imageUploadData.http_img_url);
-    console.log('User Inputs:');
-    console.log('Title:', formData.get('title'));
-    console.log('Description:', formData.get('description'));
-    console.log('Category:', formData.get('category'));
-    console.log('Province:', formData.get('province'));
-    console.log('City:', formData.get('city'));
-    console.log('Barangay:', formData.get('barangay'));
-    console.log('Contact:', formData.get('contact'));
-    console.log('Social Links:', formData.get('social_links'));
     // Convert the contacts and social_links fields to arrays
     const contact = formData.get('contact').split(',').map(contact => contact.trim());
     const socialLinks = formData.get('social_links').split(',').map(social_links => social_links.trim());
@@ -323,9 +319,10 @@ addAccountButton.addEventListener('click', async () => {
 
     if (addUserResponse.ok) {
       form.reset();
-      // window.location.reload();
+      window.location.reload();
       populateTable();
     } else {
+      alert('Please enter some data or choose "None" if applicable.');
       throw new Error('Adding item failed.');
     }
   } catch (error) {

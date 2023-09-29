@@ -1,5 +1,5 @@
-const API_PROTOCOL = 'http';
-const API_HOSTNAME = '13.229.106.142';
+const API_PROTOCOL = 'https';
+const API_HOSTNAME = 'kentjordan.xyz/api';
 
 const categoryToIcon = {
   'swim': 'fas fa-water',

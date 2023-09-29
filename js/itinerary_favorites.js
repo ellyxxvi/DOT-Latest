@@ -48,47 +48,66 @@ document.addEventListener("DOMContentLoaded", function () {
   const isLoggedIn = localStorage.getItem('access_token') !== null;
 
   if (isLoggedIn) {
-    function getUserId() {
-      const userData = JSON.parse(localStorage.getItem('user_data'));
-      if (userData && userData.id) {
-        return userData.id;
-      } else {
-        console.error('User data is missing or incomplete in localStorage.');
-        return null;
-      }
+    function parseJwt(token) {
+      var base64Url = token.split('.')[1];
+      var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+  
+      return JSON.parse(jsonPayload);
     }
+    const access_token = localStorage.getItem('access_token');
 
-    const userId = getUserId();
-    console.log("Get user ID: " + JSON.stringify(userId));
+    selectedUserId = parseJwt(access_token);
+    console.log("Get user ID: " + JSON.stringify(selectedUserId.id));
     
-    if (userId !== null) {
+    if (selectedUserId !== null) {
       // Fetch favorites data for the logged-in user
-      fetch(`http://localhost:3000/itinerary_favorites?user_id=${userId}`)
+      fetch(`${API_PROTOCOL}://${API_HOSTNAME}/itineraries/items/` , {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${access_token}` // Use the correct variable name
+        }
+       })
         .then(response => response.json())
         .then(data => {
-          const favoritePlaceIds = data.map(item => item.place_id);
+          console.log("Favorites: " + JSON.stringify(data));
+          const placesData = data; // No need to push items into a new array
 
-          // Fetch places data
-          fetch('http://localhost:3000/places')
-            .then(response => response.json())
-            .then(placesData => {
-              if (Array.isArray(favoritePlaceIds)) {
-                placesData.forEach(place => {
-                  if (favoritePlaceIds.includes(place.id)) {
+          if (Array.isArray(placesData)) {
+            placesData.forEach(place => {
+              console.log("Test place " + JSON.stringify(place));
+             
+              
+              // Fetch additional data for this place by its ID
+              fetchPlaceDataById(place.id)
+              .then(placeData => {
+                console.log("Additional Data for Place " + place.id + ": " + JSON.stringify(placeData));
+                if (placeData.id === place.id) {
+                  place.place_id = placeData.place_id;
+                }
+                 // Fetch feedback data for the user and place
+                  fetchFeedbackDataByUserIdAndPlaceId(selectedUserId.id, placeData.place_id)
+                  .then(hasFeedback => {
+                    // Add the disable_button property based on the presence of feedback
+                    place.disable_button = hasFeedback;
+                    
+                    // Assuming createBox is a function to create a box element for a place
                     const box = createBox(place);
                     boxContainer.appendChild(box);
-                  }
-                });
-              } else {
-                console.error('Invalid favoritePlaceIds data:', favoritePlaceIds);
-              }
-            })
-            .catch(error => {
-              console.error('Error fetching places data:', error);
+                  })
+                  .catch(error => {
+                    console.error("Error fetching feedback data:", error);
+                  });
+              })
+              .catch(error => {
+                console.error("Error fetching additional data:", error);
+              });
             });
-        })
-        .catch(error => {
-          console.error('Error fetching favorites data:', error);
+          } else {
+            console.error('Invalid placesData:', placesData);
+          }
         });
     } else {
       console.error('User ID is missing or invalid.');
@@ -99,6 +118,7 @@ document.addEventListener("DOMContentLoaded", function () {
   
 
   function createBox(place) {
+    console.log("CreateBox: " + JSON.stringify(place));
     const box = document.createElement('div');
     box.id = `box-${place.id}`;
     const addToFavoritesButton = document.createElement('button');
@@ -107,11 +127,15 @@ document.addEventListener("DOMContentLoaded", function () {
     addToFavoritesButton.addEventListener('click', () => {
       addToFavorites(place.id);
     });
+    var disabled = "";
+    if(place.disable_button == true) {
+      disabled = "disabled";
+    }
 
     box.classList.add('box');
     box.innerHTML = `
       <div class="image">
-        <img src="${place.image}" alt="">
+        <img src="${place.photos}" alt="">
         <span class="heart-icon">
           <i class="fas fa-heart"></i>
         </span>
@@ -120,10 +144,10 @@ document.addEventListener("DOMContentLoaded", function () {
         <h3>${place.title}</h3>
         <p>${place.description}</p>
         <div class="button-container">
-          <button class="completed-button" data-toggle="modal" data-target="#ratingModal" data-place-id="${place.id}">
+          <button class="completed-button ${disabled}" data-toggle="modal" data-target="#ratingModal" ${disabled} data-place-id="${place.place_id}">
             <span class="material-icons">check_circle</span> Completed
           </button>
-          <button class="delete-button" data-place-id="${place.id}">
+          <button class="delete-button" data-favorites-id="${place.id}">
             <span class="material-icons">delete</span>
           </button>
         </div>
@@ -134,18 +158,18 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function addToFavorites(placeId) {
-    const userId = 5;
+    // const selectedUserId = 5;
 
     // Prepare the data for the POST request
     const requestData = {
       place_id: placeId,
-      user_id: userId,
+      user_id: selectedUserId,
       created_at: getCurrentDate(),
       updated_at: getCurrentDate(),
     };
 
     // Send a POST request to add the place to favorites
-    fetch('http://localhost:3000/itinerary_favorites', {
+    fetch(`${API_PROTOCOL}://${API_HOSTNAME}/itinerary_favorites`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -174,7 +198,7 @@ document.addEventListener("DOMContentLoaded", function () {
       selectedPlaceId = completedButton.getAttribute('data-place-id');
       console.log('Selected Place ID:', selectedPlaceId);
     } else if (deleteButton) {
-      selectedPlaceId = deleteButton.getAttribute('data-place-id');
+      selectedPlaceId = deleteButton.getAttribute('data-favorites-id');
       console.log('Deleting Place ID:', selectedPlaceId);
 
       // Perform delete action
@@ -182,12 +206,13 @@ document.addEventListener("DOMContentLoaded", function () {
       if (boxToRemove) {
         boxToRemove.remove();
       }
-
+      const accessToken = localStorage.getItem('access_token');
       // Send DELETE request to remove from favorites on the server
-      fetch(`http://localhost:3000/itinerary_favorites/${selectedPlaceId}`, {
+      fetch(`${API_PROTOCOL}://${API_HOSTNAME}/itineraries/item/${selectedPlaceId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
         },
       })
         .then(response => {
@@ -226,18 +251,18 @@ document.addEventListener("DOMContentLoaded", function () {
     // Prepare the data for the POST request
     const requestData = {
       place_id: placeId,
-      user_id: getUserId(),
-      ratings: rating,
+      rating: parseInt(rating),
       comment: comment,
-      created_at: getCurrentDate(),
-      updated_at: getCurrentDate(),
+      // created_at: getCurrentDate(),
+      // updated_at: getCurrentDate(),
     };
-
+    const accessToken = localStorage.getItem('access_token');
     // POST the rating and comment to the server
-    fetch('http://localhost:3000/itinerary_visited', {
+    fetch(`${API_PROTOCOL}://${API_HOSTNAME}/feedbacks/user/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
       },
       body: JSON.stringify(requestData),
     })
@@ -245,27 +270,27 @@ document.addEventListener("DOMContentLoaded", function () {
         if (response.ok) {
           alert('Added to feedback successfully');
 
-          // Remove the box from the DOM
-          const boxToRemove = document.getElementById(`box-${placeId}`);
-          if (boxToRemove) {
-            boxToRemove.remove();
-          }
+          // // Remove the box from the DOM
+          // const boxToRemove = document.getElementById(`box-${placeId}`);
+          // if (boxToRemove) {
+          //   boxToRemove.remove();
+          // }
 
-          // Remove from favorites on the server
-          fetch(`http://localhost:3000/itinerary_favorites/${placeId}`, {
-            method: 'DELETE',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          })
-            .then(response => {
-              if (!response.ok) {
-                console.error('Failed to remove from favorites:', response.statusText);
-              }
-            })
-            .catch(error => {
-              console.error('Error removing from favorites:', error);
-            });
+          // // Remove from favorites on the server
+          // fetch(`${API_PROTOCOL}://${API_HOSTNAME}/itinerary_favorites/${placeId}`, {
+          //   method: 'DELETE',
+          //   headers: {
+          //     'Content-Type': 'application/json',
+          //   },
+          // })
+          //   .then(response => {
+          //     if (!response.ok) {
+          //       console.error('Failed to remove from favorites:', response.statusText);
+          //     }
+          //   })
+          //   .catch(error => {
+          //     console.error('Error removing from favorites:', error);
+          //   });
 
           // Close the modal
           ratingModal.hide();
@@ -294,4 +319,35 @@ document.addEventListener("DOMContentLoaded", function () {
       star.innerHTML = starRating <= rating ? '&#9733;' : '&#9734;';
     });
   }
+
+  // Function to fetch place data by ID
+function fetchPlaceDataById(placeId) {
+  const accessToken = localStorage.getItem('access_token');
+  return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/itineraries/item/${placeId}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`
+    }
+  })
+  .then(response => response.json());
+}
+
+// Function to fetch feedback data for a specific user and place_id
+function fetchFeedbackDataByUserIdAndPlaceId(userId, placeId) {
+  const accessToken = localStorage.getItem('access_token');
+  console.log("fetchFeedbackDataByUserIdAndPlaceId : " + userId + " || " + placeId);
+  return fetch(`https://kentjordan.xyz/api/feedbacks/user/${userId}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`
+    }
+  })
+  .then(response => response.json())
+  .then(feedbackData => {
+    // Check if feedbackData contains an entry with the given placeId
+    const matchingFeedback = feedbackData.find(feedback => feedback.place_id === placeId);
+    return !!matchingFeedback; // Returns true if feedback exists, false otherwise
+  });
+}
+
 });

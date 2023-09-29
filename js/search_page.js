@@ -1,27 +1,28 @@
 $(document).ready(function () {
-    const itemsPerPage = 3;
+    const itemsPerPage = 6;
     let startIndex = 0;
-    let data;
-    let filteredData;
+    let placeData;
+    const maxRecentSearches = 5; // Maximum number of recent searches to display
+    const recentSearchesKey = 'recentSearches';
 
     const galleryContainer = $('.image-gallery');
     const loadMoreButton = $('.load-more');
     const galleryItemLinks = document.querySelectorAll('.gallery-item-link');
+    const searchInput = $('.search input');
+    const searchButton = $('.search button');
+    const recentSearchesDropdown = $('.recent-searches');
 
-    // Function to handle the click event on gallery items
     function handleGalleryItemClick(event, itemId) {
         event.preventDefault();
 
-        // Find the matching festival data using item's id
-        const clickedFestival = data.find(festival => festival.id === itemId);
+        const clickedPlace = placeData.find(place => place.id === itemId);
 
-        if (clickedFestival) {
-            // Update the template with the clicked item's details
+        if (clickedPlace) {
             populateElements({
-                imageSrc: clickedFestival.image,
-                overlayTitle: clickedFestival.title,
-                festivalTitle: clickedFestival.title,
-                festivalDescription: clickedFestival.description,
+                imageSrc: clickedPlace.photos,
+                overlayTitle: clickedPlace.title,
+                placeTitle: clickedPlace.title,
+                placeDescription: clickedPlace.description,
             });
         }
     }
@@ -32,24 +33,37 @@ $(document).ready(function () {
     }
 
     function loadGalleryItems(dataToRender) {
-        const endIndex = Math.min(startIndex + itemsPerPage, dataToRender.length);
-        const itemsToLoad = dataToRender.slice(startIndex, endIndex);
+        const copy = [];
+        dataToRender[0].forEach(function (item) {
+            copy.push(item);
+        });
 
+    const endIndex = Math.min(startIndex + itemsPerPage, copy.length);
+
+    if (Array.isArray(dataToRender)) {
+        var test = Object.entries(dataToRender[0]);
+
+        const itemsToLoad = copy.slice(startIndex, endIndex);
+        console.log("Item: "+ JSON.stringify(itemsToLoad));
         itemsToLoad.forEach(item => {
-            // Build and append gallery item HTML
+            console.log("Item2: "+ JSON.stringify(item));
+            // Check if required properties exist before using them
+            const imageSrc = item.photos ? item.photos[0] : ''; // Assuming photos is an array
+            const title = item.title || '';
+            const placeTitle = item.placeTitle || '';
+            const city = item.city || '';
+
+            // Build and append gallery item HTML for places
             const itemHtml = `
-                <a href="festival_content.php?item_id=${item.id}" class="gallery-item-link" data-item-id="${item.id}">
+                <a href="explore_cardcontent.php?id=${item.id}" class="gallery-item-link" data-item-id="${item.id}">
                     <div class="gallery-item">
                         <div class="image-wrapper">
-                            <img src="${item.image}" alt="Image ${item.id}">
+                            <img src="${imageSrc}" alt="Image ${item.id}" class="place-image">
                         </div>
                         <div class="item-overlay">
-                            <div class="calendar-icon">
-                                <i class="fas fa-calendar"></i>
-                                <span class="month">${item.date}</span>
-                            </div>
-                            <h3>${item.title}</h3>
-                            <p>${item.city}</p>
+                            <h3>${title}</h3>
+                            ${placeTitle ? `<p>${placeTitle}</p>` : ''}
+                            <p>${city}</p>
                         </div>
                     </div>
                 </a>
@@ -59,70 +73,100 @@ $(document).ready(function () {
 
         startIndex += itemsToLoad.length;
 
-        if (startIndex >= dataToRender.length) {
+        if (startIndex >= copy.length) {
             loadMoreButton.hide();
         } else {
             loadMoreButton.show();
         }
-        galleryItemLinks.forEach(link => {
-            link.addEventListener('click', event => {
-                event.preventDefault();
-                const itemId = parseInt(link.getAttribute('data-item-id'));
-                window.location.href = `festival_content.php?item_id=${itemId}`;
+    } else {
+        console.error('Data to render is not an array:', copy);
+    }
+}
+
+    
+    
+
+    // Function to save a recent search query to local storage
+    function saveRecentSearch(query) {
+        const recentSearches = getRecentSearches();
+        if (recentSearches.includes(query)) {
+            const index = recentSearches.indexOf(query);
+            recentSearches.splice(index, 1);
+        } else if (recentSearches.length >= maxRecentSearches) {
+            recentSearches.pop();
+        }
+        recentSearches.unshift(query); 
+        localStorage.setItem(recentSearchesKey, JSON.stringify(recentSearches));
+    }
+
+    // Function to retrieve recent search queries from local storage
+    function getRecentSearches() {
+        const storedSearches = localStorage.getItem(recentSearchesKey);
+        return storedSearches ? JSON.parse(storedSearches) : [];
+    }
+
+    // Function to display recent searches in the dropdown
+    function displayRecentSearches() {
+        const recentSearches = getRecentSearches();
+        recentSearchesDropdown.empty();
+        if (recentSearches.length > 0) {
+            recentSearchesDropdown.append('<p>Recent Searches:</p>');
+            recentSearches.forEach(query => {
+                const recentSearchItem = $('<div class="recent-search-item"></div>');
+                recentSearchItem.text(query);
+                recentSearchItem.click(function () {
+                    searchInput.val(query);
+                    searchButton.click();
+                });
+                recentSearchesDropdown.append(recentSearchItem);
             });
-        });
+            recentSearchesDropdown.show(); 
+        } else {
+            recentSearchesDropdown.hide();
+        }
     }
 
-    function loadFilteredGallery() {
-        galleryContainer.empty();
-        startIndex = 0;
+    displayRecentSearches();
 
-        loadGalleryItems(filteredData);
-    }
+    // Search input click event
+    searchInput.click(function () {
+        displayRecentSearches(); 
+    });
 
     // Search button click event
-    $('.search button').click(function () {
-        const searchInput = $('.search input').val().toLowerCase();
-        filteredData = data.filter(item => {
-            return item.title.toLowerCase().includes(searchInput) || item.city.toLowerCase().includes(searchInput);
-        });
+    searchButton.click(function () {
+        const searchValue = searchInput.val().toLowerCase();
 
-        loadFilteredGallery();
+        if (searchValue.trim() !== '') {
+            saveRecentSearch(searchValue);
+
+            // Fetch places based on the searchValue
+            fetchPlacesBySearchValue(searchValue);
+        }
     });
 
     // Load more button click event
     loadMoreButton.click(function () {
-        loadGalleryItems(data);
+        loadGalleryItems(placeData);
     });
 
-    // Initial loading of gallery items
-    fetch('http://localhost:3000/festival')
-        .then(response => response.json())
-        .then(responseData => {
-            data = responseData;
-            loadGalleryItems(data);
-        })
-        .catch(error => console.error('Error fetching data:', error));
-
-    // month-dropdown
-    $("#monthDropdown").change(function () {
-        var selectedMonth = $(this).val();
-        updateCalendar(selectedMonth);
-    });
-
-    function updateCalendar(month) {
-        galleryContainer.empty();
-
-        let festivalsToRender = (month === 'all') ? data : data.filter(festival => {
-            const festivalMonth = getMonthFromDateString(festival.date);
-            return festivalMonth === parseInt(month);
-        });
-
-        filteredData = festivalsToRender;
-        loadFilteredGallery();
+    // Function to fetch places based on searchValue
+    function fetchPlacesBySearchValue(searchValue) {
+        // Replace 'YOUR_API_URL' with the actual API endpoint for searching places based on the searchValue
+        fetch(`${API_PROTOCOL}://${API_HOSTNAME}/search/place?q=${searchValue}`)
+            .then(response => response.json())
+            .then(responseData => {
+                placeData = [responseData.searchedPlaces];
+                loadGalleryItems(placeData);
+            })
+            .catch(error => console.error('Error fetching place data:', error));
     }
-
-    function getMonthFromDateString(dateString) {
-        // Implement this function if needed
-    }
+    
+    // fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places`)
+    //         .then(response => response.json())
+    //         .then(responseData => {
+    //             placeData = [responseData];
+    //             loadGalleryItems(placeData);
+    //         })
+    //         .catch(error => console.error('Error fetching place data:', error));
 });

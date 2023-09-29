@@ -25,7 +25,9 @@
      </div>
      <script>
           let carousel;
-
+          const API_PROTOCOL = 'https';
+          const API_HOSTNAME = 'kentjordan.xyz/api';
+          const access_token = localStorage.getItem('access_token');
           async function fetchPlacesData() {
                try {
                     const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places`);
@@ -39,7 +41,12 @@
 
           async function fetchRatingsData() {
                try {
-                    const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/itinerary_visited`);
+                    const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/places/most-rated?limit=5`, {
+                         method: 'GET',
+                         headers: {
+                              'Authorization': `Bearer ${access_token}` // Use the correct variable name
+                         }
+                    });
                     const data = await response.json();
                     return Array.isArray(data) ? data : [];
                } catch (error) {
@@ -68,10 +75,12 @@
 
                // Populate the placeRatingsMap with ratings data
                ratingsData.forEach(rating => {
-                    const placeId = parseInt(rating.place_id);
-                    const ratingValue = parseInt(rating.ratings);
+                    console.log("Rating:2 " + JSON.stringify(rating));
+                    const placeId = rating.place_id;
+                    const ratingValue = parseFloat(rating.avg_rating);
                     console.log("Rating: " + ratingValue);
                     console.log("ID: " + placeId + " " + placeRatingsMap.has(placeId));
+
                     if (!placeRatingsMap.has(placeId)) {
                          placeRatingsMap.set(placeId, [ratingValue]);
                     } else {
@@ -95,9 +104,10 @@
 
                // Generate card elements dynamically
                top5Places.forEach(place => {
+                    console.log("PLACE: " + JSON.stringify(place));
                     const cardElement = document.createElement("li");
                     cardElement.className = "card";
-                    cardElement.style.backgroundImage = `url('${place.image}')`;
+                    cardElement.style.backgroundImage = `url('${place.photos[0]}')`;
                     cardElement.innerHTML = `
                 <div class="icon card-icon fas fa-building ${place.iconClass}"></div>
                 <h2>${place.title}</h2>

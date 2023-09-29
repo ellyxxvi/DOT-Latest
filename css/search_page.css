@@ -34,6 +34,17 @@ body {
     height: 50vh;
 }
 
+.recent-searches {
+    position: absolute;
+    top: 100%; /* Position the dropdown below the search input */
+    left: 0;
+    display: none; /* Initially hide the dropdown */
+    background-color: #fff; /* Background color */
+    border: 1px solid #ccc; /* Border */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Box shadow */
+    padding: 5px; /* Padding inside the dropdown */
+    z-index: 1; /* Ensure it appears above other elements */
+}
 
 .search {
     position: relative;

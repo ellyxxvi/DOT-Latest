@@ -4,8 +4,8 @@ $(document).ready(function () {
     $("#addModal").modal("show");
   });
 });
-const API_PROTOCOL = 'http'
-const API_HOSTNAME = '13.229.106.142'
+const API_PROTOCOL = 'https'
+const API_HOSTNAME = 'kentjordan.xyz/api'
 
 // User Management Data
 document.addEventListener('DOMContentLoaded', function () {
@@ -141,12 +141,6 @@ document.addEventListener('DOMContentLoaded', function () {
       });
       const user = await handleErrors(response);
 
-      // const date = new Date();
-      // let currentDay = String(date.getDate()).padStart(2, '0');
-      // let currentMonth = String(date.getMonth() + 1).padStart(2, '0');
-      // let currentYear = date.getFullYear();
-      // let updated_at = `${currentDay}-${currentMonth}-${currentYear}`;
-
       editForm.elements.id.value = user.id;
       editForm.elements.first_name.value = user.first_name;
       editForm.elements.last_name.value = user.last_name;
@@ -157,9 +151,6 @@ document.addEventListener('DOMContentLoaded', function () {
       editForm.elements.current_province.value = user.current_province;
       editForm.elements.current_city.value = user.current_city;
       editForm.elements.current_barangay.value = user.current_barangay;
-      // editForm.elements.created_at.value = user.created_at;
-      // editForm.elements.updated_at.value = updated_at;
-
 
       const existingImageURL = user.profile_photo;
       const imagePreview = document.getElementById('edit-image-preview');
@@ -233,8 +224,7 @@ document.addEventListener('DOMContentLoaded', function () {
         current_province: updatedUser.current_province,
         current_city: updatedUser.current_city,
         current_barangay: updatedUser.current_barangay,
-        profile_photo: updatedUser.profile_photo, // Ensure this key matches the server's expectation
-        // Add any other relevant fields here
+        profile_photo: updatedUser.profile_photo,
       };
   
   

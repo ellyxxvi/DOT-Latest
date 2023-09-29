@@ -280,6 +280,12 @@
     background-color: #45a049;
   }
 
+  .completed-button.disabled {
+    background: gray;
+    cursor:not-allowed;
+    
+  }
+
   .material-icons {
     font-size: 18px;
     margin-right: 6px;

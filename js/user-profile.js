@@ -2,10 +2,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const favoritesButton = document.getElementById("favoritesButton");
     const visitedButton = document.getElementById("visitedButton");
     const accountButton = document.getElementById("accountButton");
-    const completedButtons = document.querySelectorAll('.completed-button');
-    const ratingModal = new bootstrap.Modal(document.getElementById('ratingModal'));
-    const saveRatingButton = document.getElementById('saveRating');
-    const stars = document.querySelectorAll('.star');
     //const boxContainer = document.querySelector('.box-container');
     const editProfileButton = document.querySelector('.edit-profile-button');
     const editModal = new bootstrap.Modal(document.getElementById('editModal'));
@@ -18,8 +14,6 @@ document.addEventListener("DOMContentLoaded", function () {
         return response.json();
     }
 
-    let selectedPlaceId;
-    let selectedUserId;
 
     document.getElementById("confirmLogout").addEventListener("click", function () {
         console.log("Click");
@@ -31,13 +25,13 @@ document.addEventListener("DOMContentLoaded", function () {
     // EDIT PROFILE
     editProfileButton.addEventListener('click', function () {
         editModal.show();
-        fetch('${API_PROTOCOL}://${API_HOSTNAME}/users')
+        fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users`)
             .then(response => response.json())
             .then(data => {
                 const user = JSON.parse(localStorage.getItem('user_data'));
                 if (user) {
                     document.getElementById('edit-id').value = user.id;
-                    document.getElementById('existingImage').value = user.image;
+                    document.getElementById('existingImage').value = user.profile_photo;
                     document.getElementById('first_name').value = user.first_name;
                     document.getElementById('last_name').value = user.last_name;
                     document.getElementById('gender').value = user.gender;
@@ -49,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     document.getElementById('current_barangay').value = user.current_barangay;
 
                     // Display the existing image URL
-                    const existingImageURL = user.image;
+                    const existingImageURL = user.profile_photo;
                     const imagePreview = document.getElementById('edit-image-preview');
                     imagePreview.src = existingImageURL;
 
@@ -68,11 +62,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById('updateProfileButton').addEventListener('click', function () {
         const userId = document.getElementById('edit-id').value;
-        const date = new Date();
-        let currentDay = String(date.getDate()).padStart(2, '0');
-        let currentMonth = String(date.getMonth() + 1).padStart(2, "0");
-        let currentYear = date.getFullYear();
-        let updated_at = `${currentDay}-${currentMonth}-${currentYear}`;
         
         const updatedUserData = {
             first_name: document.getElementById('first_name').value,
@@ -124,17 +113,17 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!imageFile) {
             // No new image selected, preserve the existing image URL
             var formData2 = new FormData();
-            formData2.append('image', imageFile);
+            formData2.append('photo', imageFile);
 
-            fetch('${API_PROTOCOL}://${API_HOSTNAME}/images', {
+            fetch(`${API_PROTOCOL}://${API_HOSTNAME}/images`, {
                 method: 'POST',
                 body: formData2
             })
                 .then(handleErrors)
                 .then(data => {
-                    console.log('Uploaded image URL:', data.url);
+                    console.log('Uploaded image URL:', data.http_img_url);
 
-                    updatedUser.image = data.url;
+                    updatedUser.profile_photo = data.http_img_url;
                     sendEditRequest(updatedUser);
                 })
                 .catch(error => {
@@ -196,21 +185,31 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // USER PROFILE
-// Function to fetch user data
-function fetchUserData(userId) {
-    return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users/${userId}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Error fetching user data: ${response.status}`);
-            }
-            return response.json();
-        });
+
+function fetchUserData() {
+    const accessToken = localStorage.getItem('access_token');
+    var userId = localStorage.getItem("user_id");
+    return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users/${userId}`, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}` 
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Error fetching user data: ${response.status}`);
+        }
+        //console.log("Fetch user: " + response.json() );
+        return response.json();
+    })
+    .then((data) => {
+        return data;
+    });
 }
 
-// Function to fetch preference data
+
 // Function to fetch preference data as an array
 function fetchPreferenceData() {
-    const token = localStorage.getItem('access_token'); // Assuming you store the access token in localStorage
+    const token = localStorage.getItem('access_token'); 
     const headers = {
         'Authorization': `Bearer ${token}`
     };
@@ -242,21 +241,23 @@ function fetchPreferenceData() {
   
 
 // Function to update the user profile
-// Function to update the user profile
 function updateProfile() {
     const isLoggedIn = localStorage.getItem('access_token') !== null;
-    const accessToken = getAccessTokenFromLocalStorage(); // Use the correct variable name
-
+    const accessToken = getAccessTokenFromLocalStorage(); 
     if (!isLoggedIn) {
         console.error('User is not logged in.');
         return;
     }
+    // console.log("TEST ACCESS : " + accessToken);
+    const decoded = parseJwt(accessToken);
+
+    var userId = decoded.id;
 
     // Fetch user data using the access token
-    fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users`, {
+    fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users/${userId}`, {
         method: 'GET',
         headers: {
-            'Authorization': `Bearer ${accessToken}` // Use the correct variable name
+            'Authorization': `Bearer ${accessToken}` 
         }
     })
         .then(response => {
@@ -290,6 +291,15 @@ function updateProfile() {
         });
 }
 
+function parseJwt(token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+  }
 
 function getAccessTokenFromLocalStorage() {
     const accessToken = localStorage.getItem('access_token');
@@ -309,7 +319,7 @@ function populateUserData(user, preferenced_categories) {
 
     const profileImg = document.querySelector(".profile-img img");
     if (profileImg) {
-        profileImg.src = user.image;
+        profileImg.src = user.profile_photo;
     } else {
         console.error("profile-img img element not found.");
     }
@@ -330,11 +340,11 @@ function populateUserData(user, preferenced_categories) {
 
             preferenced_categories.forEach((preference) => {
                 const preferenceItem = document.createElement("li");
-                preferenceItem.textContent = preference.category;
+                preferenceItem.textContent = preference;
                 preferenceList.appendChild(preferenceItem);
             });
 
-            preferenced_categories.appendChild(preferenceList);
+            preferencesElement.appendChild(preferenceList);
         }
     } else {
         console.error("profile-work element not found.");

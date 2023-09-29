@@ -5,9 +5,46 @@ document.addEventListener("DOMContentLoaded", function () {
     const addToFavoritesBtn = document.getElementById("add-to-favorites");
     const socialIcon = document.getElementById("socialIcon");
     const queryParams = new URLSearchParams(window.location.search);
-    const desiredServiceId = parseInt(queryParams.get("id"));
+    const desiredServiceId = queryParams.get("id");
 
-    const isServiceFavorited = localStorage.getItem("favoriteService_" + desiredServiceId);
+//    const isServiceFavorited = localStorage.getItem("favoriteService_" + desiredServiceId);
+    const favoritesListPromise = fetchFavorites();
+    favoritesListPromise
+    .then(favoritesList => {
+        // Use the favoritesList here
+        console.log("Favorites List: " + JSON.stringify(favoritesList));
+        
+        // Use Promise.all to handle multiple asynchronous calls
+        const checkingResultsPromises = favoritesList.map(item =>
+        checkIfcurrentPlaceisFavorite(item)
+        );
+
+        return Promise.all(checkingResultsPromises);
+    })
+    .then(checkingResults => {
+        // checkingResults is an array containing the results of all checkIfcurrentPlaceisFavorite calls
+        console.log("Checking Results: " + JSON.stringify(checkingResults));
+
+        // You can now work with the checkingResults array
+        // For example, you can check if any item is not a favorite:
+        const isAnyFavorite = checkingResults.some(isFavorite => isFavorite);
+        if (isAnyFavorite) {
+            addToFavoritesBtn.classList.add("added");
+            addToFavoritesBtn.innerHTML = '<i class="fas fa-check"></i> Added to Favorites';
+        } else {
+           
+        }
+
+
+        })
+    .catch(error => {
+        // Handle errors here
+        console.error("Error fetching favorites: " + error);
+        // Handle the error appropriately
+    });
+
+    const isServiceFavorited = false;   
+    // Call someFunction somewhere in your code
 
     let commentCards = document.querySelectorAll(".comment-card");
 
@@ -26,16 +63,12 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Check if the user is logged in
+        // Check if the user is logged in
     const isLoggedIn = localStorage.getItem('access_token') !== null;
 
     // Check if the user is logged in and set the button accordingly
     if (isLoggedIn) {
         addToFavoritesBtn.style.visibility = "visible";
-        if (isServiceFavorited === "true") {
-            addToFavoritesBtn.classList.add("added");
-            addToFavoritesBtn.innerHTML = '<i class="fas fa-check"></i> Added to Favorites';
-        }
     } else {
         addToFavoritesBtn.style.visibility = "hidden";
     }
@@ -43,29 +76,38 @@ document.addEventListener("DOMContentLoaded", function () {
     let addItemCounter = 1;
     let deleteItemCounter = 1;
 
+    function parseJwt(token) {
+        var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        return JSON.parse(jsonPayload);
+    }
+
     addToFavoritesBtn.addEventListener("click", function () {
         addToFavoritesBtn.classList.toggle("added");
-
+        const accessToken = getAccessTokenFromLocalStorage();
+        const user_id = parseJwt(accessToken);
         if (addToFavoritesBtn.classList.contains("added")) {
             addToFavoritesBtn.innerHTML = '<i class="fas fa-check"></i> Added to Favorites';
-            localStorage.setItem("favoriteService_" + desiredServiceId, "true");
-
-            const favoriteData = {
-                id: desiredServiceId,
-                place_id: desiredServiceId,
-                user_id: getUserId(),
-                created_at: getCurrentDate(),
-                updated_at: getCurrentDate(),
-            };
+            // localStorage.setItem("favoriteService_" + desiredServiceId, "true");
 
             // Increment the counter for the next added item
             addItemCounter++;
+           
+            const favoriteData = {
+                place_id: desiredServiceId,
+                user_id: user_id.id,
+            };
 
             // Add the service to favorites
-            fetch('http://localhost:3000/itinerary_favorites', {
+            fetch(`${API_PROTOCOL}://${API_HOSTNAME}/itineraries/item`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`
                 },
                 body: JSON.stringify(favoriteData)
             })
@@ -83,12 +125,13 @@ document.addEventListener("DOMContentLoaded", function () {
             // Use the counter for deleting items
             const deleteItemId = deleteItemCounter;
             deleteItemCounter++;
-
+            var favoritesID = addToFavoritesBtn.getAttribute("favorite-id");
             // Remove the service from favorites
-            fetch(`http://localhost:3000/itinerary_favorites/${desiredServiceId}`, {
+            fetch(`${API_PROTOCOL}://${API_HOSTNAME}/itineraries/item/${favoritesID}`, {
                 method: 'DELETE',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`
                 }
             })
                 .then(response => {
@@ -128,7 +171,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // Sum up all the ratings
-        const totalRating = placeComments.reduce((acc, comment) => acc + parseFloat(comment.ratings), 0);
+        const totalRating = placeComments.reduce((acc, comment) => acc + parseFloat(comment.rating), 0);
 
         // Calculate the average rating
         const averageRating = totalRating / placeComments.length;
@@ -185,7 +228,7 @@ document.addEventListener("DOMContentLoaded", function () {
         paragraphElement.textContent = desiredService.description;
 
         // Fetch comments for the desired service from the server
-        fetch(`http://localhost:3000/itinerary_visited?place_id=${desiredPlaceId}`)
+        fetch(`${API_PROTOCOL}://${API_HOSTNAME}/feedbacks/place/${desiredPlaceId}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`Error fetching comments: ${response.status} ${response.statusText}`);
@@ -194,8 +237,8 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .then(commentsData => {
                 // Filter comments for the desired place_id
-                const placeComments = commentsData.filter(comment => parseInt(comment.place_id) === desiredPlaceId);
-
+                const placeComments = commentsData.all;
+                console.log("Comments: " + JSON.stringify(commentsData));
                 calculateTotalRating(placeComments);
 
                 if (placeComments.length === 0) {
@@ -210,13 +253,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 placeComments.forEach(comment => {
                     const commentCard = document.createElement("div");
                     commentCard.classList.add("comment-card");
-                    commentCard.setAttribute("data-rating", comment.ratings);
-                    commentCard.classList.add(`rating-${comment.ratings}`);
+                    commentCard.setAttribute("data-rating", comment.rating);
+                    commentCard.classList.add(`rating-${comment.rating}`);
 
                     commentCard.innerHTML = `
                         <div class="comment-content">
                             <div class="rating">
-                                ${generateStars(comment.ratings)}
+                                ${generateStars(comment.rating)}
                             </div>
                             <h3 class="comment-title">${desiredService.title}</h3>
                             <p>${comment.comment}</p>
@@ -237,8 +280,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         updateCommentCards();
     }
-
-
 
 
     // Function to filter comment cards based on selected rating
@@ -271,6 +312,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    
     //data buttons
     const contactButton = document.getElementById("contact-icon");
     const contactModal = document.getElementById("contactModal");
@@ -458,4 +500,76 @@ document.addEventListener("DOMContentLoaded", function () {
         const accessToken = localStorage.getItem('access_token');
         return accessToken;
     }
+
+    
+    function fetchFavorites() {
+        const accessToken = getAccessTokenFromLocalStorage();
+      
+        // Return a Promise
+        return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/itineraries/items/`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`
+          },
+        })
+        .then(response => {
+          if (!response.ok) {
+            console.log("DATA1 " + JSON.stringify(response.json()));
+            throw new Error('Network response was not ok');
+          }
+          return response.json(); // Parse the response body as JSON
+        })
+        .then(data => {
+          const copy = [];
+          data.forEach(function (item) {
+            copy.push(item.id);
+          });
+          console.log("DATA copy: " + JSON.stringify(copy));
+          return copy;
+        })
+        .catch(error => {
+          console.log("DATA: " + JSON.stringify(error));
+          // alert('Error adding to favorites: ' + error);
+          throw error; // Rethrow the error to be handled later if needed
+        });
+      }
+      
+      function checkIfcurrentPlaceisFavorite(favoritesID){
+        const accessToken = getAccessTokenFromLocalStorage();
+
+         // Add the service to favorites
+         return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/itineraries/item/${favoritesID}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            },
+        })
+            .then(response => {
+                
+                if (!response.ok) {
+                    console.log("DATA4 " + JSON.stringify(response.json()));
+                    throw new Error('Network response was not ok');
+                }
+                return response.json(); // Parse the response body as JSON
+
+            }).then(data => {
+                console.log("DATA5: " + JSON.stringify(data));
+                if(desiredServiceId == data.place_id){
+                    console.log("Favorite to");
+                    addToFavoritesBtn.setAttribute("favorite-id", data.id);
+                    return true;
+                }else{
+                    console.log("HINDI");
+                    return false;
+                    
+                }
+                
+            })
+            .catch(error => {
+                console.log("DATA6: " + JSON.stringify(error));
+                //alert('Error adding to favorites: ' + error);
+            });
+    }
+      
+      
 });

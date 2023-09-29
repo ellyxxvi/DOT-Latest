@@ -155,7 +155,7 @@
                         <input type="hidden" name="existingImage" id="existingImage">
                         <div class="mb-3">
                             <label for="eventImage" class="form-label">Profile Picture</label>
-                            <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                            <input type="file" class="form-control" id="profile_photo" name="profile_photo" accept="profile_photo/*">
                         </div>
                         <div class="mb-3">
                             <label for="edit-first-name" class="form-label">First Name</label>

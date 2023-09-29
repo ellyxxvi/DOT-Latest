@@ -40,22 +40,31 @@ const isLoggedIn = localStorage.getItem('access_token') !== null;
 
 if (isLoggedIn) {
   // Function to get the user ID from localStorage
-  function getUserId() {
-    const userData = JSON.parse(localStorage.getItem('user_data'));
-    if (userData && userData.id) {
-      return userData.id; // Access the user ID directly
-    } else {
-      console.error('User data is missing or incomplete in localStorage.');
-      return null;
-    }
+  function parseJwt(token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
   }
+
+  const access_token = localStorage.getItem('access_token');
+
   // Get the user ID of the logged-in user
-  const userId = getUserId();
+  const userId = parseJwt(access_token);
 
   // Fetch data from both endpoints
   Promise.all([
-    fetch('http://localhost:3000/places'),
-    fetch(`http://localhost:3000/itinerary_visited?user_id=${userId}`)
+    fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places`),
+    fetch(`${API_PROTOCOL}://${API_HOSTNAME}/feedbacks/user/${userId.id}` ,{
+      method: 'GET',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${access_token}`
+      }
+    })
   ])
   .then(responses => Promise.all(responses.map(response => response.json())))
   .then(([placesData, visitedData]) => {
@@ -63,18 +72,18 @@ if (isLoggedIn) {
     console.log("Loop started");
 
     visitedData.forEach(item => {
-  const placeInfo = placesData.find(place => place.id == item.place_id);
-
+    const placeInfo = placesData.find(place => place.id == item.place_id);
+      console.log("PLACE INFO: " + JSON.stringify(placeInfo));
       if (placeInfo) {
         const box = document.createElement('div');
         box.classList.add('box');
     
         // Calculate star ratings based on the rating value
-        const starRatings = '<div class="star-ratings">' + '<i class="fas fa-star"></i>'.repeat(parseInt(item.ratings)) + '</div>';
-    
+        const starRatings = '<div class="star-ratings">' + '<i class="fas fa-star"></i>'.repeat(parseInt(item.rating)) + '</div>';
+
         box.innerHTML = `
           <div class="image">
-            <img src="${placeInfo.image}" alt="">
+            <img src="${placeInfo.photos[0]}" alt="">
             <span class="heart-icon">
               <i class="fas fa-heart"></i>
             </span>
@@ -88,11 +97,9 @@ if (isLoggedIn) {
             <div class="ratings">
               ${starRatings}
               <div class="comments">
-                <p>Comments: ${item.comment}</p>
+                <p>Comment: ${item.comment}</p>
               </div>
-              <div class="date">
-                <p>${item.created_at}</p>
-              </div>
+
             </div>
           </div>
         `;

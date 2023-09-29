@@ -1,5 +1,5 @@
-const API_PROTOCOL = 'http';
-const API_HOSTNAME = '13.229.106.142';
+const API_PROTOCOL = 'https';
+const API_HOSTNAME = 'kentjordan.xyz/api';
 
 // USER STATISTICS
 document.addEventListener('DOMContentLoaded', async function () {
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         const accessToken = getAccessTokenFromLocalStorage();
 
         // Fetch visit data from the server with authentication headers
-        const visitResponse = await fetch('http://13.229.106.142/analytics/places/most-visited?limit=5', {
+        const visitResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/places/most-visited?limit=5`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             }
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
 
         // Fetch places data from the server with authentication headers
-        const placeResponse = await fetch('http://13.229.106.142/analytics/places/most-visited?limit=5', {
+        const placeResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/places/most-visited?limit=5`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
             },
@@ -146,7 +146,7 @@ function calculateAverageRating(ratings) {
 // Function to fetch resort names
 async function fetchResortNames(accessToken) {
     try {
-        const response = await fetch('http://13.229.106.142/analytics/places/most-rated?category=resort&limit=5', {
+        const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/places/most-rated?category=resort&limit=5`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             }
@@ -195,9 +195,9 @@ async function populateAndSortResorts() {
     }
 
     const resortNames = await fetchResortNames(accessToken);
-
+    console.log("resortnames: " + JSON.stringify(resortNames));
     try {
-        const response = await fetch('http://13.229.106.142/analytics/places/most-rated?category=resort&limit=5', {
+        const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/places/most-rated?category=resort&limit=5`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             }
@@ -208,11 +208,13 @@ async function populateAndSortResorts() {
         }
 
         const data = await response.json();
-        console.log('Fetched resort data:', data);
+        console.log('Fetched resort data1:', data);
 
         if (Array.isArray(data)) {
+            console.log("DATA@@: " + JSON.stringify(data));
             resortsData.length = 0;
             data.forEach(user => {
+                console.log("USSSE@@: " + JSON.stringify(user));
                 const resort = {
                     name: resortNames[user.place_id] || 'Unknown Resort',
                     ratings: user.ratings ? user.ratings.split(',').map(Number) : []
@@ -256,7 +258,7 @@ populateAndSortResorts();
 function populateLocation() {
     const locationList = document.getElementById("location-list");
 
-    fetch("http://localhost:3000/users")
+    fetch(`{API_PROTOCOL}://${API_HOSTNAME}/users`)
         .then(response => response.json())
         .then(userData => {
 
@@ -402,10 +404,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Fetch data from the JSON server for users, places, favorites, and visited
     Promise.all([
-        fetchData('http://localhost:3000/users'),
-        fetchData('http://localhost:3000/places'),
-        fetchData('http://localhost:3000/itinerary_favorites'),
-        fetchData('http://localhost:3000/itinerary_visited')
+        fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/users`),
+        fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/places`),
+        fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/feedbacks/place`),
+        fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/itineraries/item`)
     ])
         .then(([usersData, placesData, favoritesData, visitedData]) => {
             // Process favoritesData

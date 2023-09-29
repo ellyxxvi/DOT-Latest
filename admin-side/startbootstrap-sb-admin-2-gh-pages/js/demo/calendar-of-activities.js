@@ -5,8 +5,8 @@ $(document).ready(function () {
   });
 });
 
-const API_PROTOCOL = 'http'
-const API_HOSTNAME = '13.229.106.142'
+const API_PROTOCOL = 'https'
+const API_HOSTNAME = 'kentjordan.xyz/api'
 
 document.addEventListener('DOMContentLoaded', function () {
   const tableBody = document.getElementById('tableBody');
@@ -128,10 +128,17 @@ document.addEventListener('DOMContentLoaded', function () {
   function editRow(event) {
     const button = event.target;
     const row = button.closest('tr');
-    const userId = row.querySelector('td:first-child').textContent;
+    const id = row.querySelector('td:first-child').textContent;
+  
+    // Get the access token from local storage
     const accessToken = getAccessTokenFromLocalStorage();
   
-    fetch(`${API_PROTOCOL}://${API_HOSTNAME}/events/${userId}`, {
+    // Log the ID for debugging purposes
+    console.log("ID: " + JSON.stringify(id));
+  
+    // Make a fetch request to get the event details
+    fetch(`${API_PROTOCOL}://${API_HOSTNAME}/events/${id}`, {
+      method: 'PUT',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
       },
@@ -146,47 +153,55 @@ document.addEventListener('DOMContentLoaded', function () {
           throw new Error('Fetch request failed');
         }
       })
-      .then(user => {
-        if (!user) {
+      .then(eventData => {
+        // Log the expected input structure from the server for debugging
+        console.log('Expected input structure from the server:', eventData);
+  
+        // Check if event data is valid
+        if (!eventData) {
+          console.error("No event data found.");
           return;
         }
   
-        editForm.elements.id.value = user.id;
-        editForm.elements.title.value = user.title;
-        editForm.elements.description.value = user.description;
-  
-        if (user.date && isValidISODate(user.date)) {
-          const formattedDate = formatDateToMonthAndDay(user.date);
+        // Populate the form with event data
+        editForm.elements.id.value = eventData.id;
+        editForm.elements.title.value = eventData.title;
+        editForm.elements.description.value = eventData.description;
+        editForm.elements.province.value = eventData.province;
+        editForm.elements.city.value = eventData.city;
+
+        // Check if the date is valid and format it
+        if (eventData.date && isValidISODate(eventData.date)) {
+          const formattedDate = formatDateToMonthAndDay(eventData.date);
           editForm.elements.date.value = formattedDate;
         } else {
-          console.error('Invalid or missing date format:', user.date);
           editForm.elements.date.value = '';
         }
   
-        editForm.elements.province.value = user.province;
-        editForm.elements.city.value = user.city;
+        // Populate other form fields as needed (e.g., province, city)
   
         // Display the existing image URL
-        const existingImageURL = user.images;
+        const existingImageURL = eventData.images;
         const imagePreview = document.getElementById('edit-image-preview');
         imagePreview.src = existingImageURL;
   
         // Store the existing image URL in a hidden input field
         editForm.elements.existingImage.value = existingImageURL;
   
+        // Show the edit modal
         editModal.show();
       })
       .catch(error => {
-        console.error('Error fetching user data:', error);
-        // Display an error message to the user, e.g., using a toast or alert
+        console.error('Error fetching event data:', error);
       });
   }
-  
   
   // Function to check if a date string is a valid ISO date
   function isValidISODate(dateString) {
     return dateString && !isNaN(Date.parse(dateString));
   }
+  
+  // Rest of your code for form submission and update requests
   
   
   
@@ -197,6 +212,8 @@ editForm.addEventListener('submit', event => {
   const updatedUser = {};
   formData.delete('created_at'); // remove created_at
   formData.delete('existingImage'); // remove existingImage
+  formData.append("barangay", "Unknown Barangay");
+  formData.delete('updated_at');
   formData.forEach((value, key) => {
     if (key === 'date') {
       // Convert the date to ISO string format
@@ -213,11 +230,12 @@ editForm.addEventListener('submit', event => {
 
   if (!imageFile) {
     // No new image selected, preserve the existing image URL
-    updatedUser.image = [editForm.elements.existingImage.value];
+    updatedUser.images = [editForm.elements.existingImage.value];
+    console.log("EDIT1 " + JSON.stringify(updatedUser));
     sendEditRequest(updatedUser, accessToken);
   } else {
     var formData2 = new FormData();
-    formData2.append('image', imageFile);
+    formData2.append('photo', imageFile);
 
     fetch(`${API_PROTOCOL}://${API_HOSTNAME}/images`, {
       method: 'POST',
@@ -236,7 +254,8 @@ editForm.addEventListener('submit', event => {
       .then(data => {
         console.log('Uploaded image URL:', data.http_img_url);
 
-        updatedUser.image = [data.http_img_url];
+        updatedUser.images = [data.http_img_url];
+        console.log("EDIT2 "+ JSON.stringify(updatedUser));
         sendEditRequest(updatedUser, accessToken);
       })
       .catch(error => {
@@ -248,7 +267,9 @@ editForm.addEventListener('submit', event => {
 
 // Function to send the PUT request to update user data
 function sendEditRequest(updatedUser, accessToken) {
-  fetch(`${API_PROTOCOL}://${API_HOSTNAME}/events/${updatedUser.id}`, {
+  var userId = updatedUser.id;
+  delete updatedUser.id;
+  fetch(`${API_PROTOCOL}://${API_HOSTNAME}/events/${userId}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
