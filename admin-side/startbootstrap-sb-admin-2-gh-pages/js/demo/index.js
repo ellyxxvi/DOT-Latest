@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         const visitCounts = {};
 
-        // Count visits per place
+        //Count visits per place
         visitData.forEach(visit => {
             const placeId = visit.place_id;
             if (visitCounts.hasOwnProperty(placeId)) {
@@ -93,14 +93,14 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         const placeData = await placeResponse.json();
 
-        // Merge visit counts with place data
+        //Merge visit counts with place data
         placeData.forEach(place => {
             const placeId = place.id;
             place.visits = visitCounts[placeId] || 0;
         });
 
-        // // Sort places based on visits
-        // placeData.sort((a, b) => b.visits - a.visits);
+        // Sort places based on visits
+        placeData.sort((a, b) => b.visits - a.visits);
 
         const popularDestinationsContainer = document.getElementById('popular-destinations');
 
@@ -114,11 +114,11 @@ document.addEventListener('DOMContentLoaded', async function () {
             const liElement = document.createElement('li');
             liElement.innerHTML = `
                 <span class="chart-progress-indicator chart-progress-indicator--increase">
-                    <span class="chart-progress-indicator__number">${place.visits}</span>
+                    <span class="chart-progress-indicator__number">${place.visited_count}</span>
                 </span>
                 <span class="bold-rank">Top ${index + 1}:</span> ${place.title}
                 <div class="progress wds-progress progress-bar-blue">
-                    <div class="progress-bar" style="width: ${place.visits}%;"></div>
+                    <div class="progress-bar" style="width: ${place.visited_count}%;"></div>
                 </div>
             `;
 
@@ -187,7 +187,7 @@ function calculateAverageRating(ratings) {
 async function populateAndSortResorts() {
     const resortList = document.getElementById("resort-list");
 
-    const accessToken = getAccessTokenFromLocalStorage();
+    const accessToken = localStorage.getItem('access_token');
 
     if (!accessToken) {
         console.error('Access token is missing or invalid.');
@@ -195,9 +195,9 @@ async function populateAndSortResorts() {
     }
 
     const resortNames = await fetchResortNames(accessToken);
-    console.log("resortnames: " + JSON.stringify(resortNames));
+
     try {
-        const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/places/most-rated?category=resort&limit=5`, {
+        const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/places/most-rated?limit=5`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             }
@@ -208,37 +208,34 @@ async function populateAndSortResorts() {
         }
 
         const data = await response.json();
-        console.log('Fetched resort data1:', data);
 
         if (Array.isArray(data)) {
-            console.log("DATA@@: " + JSON.stringify(data));
             resortsData.length = 0;
             data.forEach(user => {
-                console.log("USSSE@@: " + JSON.stringify(user));
                 const resort = {
-                    name: resortNames[user.place_id] || 'Unknown Resort',
-                    ratings: user.ratings ? user.ratings.split(',').map(Number) : []
+                    name: user.title,
+                    ratings: user.avg_rating
                 };
 
-                if (resort.ratings.length > 0 && resortNames[user.place_id] !== undefined) {
+                //if (resort.ratings.length > 0 && resortNames[user.place_id] !== undefined) {
                     resortsData.push(resort);
-                }
+                //}
+                
             });
 
-            resortsData.sort((a, b) => calculateAverageRating(b.ratings) - calculateAverageRating(a.ratings));
-
+            //resortsData.sort((a, b) => calculateAverageRating(b.ratings) - calculateAverageRating(a.ratings));
             resortList.innerHTML = "";
 
             resortsData.slice(0, 5).forEach((resort, index) => {
-                const averageRating = calculateAverageRating(resort.ratings);
+                //const averageRating = calculateAverageRating(resort.ratings);
                 const listItem = document.createElement("li");
                 listItem.innerHTML = `
                     <span class="chart-progress-indicator chart-progress-indicator--increase">
-                        <span class="chart-progress-indicator__number">${averageRating}</span>
+                        <span class="chart-progress-indicator__number">${resort.ratings}</span>
                     </span> 
                     <span class="bold-rank">Top ${index + 1}:</span> ${resort.name}
                     <div class="progress wds-progress progress-bar-blue">
-                        <div class="progress-bar" style="width: ${averageRating * 20}%;"></div>
+                        <div class="progress-bar" style="width: ${resort.ratings * 20}%;"></div>
                     </div>
                 `;
                 resortList.appendChild(listItem);
@@ -255,55 +252,59 @@ populateAndSortResorts();
 
 
 // User Activity Locations
-function populateLocation() {
     const locationList = document.getElementById("location-list");
-
-    fetch(`{API_PROTOCOL}://${API_HOSTNAME}/users`)
-        .then(response => response.json())
-        .then(userData => {
-
-            const activeUsersByCity = {};
-
-            userData.forEach(user => {
-                const cityName = user.current_city;
-
-                if (activeUsersByCity.hasOwnProperty(cityName)) {
-                    activeUsersByCity[cityName]++;
-                } else {
-                    activeUsersByCity[cityName] = 1;
+    
+    function populateLocation() {
+        const accessToken = getAccessTokenFromLocalStorage();
+        fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/users/most-active?limit=5`, {
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
                 }
+            })
+            .then(response => response.json())
+            .then(userData => {
+                const activeUsersByCity = {};
+                // userData.forEach(user => {
+                //     const cityName = user.current_city;
+    
+                //     if (activeUsersByCity.hasOwnProperty(cityName)) {
+                //         activeUsersByCity[cityName]++;
+                //     } else {
+                //         activeUsersByCity[cityName] = 1;
+                //     }
+                // });
+    
+                // Sort cities by active user count in descending order
+                //const sortedCities = Object.keys(activeUsersByCity).sort((a, b) => activeUsersByCity[b] - activeUsersByCity[a]);
+    
+                locationList.innerHTML = "";
+    
+                // Display only the top 1 to top 5 cities
+                for (let i = 0; i < Math.min(userData.length, 5); i++) {
+                    // const cityName = sortedCities[i];
+                    // const activeUsersCount = activeUsersByCity[cityName];
+                    const listItem = document.createElement("li");
+                    listItem.innerHTML = `
+                        <span class="chart-progress-indicator chart-progress-indicator--increase">
+                            <span class="chart-progress-indicator__number">${userData[i].users_count}</span>
+                        </span>
+                        <strong>Top ${i + 1}:</strong> ${userData[i].city}
+                        <div class="progress wds-progress progress-bar-blue">
+                            <div class="progress-bar" style="width: ${userData[i].users_count}%;"></div>
+                        </div>
+                    `;
+    
+                    locationList.appendChild(listItem);
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching user data:", error);
             });
+    }
+    
+    // Call the function to populate the location list
+    populateLocation();
 
-            // Sort cities by active user count in descending order
-            const sortedCities = Object.keys(activeUsersByCity).sort((a, b) => activeUsersByCity[b] - activeUsersByCity[a]);
-
-            locationList.innerHTML = "";
-
-            // Display only the top 1 to top 5 cities
-            for (let i = 0; i < Math.min(sortedCities.length, 5); i++) {
-                const cityName = sortedCities[i];
-                const activeUsersCount = activeUsersByCity[cityName];
-
-                const listItem = document.createElement("li");
-                listItem.innerHTML = `
-                    <span class="chart-progress-indicator chart-progress-indicator--increase">
-                        <span class="chart-progress-indicator__number">${activeUsersCount}</span>
-                    </span>
-                    <strong>Top ${i + 1}:</strong> ${cityName}
-                    <div class="progress wds-progress progress-bar-blue">
-                        <div class="progress-bar" style="width: ${activeUsersCount}%;"></div>
-                    </div>
-                `;
-
-                locationList.appendChild(listItem);
-            }
-        })
-        .catch(error => {
-            console.error("Error fetching user data:", error);
-        });
-}
-
-populateLocation();
 
 //RECENT ACTIVITY
 const recentActivity = [];
@@ -403,13 +404,22 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Fetch data from the JSON server for users, places, favorites, and visited
+    const headers = new Headers();
+    const accessToken = getAccessTokenFromLocalStorage();
+    headers.append('Authorization', `Bearer ${accessToken}`); // Replace 'YourAccessToken' with your actual access token
+    headers.append('Content-Type', 'application/json');
     Promise.all([
-        fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/users`),
-        fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/places`),
-        fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/feedbacks/place`),
-        fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/itineraries/item`)
+        fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/users`, headers),
+        fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/places`, headers),
+        fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/feedbacks`, headers),
+        fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/itineraries`, headers),
     ])
         .then(([usersData, placesData, favoritesData, visitedData]) => {
+            console.log("PROMISE RESPONSE ");
+            console.log("UserS: " + JSON.stringify(usersData));
+            console.log("placesData: " + JSON.stringify(placesData));
+            console.log("favoritesData: " + JSON.stringify(favoritesData));
+            console.log("visitedData: " + JSON.stringify(visitedData));
             // Process favoritesData
             favoritesData.forEach(favorite => {
                 const user = usersData.find(user => user.id === favorite.user_id);
@@ -426,9 +436,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         const timestamp = new Date().toISOString();
                         storeTimestamp(timestampKey, timestamp);
                     }
-
+                    
                     recentActivity.push({
-                        userImage: user.image,
+                        userImage: user.profile_photo,
                         userName: fullName,
                         activityText: activityText,
                         timestamp: storedTimestamp || new Date().toISOString(),
@@ -454,7 +464,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
 
                     recentActivity.push({
-                        userImage: user.image,
+                        userImage: user.profile_photo,
                         userName: fullName,
                         activityText: activityText,
                         timestamp: storedTimestamp || new Date().toISOString(),
