@@ -379,7 +379,7 @@ addAccountButton.addEventListener('click', () => {
           .then(userData => {
             console.log('User response:', userData);
             form.reset();
-            // location.reload();
+            this.location.reload();
             populateTable();
           })
           .catch(error => {

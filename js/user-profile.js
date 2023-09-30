@@ -21,131 +21,166 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.removeItem("user_data");
         window.location.href = "login_register.php";
     });
+    function parseJwt(token) {
+        var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
 
+        return JSON.parse(jsonPayload);
+    }
     // EDIT PROFILE
     editProfileButton.addEventListener('click', function () {
         editModal.show();
-        fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users`)
-            .then(response => response.json())
-            .then(data => {
-                const user = JSON.parse(localStorage.getItem('user_data'));
-                if (user) {
-                    document.getElementById('edit-id').value = user.id;
-                    document.getElementById('existingImage').value = user.profile_photo;
-                    document.getElementById('first_name').value = user.first_name;
-                    document.getElementById('last_name').value = user.last_name;
-                    document.getElementById('gender').value = user.gender;
-                    document.getElementById('email').value = user.email;
-                    document.getElementById('password').value = user.password;
-                    document.getElementById('from_country').value = user.from_country;
-                    document.getElementById('current_province').value = user.current_province;
-                    document.getElementById('current_city').value = user.current_city;
-                    document.getElementById('current_barangay').value = user.current_barangay;
+        // var userId = localStorage.getItem("user_id");
+        const accessToken = localStorage.getItem('access_token');
+        const userId = parseJwt(accessToken);
+        fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users/${userId.id}`, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data) {
+                document.getElementById('edit-id').value = data.id;
+                document.getElementById('existingImage').value = data.profile_photo;
+                document.getElementById('first_name').value = data.first_name;
+                document.getElementById('last_name').value = data.last_name;
+                document.getElementById('gender').value = data.gender;
+                document.getElementById('email').value = data.email;
+                document.getElementById('password').value = data.password;
+                document.getElementById('from_country').value = data.from_country;
+                document.getElementById('current_province').value = data.current_province;
+                document.getElementById('current_city').value = data.current_city;
+                document.getElementById('current_barangay').value = data.current_barangay;
 
-                    // Display the existing image URL
-                    const existingImageURL = user.profile_photo;
-                    const imagePreview = document.getElementById('edit-image-preview');
-                    imagePreview.src = existingImageURL;
+                // Display the existing image URL
+                const existingImageURL = data.profile_photo;
+                const imagePreview = document.getElementById('edit-image-preview');
+                imagePreview.src = existingImageURL;
 
-                    // Store the existing image URL in a hidden input field
-                    editForm.elements.existingImage.value = existingImageURL;
+                // Store the existing image URL in a hidden input field
+                editForm.elements.existingImage.value = existingImageURL;
 
-                    editModal.show();
-                } else {
-                    console.error("No user data found.");
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching user data:', error);
-            });
+                editModal.show();
+            } else {
+                console.error("No user data found.");
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error);
+        });
     });
 
     document.getElementById('updateProfileButton').addEventListener('click', function () {
+        const accessToken = localStorage.getItem('access_token');
         const userId = document.getElementById('edit-id').value;
         
         const updatedUserData = {
             first_name: document.getElementById('first_name').value,
             last_name: document.getElementById('last_name').value,
-            gender: document.getElementById('gender').value,
+            //gender: document.getElementById('gender').value,
             email: document.getElementById('email').value,
-            password: document.getElementById('password').value,
+            //password: document.getElementById('password').value,
             from_country: document.getElementById('from_country').value,
             current_province: document.getElementById('current_province').value,
             current_city: document.getElementById('current_city').value,
             current_barangay: document.getElementById('current_barangay').value,
+            role : "REGULAR"
+
         };
 
-        fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users/${userId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(updatedUserData),
-        })
-            .then(response => {
-                if (response.ok) {
-                    console.log('Profile updated successfully');
-                    localStorage.setItem('user_data', JSON.stringify(updatedUserData));
-                    this.location.reload();
-                } else {
-                    console.error('Failed to update profile');
-                }
-            })
-            .catch(error => {
-                console.error('Error updating profile:', error);
-            });
+        // fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users/${userId}`, {
+        //     method: 'PUT',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         'Authorization': `Bearer ${accessToken}`
+        //     },
+        //     body: JSON.stringify(updatedUserData),
+        // })
+        //     .then(response => {
+        //         if (response.ok) {
+        //             console.log('Profile updated successfully');
+        //             localStorage.setItem('user_data', JSON.stringify(updatedUserData));
+        //             this.location.reload();
+        //         } else {
+        //             console.error('Failed to update profile');
+        //         }
+        //     })
+        //     .catch(error => {
+        //         console.error('Error updating profile:', error);
+        //     });
 
     });
     const editForm = document.getElementById('edit-user-form');
 
-    // Handle edit form submission
     editForm.addEventListener('submit', event => {
+        const accessToken = localStorage.getItem('access_token');
         event.preventDefault();
         const formData = new FormData(editForm);
         const updatedUser = {};
         formData.forEach((value, key) => {
-            updatedUser[key] = value;
+            if(key != "created_at" && key != "updated_at" && key != "email" && key != "existingImage" && key != "gender" && key != "password"){
+                updatedUser[key] = value;
+            }
         });
-
+        updatedUser["role"]= "REGULAR";
         const imageInput = editForm.querySelector('input[type="file"]');
         const imageFile = imageInput.files[0];
-
-        if (!imageFile) {
-            // No new image selected, preserve the existing image URL
+    
+        if (imageFile) {
             var formData2 = new FormData();
             formData2.append('photo', imageFile);
-
+        
             fetch(`${API_PROTOCOL}://${API_HOSTNAME}/images`, {
                 method: 'POST',
-                body: formData2
+                body: formData2,
+                headers: {
+                    'Authorization': `Bearer ${accessToken}` 
+                }
             })
-                .then(handleErrors)
-                .then(data => {
-                    console.log('Uploaded image URL:', data.http_img_url);
-
-                    updatedUser.profile_photo = data.http_img_url;
-                    sendEditRequest(updatedUser);
-                })
-                .catch(error => {
-                    console.error('There was a problem with the fetch operation:', error);
-                });
+            .then(handleErrors)
+            .then(data => {
+                console.log('Uploaded image URL:', data.http_img_url);
+        
+                updatedUser.profile_photo = data.http_img_url;
+                sendEditRequest(updatedUser);
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+        } else {
+            // No new image selected, preserve the existing image URL
+            updatedUser.profile_photo = document.getElementById('existingImage').value;
+            sendEditRequest(updatedUser);
         }
     });
-
+    
     function sendEditRequest(updatedUser) {
+        const accessToken = localStorage.getItem('access_token');
         const userId = updatedUser.id;
+        console.log(JSON.stringify(updatedUser));
+        delete updatedUser.id; // Remove the id property from updatedUser
+
         fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users/${userId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
             },
             body: JSON.stringify(updatedUser),
         })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Profile updated:', data);
-                window.location.reload();
-                editModal.hide();
+            .then(response => {
+                if (response.ok) {
+                    console.log('Profile updated successfully');
+                    // localStorage.setItem('user_data', JSON.stringify(updatedUser));
+                    // window.location.reload(); // Use window.location.reload() to reload the page
+                    editModal.hide();
+                } else {
+                    console.error('Failed to update profile');
+                }
             })
             .catch(error => {
                 console.error('Error updating profile:', error);
@@ -316,7 +351,7 @@ function populateUserData(user, preferenced_categories) {
     } else {
         console.error("nameHolder element not found.");
     }
-
+    console.log("User: " + JSON.stringify(user));
     const profileImg = document.querySelector(".profile-img img");
     if (profileImg) {
         profileImg.src = user.profile_photo;

@@ -65,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
             saveUserPreferences(selectedPreferences);
         } else {
             alert('User registration must be successful before saving preferences.');
+
         }
     });
 });
@@ -124,7 +125,7 @@ function registerUser(user) {
         console.log('User created:', data);
         localStorage.setItem('access_token', (data.access_token));
         //localStorage.setItem('user_id', (data.id));
-        alert('New user added. Please proceed to log in to your account.');
+       
 
         // Set the registrationSuccessful flag to true
         registrationSuccessful = true;
@@ -177,7 +178,8 @@ function saveUserPreferences(selectedPreferences) {
     })
     .then(data => {
         console.log('User preferences saved:', data);
-        // Optionally, handle the response or perform any necessary actions here
+        alert('New user added. Please proceed to log in to your account.');
+        window.location.reload();
     })
     .catch(error => console.error('Error saving preferences:', error));
 }

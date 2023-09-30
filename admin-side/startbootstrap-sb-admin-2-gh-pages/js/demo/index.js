@@ -3,43 +3,43 @@ const API_HOSTNAME = 'kentjordan.xyz/api';
 
 // USER STATISTICS
 document.addEventListener('DOMContentLoaded', async function () {
-  try {
-    const accessToken = getAccessTokenFromLocalStorage();
+    try {
+        const accessToken = getAccessTokenFromLocalStorage();
 
-    if (!accessToken) {
-      throw new Error('Access token not found in local storage');
+        if (!accessToken) {
+            throw new Error('Access token not found in local storage');
+        }
+
+        const userResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users?role=REGULAR`, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+            },
+        });
+
+        if (!userResponse.ok) {
+            const responseData = await userResponse.text();
+            console.error(`Error fetching user data: ${userResponse.status} ${userResponse.statusText}`, responseData);
+            throw new Error('Network response for user data was not ok');
+        }
+
+        const rawData = await userResponse.text();
+        console.log('Raw User Data Response:', rawData);
+
+        // Parse the response as JSON
+        const userData = JSON.parse(rawData); // Move the declaration here
+        console.log('User Data Response:', userData);
+
+        const totalUsers = userData.length;
+        const menUsers = userData.filter(user => user.gender === 'male').length;
+        const womenUsers = userData.filter(user => user.gender === 'female').length;
+
+        document.querySelector('#total-users').textContent = totalUsers;
+        document.querySelector('#men-users').textContent = menUsers;
+        document.querySelector('#women-users').textContent = womenUsers;
+
+    } catch (error) {
+        console.error('Error fetching data:', error.message);
     }
-
-    const userResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users?role=REGULAR`, {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-      },
-    });
-
-    if (!userResponse.ok) {
-      const responseData = await userResponse.text();
-      console.error(`Error fetching user data: ${userResponse.status} ${userResponse.statusText}`, responseData);
-      throw new Error('Network response for user data was not ok');
-    }
-
-    const rawData = await userResponse.text();
-    console.log('Raw User Data Response:', rawData);
-
-    // Parse the response as JSON
-    const userData = JSON.parse(rawData); // Move the declaration here
-    console.log('User Data Response:', userData);
-
-    const totalUsers = userData.length;
-    const menUsers = userData.filter(user => user.gender === 'male').length;
-    const womenUsers = userData.filter(user => user.gender === 'female').length;
-
-    document.querySelector('#total-users').textContent = totalUsers;
-    document.querySelector('#men-users').textContent = menUsers;
-    document.querySelector('#women-users').textContent = womenUsers;
-
-  } catch (error) {
-    console.error('Error fetching data:', error.message);
-  }
 });
 
 
@@ -218,9 +218,9 @@ async function populateAndSortResorts() {
                 };
 
                 //if (resort.ratings.length > 0 && resortNames[user.place_id] !== undefined) {
-                    resortsData.push(resort);
+                resortsData.push(resort);
                 //}
-                
+
             });
 
             //resortsData.sort((a, b) => calculateAverageRating(b.ratings) - calculateAverageRating(a.ratings));
@@ -252,39 +252,39 @@ populateAndSortResorts();
 
 
 // User Activity Locations
-    const locationList = document.getElementById("location-list");
-    
-    function populateLocation() {
-        const accessToken = getAccessTokenFromLocalStorage();
-        fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/users/most-active?limit=5`, {
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`
-                }
-            })
-            .then(response => response.json())
-            .then(userData => {
-                const activeUsersByCity = {};
-                // userData.forEach(user => {
-                //     const cityName = user.current_city;
-    
-                //     if (activeUsersByCity.hasOwnProperty(cityName)) {
-                //         activeUsersByCity[cityName]++;
-                //     } else {
-                //         activeUsersByCity[cityName] = 1;
-                //     }
-                // });
-    
-                // Sort cities by active user count in descending order
-                //const sortedCities = Object.keys(activeUsersByCity).sort((a, b) => activeUsersByCity[b] - activeUsersByCity[a]);
-    
-                locationList.innerHTML = "";
-    
-                // Display only the top 1 to top 5 cities
-                for (let i = 0; i < Math.min(userData.length, 5); i++) {
-                    // const cityName = sortedCities[i];
-                    // const activeUsersCount = activeUsersByCity[cityName];
-                    const listItem = document.createElement("li");
-                    listItem.innerHTML = `
+const locationList = document.getElementById("location-list");
+
+function populateLocation() {
+    const accessToken = getAccessTokenFromLocalStorage();
+    fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/users/most-active?limit=5`, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+    })
+        .then(response => response.json())
+        .then(userData => {
+            const activeUsersByCity = {};
+            // userData.forEach(user => {
+            //     const cityName = user.current_city;
+
+            //     if (activeUsersByCity.hasOwnProperty(cityName)) {
+            //         activeUsersByCity[cityName]++;
+            //     } else {
+            //         activeUsersByCity[cityName] = 1;
+            //     }
+            // });
+
+            // Sort cities by active user count in descending order
+            //const sortedCities = Object.keys(activeUsersByCity).sort((a, b) => activeUsersByCity[b] - activeUsersByCity[a]);
+
+            locationList.innerHTML = "";
+
+            // Display only the top 1 to top 5 cities
+            for (let i = 0; i < Math.min(userData.length, 5); i++) {
+                // const cityName = sortedCities[i];
+                // const activeUsersCount = activeUsersByCity[cityName];
+                const listItem = document.createElement("li");
+                listItem.innerHTML = `
                         <span class="chart-progress-indicator chart-progress-indicator--increase">
                             <span class="chart-progress-indicator__number">${userData[i].users_count}</span>
                         </span>
@@ -293,29 +293,32 @@ populateAndSortResorts();
                             <div class="progress-bar" style="width: ${userData[i].users_count}%;"></div>
                         </div>
                     `;
-    
-                    locationList.appendChild(listItem);
-                }
-            })
-            .catch(error => {
-                console.error("Error fetching user data:", error);
-            });
-    }
-    
-    // Call the function to populate the location list
-    populateLocation();
+
+                locationList.appendChild(listItem);
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching user data:", error);
+        });
+}
+
+// Call the function to populate the location list
+populateLocation();
 
 
 //RECENT ACTIVITY
-const recentActivity = [];
+const recentActivityFavorites = [];
+const recentActivityVisited = [];
 
 document.addEventListener('DOMContentLoaded', function () {
-    const card = document.querySelector('.user-activity-card .card-block');
+    const cardFavorites = document.querySelector('.user-activity-card .card-block-favorites');
+    const cardVisited = document.querySelector('.user-activity-card .card-block-visited');
 
     function updateRecentActivity() {
-        card.innerHTML = '';
+        cardFavorites.innerHTML = '';
+        cardVisited.innerHTML = '';
 
-        recentActivity.forEach(item => {
+        recentActivityFavorites.forEach(item => {
             const row = document.createElement('div');
             row.className = 'row m-b-25';
 
@@ -362,8 +365,58 @@ document.addEventListener('DOMContentLoaded', function () {
             row.appendChild(col1);
             row.appendChild(col2);
 
-            card.appendChild(row);
+            cardFavorites.appendChild(row);
         });
+        recentActivityVisited.forEach(item => {
+            const row = document.createElement('div');
+            row.className = 'row m-b-25';
+
+            const col1 = document.createElement('div');
+            col1.className = 'col-auto p-r-0';
+
+            const uImg = document.createElement('div');
+            uImg.className = 'u-img';
+            const coverImg = document.createElement('img');
+            coverImg.src = item.userImage;
+            coverImg.alt = 'user image';
+            coverImg.className = 'img-radius cover-img';
+            const profileImg = document.createElement('img');
+            profileImg.src = 'https://img.icons8.com/office/16/000000/active-state.png';
+            profileImg.alt = 'user image';
+            profileImg.className = 'img-radius profile-img';
+
+            uImg.appendChild(coverImg);
+            uImg.appendChild(profileImg);
+            col1.appendChild(uImg);
+
+            const col2 = document.createElement('div');
+            col2.className = 'col';
+
+            const userName = document.createElement('h6');
+            userName.className = 'm-b-5';
+            userName.textContent = item.userName;
+
+            const activityText = document.createElement('p');
+            activityText.className = 'text-muted m-b-0';
+            activityText.textContent = item.activityText;
+
+            const timeAgo = document.createElement('p');
+            timeAgo.className = 'text-muted m-b-0';
+            const timerIcon = document.createElement('i');
+            timerIcon.className = 'mdi mdi-timer feather icon-clock m-r-10';
+            timeAgo.appendChild(timerIcon);
+            timeAgo.textContent = formatTimeAgo(item.timestamp);
+
+            col2.appendChild(userName);
+            col2.appendChild(activityText);
+            col2.appendChild(timeAgo);
+
+            row.appendChild(col1);
+            row.appendChild(col2);
+
+            cardVisited.appendChild(row);
+        });
+        
     }
 
     async function fetchData(url) {
@@ -409,14 +462,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Fetch data from the JSON server for users, places, favorites, and visited
-   
+
     Promise.all([
         fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/users`),
         fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/places`),
         fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/feedbacks`),
         fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/itineraries`),
     ])
-        .then(([usersData, placesData, favoritesData, visitedData]) => {
+        .then(([usersData, placesData, visitedData, favoritesData ]) => {
             console.log("PROMISE RESPONSE ");
             console.log("UserS: " + JSON.stringify(usersData));
             console.log("placesData: " + JSON.stringify(placesData));
@@ -430,16 +483,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (user && place) {
                     const fullName = `${user.first_name} ${user.last_name}`;
                     const timestampKey = `favorite_${favorite.id}_timestamp`;
-                    const storedTimestamp = getStoredTimestamp(timestampKey);
+                    const storedTimestamp = favorite.created_at;
 
                     const activityText = `Added ${place.title} to favorites`;
 
                     if (!storedTimestamp) {
                         const timestamp = new Date().toISOString();
-                        storeTimestamp(timestampKey, timestamp);
+                        // storeTimestamp(timestampKey, timestamp);
                     }
-                    
-                    recentActivity.push({
+
+                    recentActivityFavorites.push({
                         userImage: user.profile_photo,
                         userName: fullName,
                         activityText: activityText,
@@ -456,16 +509,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (user) {
                     const fullName = `${user.first_name} ${user.last_name}`;
                     const timestampKey = `visit_${visit.id}_timestamp`;
-                    const storedTimestamp = getStoredTimestamp(timestampKey);
+                    const storedTimestamp = visit.created_at;
 
                     const activityText = place ? `Visited ${place.title}` : `Visited a place`;
 
                     if (!storedTimestamp) {
                         const timestamp = new Date().toISOString();
-                        storeTimestamp(timestampKey, timestamp);
+                        // storeTimestamp(timestampKey, timestamp);
                     }
 
-                    recentActivity.push({
+                    recentActivityVisited.push({
                         userImage: user.profile_photo,
                         userName: fullName,
                         activityText: activityText,
@@ -484,5 +537,9 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Error fetching data:', error);
         });
 
+
+
+
 });
+
 

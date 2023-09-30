@@ -342,12 +342,29 @@ function fetchFeedbackDataByUserIdAndPlaceId(userId, placeId) {
       'Authorization': `Bearer ${accessToken}`
     }
   })
-  .then(response => response.json())
+  .then(response => {
+    if (!response.ok) {
+      // Handle the case where the response status is not OK (e.g., 404)
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
   .then(feedbackData => {
+    if (!Array.isArray(feedbackData)) {
+      // Handle the case where feedbackData is not an array
+      throw new Error('Feedback data is not an array');
+    }
+
     // Check if feedbackData contains an entry with the given placeId
     const matchingFeedback = feedbackData.find(feedback => feedback.place_id === placeId);
     return !!matchingFeedback; // Returns true if feedback exists, false otherwise
+  })
+  .catch(error => {
+    // Handle any errors that occur during the fetch or data processing
+    console.error('Error fetching feedback data:', error);
+    return false; // Return false to indicate that feedback data is not found or an error occurred
   });
 }
+
 
 });

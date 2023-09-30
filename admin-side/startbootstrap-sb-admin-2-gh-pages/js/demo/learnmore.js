@@ -291,6 +291,7 @@ async function sendEditRequest(updatedUser) {
             .then(userData => {
               console.log('User response:', userData);
               form.reset();
+              this.location.reload();
               populateTable();
             })
             .catch(error => console.error('Error adding user data:', error));
