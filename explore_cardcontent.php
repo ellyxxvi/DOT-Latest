@@ -16,6 +16,8 @@
     <script src="https://kit.fontawesome.com/e173e574d6.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <link rel="icon" href="image/LOGO (2).png" type="image/png">
+
 </head>
 
 <body>

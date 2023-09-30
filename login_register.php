@@ -11,6 +11,7 @@
     <script src="https://kit.fontawesome.com/83c0f4a797.js" crossorigin="anonymous"></script>
 
     <link href="css/login_register.css" rel="stylesheet">
+    <link rel="icon" href="image/LOGO (2).png" type="image/png">
 </head>
 
 <body>
@@ -49,8 +50,8 @@
                     <div class="form-group">
                         <select class="form-control" name="gender" id="gender" required>
                             <option disabled selected value="">Gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
                         </select>
                     </div>
                     <input type="text" placeholder="Email" name="email" id="emailInput" autocomplete="off" required>

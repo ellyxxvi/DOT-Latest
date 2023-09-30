@@ -15,6 +15,7 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   
   <link href="css/footer.css" rel="stylesheet">
+  <link rel="icon" href="image/LOGO (2).png" type="image/png">
 </head>
 <body>
 

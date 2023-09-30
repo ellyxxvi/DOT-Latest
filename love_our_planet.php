@@ -11,6 +11,7 @@
     <script src="https://kit.fontawesome.com/83c0f4a797.js" crossorigin="anonymous"></script>
 
     <link href="css/love_our_planet.css" rel="stylesheet">
+    <link rel="icon" href="image/LOGO (2).png" type="image/png">
 </head>
 
 <body>

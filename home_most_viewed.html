@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Fontawesome Link for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    <link rel="icon" href="image/LOGO (2).png" type="image/png">
 </head>
 
 <body>
@@ -25,142 +26,155 @@
     </div>
     <script>
 
-        const API_PROTOCOL = 'https';
-        const API_HOSTNAME = 'kentjordan.xyz/api';
-        const access_token = localStorage.getItem('access_token');
-        // Find the most visited place
-        document.addEventListener('DOMContentLoaded', function () {
-            fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places`)
-                .then(response => response.json())
-                .then(data => {
-                    data.forEach(place => {
-                        const storedVisits = localStorage.getItem(`place_${place.id}_visits`);
-                        if (storedVisits) {
-                            place.visits = parseInt(storedVisits);
-                            console.log("Visit: " + JSON.stringify(place.visits));
-                        }
-                    });
+// Define the API details and access token
+const API_PROTOCOL = 'https';
+const API_HOSTNAME = 'kentjordan.xyz/api';
+const access_token = localStorage.getItem('access_token');
 
-                    // Sort the data based on visits
-                    // data.sort((a, b) => b.visits - a.visits);
-                    // console.log("Sorted data: " + JSON.stringify(data));
+// Function to fetch places data
+async function fetchPlacesData() {
+    try {
+        const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places`);
+        const data = await response.json();
+        return Array.isArray(data) ? data : [];
+    } catch (error) {
+        console.error('Error fetching places data:', error);
+        return [];
+    }
+}
 
-                    const mostVisitedPlace = data[0];
+// Find the most visited place and populate the carousel
+document.addEventListener('DOMContentLoaded', async function () {
+    try {
+        const mostVisitedPlacesData = await fetchPlacesData();
 
-                    // Display the most visited place in the card
-                    const mostVisitedCard = document.createElement("div");
-                    mostVisitedCard.className = "card";
-                    mostVisitedCard.style.backgroundImage = `url('${mostVisitedPlace.photos[0]}')`;
-                    mostVisitedCard.innerHTML = `
+        if (mostVisitedPlacesData.length === 0) {
+            // Handle the case where there are no most visited places
+            console.error('No most visited places found.');
+            return;
+        }
+
+        const mostVisitedPlace = mostVisitedPlacesData[0];
+        console.log("Visited data: " + JSON.stringify(mostVisitedPlace));
+
+        // Display the most visited place in the card
+        const mostVisitedCard = document.createElement("div");
+        mostVisitedCard.className = "card";
+        mostVisitedCard.style.backgroundImage = `url('${mostVisitedPlace.photos[0]}')`;
+        mostVisitedCard.innerHTML = `
+            <div class="icon card-icon fas fa-building"></div>
+            <h2>${mostVisitedPlace.title}</h2>
+            <span>${mostVisitedPlace.category}</span>
+        `;
+
+        mostVisitedCard.addEventListener("click", () => {
+            window.top.location.href = `explore_cardcontent.php?id=${mostVisitedPlace.id}`;
+        });
+
+        const carousel = document.querySelector(".carousel");
+        carousel.appendChild(mostVisitedCard);
+
+        mostVisitedPlacesData.shift();
+
+        // Combine the most visited place data with the rest of the places
+        const allPlacesData = [mostVisitedPlace, ...mostVisitedPlacesData];
+
+        // Display the remaining top 4 places in the carousel
+        allPlacesData.slice(1, 4).forEach(place => {
+            const cardElement = document.createElement("li");
+            cardElement.className = "card";
+            cardElement.style.backgroundImage = `url('${place.photos[0]}')`;
+            cardElement.innerHTML = `
                 <div class="icon card-icon fas fa-building"></div>
-                <h2>${mostVisitedPlace.title}</h2>
-                <span>${mostVisitedPlace.category}</span>
+                <h2>${place.title}</h2>
+                <span>${place.category}</span>
             `;
 
-                    mostVisitedCard.addEventListener("click", () => {
-                        window.top.location.href = `explore_cardcontent.php?id=${mostVisitedPlace.id}`;
-                    });
+            cardElement.addEventListener("click", () => {
+                window.top.location.href = `explore_cardcontent.php?id=${place.id}`;
+            });
 
-                    const carousel = document.querySelector(".carousel");
-                    carousel.appendChild(mostVisitedCard);
-
-                    data.shift();
-
-                    // Display the remaining top 4 places in the carousel
-                    data.slice(0, 4).forEach(place => {
-                        const cardElement = document.createElement("li");
-                        cardElement.className = "card";
-                        cardElement.style.backgroundImage = `url('${place.photos[0]}')`;
-                        cardElement.innerHTML = `
-                    <div class="icon card-icon fas fa-building"></div>
-                    <h2>${place.title}</h2>
-                    <span>${place.category}</span>
-                `;
-
-                        cardElement.addEventListener("click", () => {
-                            window.top.location.href = `explore_cardcontent.php?id=${place.id}`;
-                        });
-
-                        carousel.appendChild(cardElement);
-                    });
-
-                    // Move the carousel manipulation code here
-                    const wrapper = document.querySelector(".wrapper");
-                    const firstCardWidth = carousel.querySelector(".card").offsetWidth;
-                    const arrowBtns = document.querySelectorAll(".wrapper i");
-                    const carouselChildrens = [...carousel.children];
-                    let isDragging = false,
-                        isAutoPlay = true,
-                        startX, startScrollLeft, timeoutId;
-
-                    let cardPerView = Math.round(carousel.offsetWidth / firstCardWidth);
-                    carouselChildrens.slice(-cardPerView).reverse().forEach(card => {
-                        carousel.insertAdjacentHTML("afterbegin", card.outerHTML);
-                    });
-
-                    carouselChildrens.slice(0, cardPerView).forEach(card => {
-                        carousel.insertAdjacentHTML("beforeend", card.outerHTML);
-                    });
-
-                    carousel.classList.add("no-transition");
-                    carousel.scrollLeft = carousel.offsetWidth;
-                    carousel.classList.remove("no-transition");
-
-                    arrowBtns.forEach(btn => {
-                        btn.addEventListener("click", () => {
-                            carousel.scrollLeft += btn.id == "left" ? -firstCardWidth : firstCardWidth;
-                        });
-                    });
-
-                    const dragStart = (e) => {
-                        isDragging = true;
-                        carousel.classList.add("dragging");
-
-                        startX = e.pageX;
-                        startScrollLeft = carousel.scrollLeft;
-                    };
-
-                    const dragging = (e) => {
-                        if (!isDragging) return;
-
-                        carousel.scrollLeft = startScrollLeft - (e.pageX - startX);
-                    };
-
-                    const dragStop = () => {
-                        isDragging = false;
-                        carousel.classList.remove("dragging");
-                    };
-
-                    const infiniteScroll = () => {
-                        if (carousel.scrollLeft === 0) {
-                            carousel.classList.add("no-transition");
-                            carousel.scrollLeft = carousel.scrollWidth - (2 * carousel.offsetWidth);
-                            carousel.classList.remove("no-transition");
-                        } else if (Math.ceil(carousel.scrollLeft) === carousel.scrollWidth - carousel.offsetWidth) {
-                            carousel.classList.add("no-transition");
-                            carousel.scrollLeft = carousel.offsetWidth;
-                            carousel.classList.remove("no-transition");
-                        }
-
-                        clearTimeout(timeoutId);
-                        if (!wrapper.matches(":hover")) autoPlay();
-                    };
-
-                    const autoPlay = () => {
-                        if (window.innerWidth < 800 || !isAutoPlay) return;
-                        timeoutId = setTimeout(() => carousel.scrollLeft += firstCardWidth, 2500);
-                    };
-
-                    autoPlay();
-                    carousel.addEventListener("mousedown", dragStart);
-                    carousel.addEventListener("mousemove", dragging);
-                    document.addEventListener("mouseup", dragStop);
-                    carousel.addEventListener("scroll", infiniteScroll);
-                    wrapper.addEventListener("mouseenter", () => clearTimeout(timeoutId));
-                    wrapper.addEventListener("mouseleave", autoPlay);
-                })
-                .catch(error => console.error('Error fetching data:', error));
+            carousel.appendChild(cardElement);
         });
+
+        // Rest of your code for carousel and interactions
+        const wrapper = document.querySelector(".wrapper");
+        const firstCardWidth = carousel.querySelector(".card").offsetWidth;
+        const arrowBtns = document.querySelectorAll(".wrapper i");
+        const carouselChildrens = [...carousel.children];
+        let isDragging = false,
+            isAutoPlay = true,
+            startX, startScrollLeft, timeoutId;
+
+        let cardPerView = Math.round(carousel.offsetWidth / firstCardWidth);
+        carouselChildrens.slice(-cardPerView).reverse().forEach(card => {
+            carousel.insertAdjacentHTML("afterbegin", card.outerHTML);
+        });
+
+        carouselChildrens.slice(0, cardPerView).forEach(card => {
+            carousel.insertAdjacentHTML("beforeend", card.outerHTML);
+        });
+
+        carousel.classList.add("no-transition");
+        carousel.scrollLeft = carousel.offsetWidth;
+        carousel.classList.remove("no-transition");
+
+        arrowBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                carousel.scrollLeft += btn.id == "left" ? -firstCardWidth : firstCardWidth;
+            });
+        });
+
+        const dragStart = (e) => {
+            isDragging = true;
+            carousel.classList.add("dragging");
+
+            startX = e.pageX;
+            startScrollLeft = carousel.scrollLeft;
+        };
+
+        const dragging = (e) => {
+            if (!isDragging) return;
+
+            carousel.scrollLeft = startScrollLeft - (e.pageX - startX);
+        };
+
+        const dragStop = () => {
+            isDragging = false;
+            carousel.classList.remove("dragging");
+        };
+
+        const infiniteScroll = () => {
+            if (carousel.scrollLeft === 0) {
+                carousel.classList.add("no-transition");
+                carousel.scrollLeft = carousel.scrollWidth - (2 * carousel.offsetWidth);
+                carousel.classList.remove("no-transition");
+            } else if (Math.ceil(carousel.scrollLeft) === carousel.scrollWidth - carousel.offsetWidth) {
+                carousel.classList.add("no-transition");
+                carousel.scrollLeft = carousel.offsetWidth;
+                carousel.classList.remove("no-transition");
+            }
+
+            clearTimeout(timeoutId);
+            if (!wrapper.matches(":hover")) autoPlay();
+        };
+
+        const autoPlay = () => {
+            if (window.innerWidth < 800 || !isAutoPlay) return;
+            timeoutId = setTimeout(() => carousel.scrollLeft += firstCardWidth, 2500);
+        };
+
+        autoPlay();
+        carousel.addEventListener("mousedown", dragStart);
+        carousel.addEventListener("mousemove", dragging);
+        document.addEventListener("mouseup", dragStop);
+        carousel.addEventListener("scroll", infiniteScroll);
+        wrapper.addEventListener("mouseenter", () => clearTimeout(timeoutId));
+        wrapper.addEventListener("mouseleave", autoPlay);
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+});
 
     </script>
 

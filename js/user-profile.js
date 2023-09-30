@@ -225,11 +225,11 @@ function fetchPreferenceData() {
     })
     .then((data) => {
         if (Array.isArray(data)) {
-            return data; // Return the array as is
+            return data; 
         } else if (data) {
-            return [data]; // Convert a single preference entry to an array
+            return [data]; 
         } else {
-            return []; // Return an empty array if there's no preference data
+            return []; 
         }
     })
     .catch((preferenceError) => {

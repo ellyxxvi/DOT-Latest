@@ -12,6 +12,8 @@
   <!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" rel="stylesheet"> -->
   <link rel="stylesheet" href="css/wheretogo_main.css" />
   <link href="css/footer.css" rel="stylesheet">
+
+  <link rel="icon" href="image/LOGO (2).png" type="image/png">
 </head>
 
 <body>

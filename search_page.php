@@ -13,6 +13,7 @@
 
 
     <link href="css/search_page.css" rel="stylesheet">
+    <link rel="icon" href="image/LOGO (2).png" type="image/png">
 </head>
 
 <body>
