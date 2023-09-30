@@ -7,6 +7,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const queryParams = new URLSearchParams(window.location.search);
     const desiredServiceId = queryParams.get("id");
 
+    // ADD to visited
+    addVisited(desiredServiceId);
+
 //    const isServiceFavorited = localStorage.getItem("favoriteService_" + desiredServiceId);
     const favoritesListPromise = fetchFavorites();
     favoritesListPromise
@@ -571,5 +574,30 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }
       
-      
+    function addVisited(serviceId) {
+        const accessToken = localStorage.getItem('access_token');
+      console.log("Added " + serviceId);
+        // Return a Promise
+        return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/visit-place/${serviceId}/user`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`
+          },
+        })
+        .then(response => {
+          if (!response.ok) {
+            console.log("DATA1 " + JSON.stringify(response.json()));
+            throw new Error('Network response was not ok');
+          }
+          return response.json(); // Parse the response body as JSON
+        })
+        .then(data => {
+         
+        })
+        .catch(error => {
+          console.log("DATA: " + JSON.stringify(error));
+          // alert('Error adding to favorites: ' + error);
+          throw error; // Rethrow the error to be handled later if needed
+        });
+    }
 });

@@ -368,7 +368,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function fetchData(url) {
         try {
-            const response = await fetch(url);
+            const accessToken = getAccessTokenFromLocalStorage();
+            const response = await fetch(url, {
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -404,15 +409,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Fetch data from the JSON server for users, places, favorites, and visited
-    const headers = new Headers();
-    const accessToken = getAccessTokenFromLocalStorage();
-    headers.append('Authorization', `Bearer ${accessToken}`); // Replace 'YourAccessToken' with your actual access token
-    headers.append('Content-Type', 'application/json');
+   
     Promise.all([
-        fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/users`, headers),
-        fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/places`, headers),
-        fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/feedbacks`, headers),
-        fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/itineraries`, headers),
+        fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/users`),
+        fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/places`),
+        fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/feedbacks`),
+        fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/itineraries`),
     ])
         .then(([usersData, placesData, favoritesData, visitedData]) => {
             console.log("PROMISE RESPONSE ");

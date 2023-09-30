@@ -100,16 +100,16 @@ const contentContainer = document.getElementById('load-more-btn');
 contentContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
 // Get all elements with the class "card-link"
-const cardLinks = document.querySelectorAll('.card-link');
+// const cardLinks = document.querySelectorAll('.card-link');
 
-cardLinks.forEach(cardLink => {
-  cardLink.addEventListener('click', function (event) {
-      // Get the service-id attribute value
-      const serviceId = cardLink.getAttribute('service-id');
-      // Call the handleCardClick function with the serviceId
-      handleCardClick(serviceId);
-  });
-});
+// cardLinks.forEach(cardLink => {
+//   cardLink.addEventListener('click', function (event) {
+//       // Get the service-id attribute value
+//       const serviceId = cardLink.getAttribute('service-id');
+//       // Call the handleCardClick function with the serviceId
+//       handleCardClick(serviceId);
+//   });
+// });
 }
 
 
@@ -210,27 +210,27 @@ displayServiceCards(servicesData.slice(0, initialItems));
 });
 
 // Inside your handleCardClick function
-function handleCardClick(serviceId) {
-  //const clickedService = servicesData.find(service => service.id === serviceId);
-  // if (clickedService) {
-  //   // Check if the service has a visit count stored in local storage
-  //   const storedVisits = localStorage.getItem(`service_${serviceId}_visits`);
-  //   const visits = storedVisits ? parseInt(storedVisits) : 0;
+// function handleCardClick(serviceId) {
+//   //const clickedService = servicesData.find(service => service.id === serviceId);
+//   // if (clickedService) {
+//   //   // Check if the service has a visit count stored in local storage
+//   //   const storedVisits = localStorage.getItem(`service_${serviceId}_visits`);
+//   //   const visits = storedVisits ? parseInt(storedVisits) : 0;
 
-  //   const newVisits = visits + 1;
+//   //   const newVisits = visits + 1;
 
-  //   localStorage.setItem(`service_${serviceId}_visits`, newVisits.toString());
+//   //   localStorage.setItem(`service_${serviceId}_visits`, newVisits.toString());
 
-  //   // Update the progress value based on your logic
-  //   clickedService.progress = newVisits; // Set progress to the number of visits
+//   //   // Update the progress value based on your logic
+//   //   clickedService.progress = newVisits; // Set progress to the number of visits
 
-  //   // Update the total visits count and progress bar
-  //   totalVisits++;
-  //   updateProgressBar();
-  // }
-  console.log("Service: " + serviceId);
-  addVisited(serviceId);
-}
+//   //   // Update the total visits count and progress bar
+//   //   totalVisits++;
+//   //   updateProgressBar();
+//   // }
+//   console.log("Service: " + serviceId);
+//   addVisited(serviceId);
+// }
 
 
 function updateProgressBar() {
@@ -242,29 +242,29 @@ function updateProgressBar() {
   visitsNumber.textContent = totalVisits;
 }
 
-function addVisited(serviceId) {
-  const accessToken = localStorage.getItem('access_token');
+// function addVisited(serviceId) {
+//   const accessToken = localStorage.getItem('access_token');
 
-  // Return a Promise
-  return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/visit-place/${serviceId}/user`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${accessToken}`
-    },
-  })
-  .then(response => {
-    if (!response.ok) {
-      console.log("DATA1 " + JSON.stringify(response.json()));
-      throw new Error('Network response was not ok');
-    }
-    return response.json(); // Parse the response body as JSON
-  })
-  .then(data => {
+//   // Return a Promise
+//   return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/visit-place/${serviceId}/user`, {
+//     method: 'POST',
+//     headers: {
+//       'Authorization': `Bearer ${accessToken}`
+//     },
+//   })
+//   .then(response => {
+//     if (!response.ok) {
+//       console.log("DATA1 " + JSON.stringify(response.json()));
+//       throw new Error('Network response was not ok');
+//     }
+//     return response.json(); // Parse the response body as JSON
+//   })
+//   .then(data => {
    
-  })
-  .catch(error => {
-    console.log("DATA: " + JSON.stringify(error));
-    // alert('Error adding to favorites: ' + error);
-    throw error; // Rethrow the error to be handled later if needed
-  });
-}
+//   })
+//   .catch(error => {
+//     console.log("DATA: " + JSON.stringify(error));
+//     // alert('Error adding to favorites: ' + error);
+//     throw error; // Rethrow the error to be handled later if needed
+//   });
+// }
