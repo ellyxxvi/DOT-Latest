@@ -1,5 +1,5 @@
 const API_PROTOCOL = 'https';
-const API_HOSTNAME = 'kentjordan.xyz/api';
+const API_HOSTNAME = 'goexplorebatangas.com/api';
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginButton = document.getElementById('loginButton');

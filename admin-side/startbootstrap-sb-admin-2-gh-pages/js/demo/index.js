@@ -1,5 +1,5 @@
 const API_PROTOCOL = 'https';
-const API_HOSTNAME = 'kentjordan.xyz/api';
+const API_HOSTNAME = 'goexplorebatangas.com/api';
 
 // USER STATISTICS
 document.addEventListener('DOMContentLoaded', async function () {
@@ -23,12 +23,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
 
         const rawData = await userResponse.text();
-        console.log('Raw User Data Response:', rawData);
-
         // Parse the response as JSON
         const userData = JSON.parse(rawData); // Move the declaration here
-        console.log('User Data Response:', userData);
-
+       
         const totalUsers = userData.length;
         const menUsers = userData.filter(user => user.gender === 'male').length;
         const womenUsers = userData.filter(user => user.gender === 'female').length;
@@ -157,8 +154,7 @@ async function fetchResortNames(accessToken) {
         }
 
         const data = await response.json();
-        console.log('Fetched resort data:', data);
-
+       
         const resortNames = {};
         if (Array.isArray(data)) {
             data.forEach(place => {
@@ -468,11 +464,6 @@ document.addEventListener('DOMContentLoaded', function () {
         fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/itineraries`),
     ])
         .then(([usersData, placesData, visitedData, favoritesData ]) => {
-            console.log("PROMISE RESPONSE ");
-            console.log("UserS: " + JSON.stringify(usersData));
-            console.log("placesData: " + JSON.stringify(placesData));
-            console.log("favoritesData: " + JSON.stringify(favoritesData));
-            console.log("visitedData: " + JSON.stringify(visitedData));
             // Process favoritesData
             favoritesData.forEach(favorite => {
                 const user = usersData.find(user => user.id === favorite.user_id);
