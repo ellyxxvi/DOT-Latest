@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Learn More</title>
+
+    <!-- Custom fonts for this template -->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this page -->
+    <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <link rel="icon" href="image/LOGO (2).png" type="image/png">
+
+</head>
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Sidebar - Brand -->
+            <div class="nav-logo d-flex align-items-center justify-content-center">
+                <a href="index.html">
+                    <img src="image/LOGO (5).png" alt="Go Explore Logo" class="logo-image mx-3 d-none d-md-block"
+                        style="width: 150px; height: auto; object-fit: cover; justify-content: center; align-items: center;">
+                </a>
+            </div>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item">
+                <a class="nav-link" href="index.html">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span></a>
+            </li>
+
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Interface
+            </div>
+            <!-- Nav Item - Admin Management Menu -->
+            <li class="nav-item">
+                <a class="nav-link" href="admin-management.html">
+                    <i class="fas fa-fw fa-lock"></i>
+                    <span>Admin Management</span>
+                </a>
+            </li>
+            <!-- Nav Item - User Management Menu -->
+            <li class="nav-item">
+                <a class="nav-link" href="users-management.html">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>User Management</span>
+                </a>
+            </li>
+            <!-- Nav Item - Categories Collapse Menu -->
+            <li class="nav-item active">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+                    aria-expanded="true" aria-controls="collapseTwo">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Categories</span>
+                </a>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Webpage Categories:</h6>
+                        <a class="collapse-item" href="places.html">Places</a>
+                        <a class="collapse-item" href="calendar-of-activities.html">Calendar of Activities</a>
+                        <a class="collapse-item" href="footer.html">Footer</a>
+                        <a class="collapse-item" href="learnmore.html">Learn More</a>
+                        <a class="collapse-item" href="places_cities.html">Where to Go</a>
+                    </div>
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Love Our Planet:</h6>
+                        <a class="collapse-item" href="things-to-bring.html">Things to Bring</a>
+                        <a class="collapse-item" href="what-to-avoid.html">Things to Avoid</a>
+                        <a class="collapse-item" href="stuff-to-remember.html">Stuff to Remember</a>
+                    </div>
+
+                </div>
+
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+
+        </ul>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <form class="form-inline">
+                        <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                    </form>
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">ADMIN</span>
+                                <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
+                            </a>
+                            <!-- Dropdown - User Information -->
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Logout
+                                </a>
+                            </div>
+                        </li>
+
+                    </ul>
+
+                </nav>
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-2 text-gray-800">Learn More</h1>
+                    <p class="mb-4">Here you can add, edit, and delete learn more contents from your <a target="_blank"
+                            href="https://datatables.net">Go Explore Website</a>.</p>
+
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <div class="row">
+                                <div class="col-10">
+                                    <h6 class="m-0 font-weight-bold text-primary">Database Table</h6>
+                                </div>
+                                <div class="col-2">
+                                    <button class="btn btn-primary btn-sm" id="addButton">Add Content</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Image</th>
+                                            <th>Description</th>
+                                            <th>Created Date</th>
+                                            <th>Updated Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tableBody">
+                                        <!-- dynamic -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <div class="modal fade" id="addEventModal" tabindex="-1" aria-labelledby="addEventModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addEventModalLabel">Add Content</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Form to add event details -->
+                            <form id="add-user-form" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label for="eventImage" class="form-label">Content Image</label>
+                                    <input type="file" class="form-control" id="images" name="images"
+                                        accept="images/*">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="eventDescription" class="form-label">Description</label>
+                                    <textarea class="form-control" id="description" name="description" rows="3"
+                                        required></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="btn-cancel" class="btn btn-secondary"
+                                data-dismiss="modal">Cancel</button>
+                            <button type="button" id="btn-add-account" class="btn btn-primary">Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="editModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                aria-labelledby="editModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editModalLabel">Edit Learn More</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="edit-user-form" enctype="multipart/form-data">
+                                <input type="hidden" name="id" id="edit-id">
+                                <img id="edit-image-preview" src="" alt="Image Preview" class="img-thumbnail"
+                                    width="100px">
+                                <input type="hidden" name="existingImage" id="existingImage">
+                                <div class="mb-3">
+                                    <label for="eventImage" class="form-label">Learn More Image</label>
+                                    <input type="file" class="form-control" id="images" name="images" accept="images/*">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="eventDescription" class="form-label">Description</label>
+                                    <textarea class="form-control" id="description" name="description" rows="3"
+                                        required></textarea>
+                                </div>
+                                <input type="hidden" name="created_at">
+                                <input type="hidden" name="updated_at">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- End of Content Wrapper -->
+
+                </div>
+                <!-- End of Page Wrapper -->
+            </div>
+        </div>
+    </div>
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="login.html">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
+
+    <!-- Page level plugins -->
+    <script src="vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="js/demo/learnmore.js"></script>
+
+</body>
+
+</html>

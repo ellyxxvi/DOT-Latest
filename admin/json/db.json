@@ -1,0 +1,658 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "existingImage": "http://localhost:3001/images/63bda694774202ae772e9402650fc871",
+      "image": "http://localhost:3001/images/b8f4e2142b081ab155ed9813ace7f68f",
+      "first_name": "Kent",
+      "last_name": "Jordan",
+      "gender": "Male",
+      "email": "test@gmail.com",
+      "password": "test",
+      "from_country": "test",
+      "current_province": "test",
+      "current_city": "Batangas City",
+      "current_barangay": "test",
+      "created_at": "",
+      "updated_at": "18-09-2023"
+    },
+    {
+      "id": 2,
+      "existingImage": "http://localhost:3001/images/139d9c117a187d6858485b88ba06af34",
+      "image": "http://localhost:3001/images/139d9c117a187d6858485b88ba06af34",
+      "first_name": "Mikkay1",
+      "last_name": "Gabinete",
+      "gender": "Female",
+      "email": "mikkay@gmail.com",
+      "password": "mikkay",
+      "from_country": "test",
+      "current_province": "test",
+      "current_city": "Batangas City",
+      "current_barangay": "test",
+      "created_at": "",
+      "updated_at": ""
+    }
+  ],
+  "preference": [
+    {
+      "user_id": 1,
+      "id": 1,
+      "preferences": [
+        {
+          "category": "hotels"
+        },
+        {
+          "category": "swim"
+        }
+      ]
+    },
+    {
+      "user_id": 2,
+      "id": 2,
+      "preferences": [
+        {
+          "category": "church"
+        },
+        {
+          "category": "swim"
+        }
+      ]
+    }
+  ],
+  "admin": [
+    {
+      "id": 1,
+      "user_name": "admin1",
+      "email": "test@gmail.com",
+      "password": "test",
+      "created_at": "23-08-2023",
+      "updated_at": "23-08-2023"
+    },
+    {
+      "user_name": "admin2",
+      "email": "server@gmail.com",
+      "password": "server",
+      "created_at": "23-08-2023",
+      "id": 2
+    },
+    {
+      "user_name": "mikkay",
+      "email": "mikkay@gmail.com",
+      "password": "mikay",
+      "created_at": "18-09-2023",
+      "id": 3
+    }
+  ],
+  "places": [
+    {
+      "id": 1,
+      "image": "http://localhost:3001/images/eb7d09cf3d43402630b3f4d2a6598b41",
+      "existingImage": "http://localhost:3001/images/eb7d09cf3d43402630b3f4d2a6598b41",
+      "title": "Camp Netanya Resort and Spa",
+      "description": "Camp Netanya Resort and Spa claims its popularity from its Santorini architecture giving rise to its brilliant blue domes and white wash buildings. Camp Netanya offers 48 guest rooms and villas, dive shop, wellness center and family and friend everyone should enjoy.",
+      "category": "hotels",
+      "province": "Batangas",
+      "city": "Batangas",
+      "barangay": "Ligaya",
+      "contact": "09278954092,  09397535074, 09166907269",
+      "website": "www.campnetanya.com.ph",
+      "created_at": "23-08-2023",
+      "updated_at": "18-09-2023"
+    },
+    {
+      "id": 2,
+      "image": "http://localhost:3001/images/c74872c3d2de00a0c70ccefbcbc044f9",
+      "existingImage": "http://localhost:3001/images/41de732efa10f6287b2d630669257996",
+      "title": "Aquaventure Reef Club",
+      "description": "Located in the stunning peninsula of Mabini along Batangas Bay, AquaVenture Reef Club is a full service dive resort, offering everything from airport pickup round-trip, comfortable, clean and Covid-Safe suites, diving classes to make the oceans accessible,local diving, ocean adventure tours and a diverse menu with a local flair in their restaurant.",
+      "category": "hotels",
+      "province": "Batangas",
+      "city": "Mabini",
+      "barangay": " Sitio Looc, Barangay Bagalangit",
+      "contact": "0919-999-0436",
+      "website": "https://www.facebook.com/aquaventurereefclub",
+      "created_at": "05-09-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 3,
+      "image": "http://localhost:3001/images/46bca752931009583da5f82a83e8bffd",
+      "existingImage": "http://localhost:3001/images/a4e2573063823a0338d9e6e074408cfd",
+      "title": "Casita Ysabel",
+      "description": "Casita Ysabel is know for its rustic comfortnestled in Mabini, Batangas. It has now become a favorite destination among local and foreign guest who are looking for privacy and comfort. A place of true relaxation, rejuvenation and a distinct rainforest ocean experience. It’s beauty and tranquility enfolds you with the warmth and charm of a pradise home.",
+      "category": "hotels",
+      "province": "Batangas",
+      "city": "Mabini",
+      "barangay": "Baranggay San  Teodoro",
+      "contact": "0908-822-0012 / 0935-395-2345",
+      "website": "www.casitaysabel.co",
+      "created_at": "05-09-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 4,
+      "image": "http://localhost:3001/images/7d4b88cfeed789c7bc7e17a4700495c9",
+      "existingImage": "http://localhost:3001/images/d76ea1bc8ef27deea498f912db3c3631",
+      "title": "Eagle Point Beach and Dive Resort",
+      "description": "Eagle Point Resort is a seaside haven located at the tip of the Calumpang Peninsula in Anilao, Batangas. The resort is owned by a family corporation and is the largest and most popular diving destination for locals and foreigners in Batangas. . It is also the premier company outing venue in Batangas, as it offers exclusive access to private and secluded beaches and a plethora of water activities. Eagle Point Beach and Dive Resort is the Leading Scuba Diving, Leisure & Family Resort in\nAnilao Batangas.",
+      "category": "hotels",
+      "province": "Batangas",
+      "city": "Mabini",
+      "barangay": "Barangay Bagalangitm, Anilao",
+      "contact": "0917-846-3958 / 0927-351-0164",
+      "website": "https://www.facebook.com/eaglepointbeachanddiveresort",
+      "created_at": "07-09-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 5,
+      "image": "http://localhost:3001/images/83beaf3ad73e13a51b1f218bc5cc1cff",
+      "existingImage": "http://localhost:3001/images/aa22f55b94fd440714e8ee3691324e50",
+      "title": "La Chevrerie resort and Spa",
+      "description": " A Seamless fusion of comfort and style of recreation and relaxation of simplicity and indulgence. A rustic yet luxuriously grand holiday escape it is the idea destination for a dream tropical vacation La Chevrerie is a 5 star resort in Anilao Batangas",
+      "category": "hotels",
+      "province": "Batangas",
+      "city": "Mabini",
+      "barangay": "052 Barangay Ligaya, Anilao",
+      "contact": "0917-703-3320",
+      "website": "https://www.facebook.com/lachevrerieresort ",
+      "created_at": "07-09-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 6,
+      "image": "http://localhost:3001/images/a509cfc13243db2889fbe8b56920cdec",
+      "existingImage": "http://localhost:3001/images/b139e9b6ebe64bb4775424ce94e8e3d7",
+      "title": "Punta Fuego",
+      "description": "Fuego Point, also referred to as Punta Fuego, is a peninsula with a distinctive flame-like shape situated in the western region of Batangas province on Luzon Island in the Philippines. This headland stretches out as a promontory measuring 2.9 kilometers, extending into the South China Sea. It offers scenic views of Fortune Island, Nasugbu Bay, and Calayo Bay, all located in the municipality of Nasugbu.",
+      "category": "swim",
+      "province": "Batangas",
+      "city": "Nasugbu ",
+      "barangay": "Ligaya",
+      "contact": "0919-999-0436",
+      "website": "www.casitaysabel.co",
+      "created_at": "07-09-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "title": "dfgfdfd",
+      "description": "gfdg",
+      "category": "hotels",
+      "province": "fdgfdd",
+      "city": "gfdfg",
+      "barangay": "dfgfdfd",
+      "contact": "gfd",
+      "website": "fdggfd",
+      "image": "http://localhost:3001/images/b8d0993126bf62241734fb6b534c7c20",
+      "created_at": "16-09-2023",
+      "id": 7
+    },
+    {
+      "title": "gdfgddf",
+      "description": "gdfg",
+      "category": "tourists",
+      "province": "gdffdg",
+      "city": "fdgfd",
+      "barangay": "fdgfd",
+      "contact": "gfd",
+      "website": "gfdgd",
+      "image": "http://localhost:3001/images/aaeaced3a95494c4d691ab8e869182c5",
+      "created_at": "16-09-2023",
+      "id": 8
+    },
+    {
+      "title": "gfdgfdfd",
+      "description": "gdgd",
+      "category": "nature",
+      "province": "fgdfd",
+      "city": "gfdgf",
+      "barangay": "gdg",
+      "contact": "gdfd",
+      "website": "fgfd",
+      "image": "http://localhost:3001/images/684c08dbd64792acd5e17513f1667fd2",
+      "created_at": "16-09-2023",
+      "id": 9
+    }
+  ],
+  "places_cities": [
+    {
+      "id": 1,
+      "image": "http://localhost:3001/images/8d1456ee1acdc4353e3d52f97c55c411",
+      "existingImage": "http://localhost:3001/images/8d1456ee1acdc4353e3d52f97c55c411",
+      "city": "Lipa",
+      "description": "Great Place",
+      "created_at": "31-08-2023",
+      "updated_at": "18-09-2023"
+    },
+    {
+      "id": 2,
+      "image": "http://localhost:3001/images/c1271a5a81a29018989e6519c61c0f6b",
+      "existingImage": "http://localhost:3001/images/4c32e587f126311786969bc2e17f1b9e",
+      "city": "Agoncillo",
+      "description": "Great Place",
+      "created_at": "31-08-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 3,
+      "image": "http://localhost:3001/images/d0076396925d39f685f50e389b29ff10",
+      "existingImage": "http://localhost:3001/images/53af0e98ab10fb0292329c0fce5e6f16",
+      "city": "Taysan",
+      "description": "Great Place",
+      "created_at": "31-08-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 6,
+      "image": "http://localhost:3001/images/6f8cc35559bc17a06ee2c267485c16dc",
+      "existingImage": "http://localhost:3001/images/10c403797fbb953da630b93f37a4ac1e",
+      "city": "San Jose",
+      "description": "Great Place",
+      "created_at": "31-08-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 7,
+      "image": "http://localhost:3001/images/d7dd9fb0a11fa4238ca5c93b2c73dfbf",
+      "existingImage": "http://localhost:3001/images/65a022f09144b861e5527f1157e0740e",
+      "city": "Calatagan",
+      "description": "Great Place",
+      "created_at": "31-08-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 8,
+      "image": "http://localhost:3001/images/b92a855080aafbd3d46e82ad5f46a920",
+      "existingImage": "http://localhost:3001/images/9fada7648d27480cda43145b2b26a6bb",
+      "city": "Batangas",
+      "description": "Great Place",
+      "created_at": "14-09-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "city": "Mabini",
+      "description": "Great Place",
+      "image": "http://localhost:3001/images/efecb576f7f1d580c935526ce80fbbd7",
+      "created_at": "15-09-2023",
+      "id": 9
+    }
+  ],
+  "festival": [
+    {
+      "id": 1,
+      "existingImage": "http://localhost:3001/images/5b528992f17712ceac87b29ba2e471c5",
+      "image": "http://localhost:3001/images/5b528992f17712ceac87b29ba2e471c5",
+      "title": "Sublian Festival",
+      "description": "-The Sublian festival, a two weeklong celebration which culminates every year on the 23rd of July, is rooted in the Batangueños’ devotion to the town’s patron: the Holy Cross in Bauan and Agoncillo, and the Sto. Niño in Batangas City. ",
+      "date": "July 23",
+      "province": "Batangas",
+      "city": "Batangas",
+      "created_at": "18-08-2023",
+      "updated_at": "18-09-2023"
+    },
+    {
+      "id": 2,
+      "existingImage": "http://localhost:3001/images/75f22aa8b9a8cd404327f5c6b90c75b3",
+      "image": "http://localhost:3001/images/75f22aa8b9a8cd404327f5c6b90c75b3",
+      "title": "Parada ng Lechon",
+      "description": "- Balayan town celebrates the feast of St. John the Baptist every June 24th with a parade of roast pig (lechon). In parody of the time-honored ritual of baptism, townsfolk throw water on each other during the parade in the spirit of fun. After the lechon has been blessed, everyone sits down to partake in the feast. ",
+      "date": "June 24",
+      "province": "Batangas",
+      "city": "Mabini",
+      "created_at": "25-08-2023",
+      "updated_at": "18-09-2023"
+    },
+    {
+      "id": 3,
+      "existingImage": "http://localhost:3001/images/6c7cbd86a5db8318dc20ba2372b81e59",
+      "image": "http://localhost:3001/images/7bd81a12a4ae1f9ff520bf58b81bdfba",
+      "title": "Tapusan Festival",
+      "description": "- Starting on the first of May, floral offerings are laid before an old cross in the town of Alitagtag. The honoring of the Holy Cross peaks on the last day of May with a procession during which the cross is mounted on a beautifully decorated float and drawn through the streets with other flower-bedecked floats carrying Marian images.",
+      "date": "May 31",
+      "province": "Batangas",
+      "city": "Alitagtag",
+      "created_at": "25-08-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 4,
+      "existingImage": "http://localhost:3001/images/5549f4dd3b4167b48c62b2f5633eb1ce",
+      "image": "http://localhost:3001/images/c5f0c1f913e1f75fb01ea127fe1bbf0a",
+      "title": "Anihan Festival",
+      "description": "- The Anihan Festival is first and foremost a thanksgiving celebration for the people’s bountiful harvest. It is likewise a tribute to the farmers whose efforts are a significant factor in the success of agricultural development in Lobo.\n\n\n-Anihan Festival is an annual celebration of the Loboeño’s gratitude and veneration to St. Michael the Archangel and most of all, to give the highest respect and adoration to the Almighty God. It is part of the week-long commemoration and celebration of Lobo Foundation Anniversary that usually ends on the 29th day of September – the feast day of St. Michael the Archangel. Various activities such as Alay-Lakad, Kasalang Bayan, Entertainment Night, Job Fair, Agri-Trade Fair, Search for Miss Lobo Pageant, Street Dancing Competition, Float Parade, Search for Anihan Festival Queen, Cultural Presentation and Fluvial Procession are being celebrated. These activities or events are being participated in by LGU, students from both private and public secondary schools, senior high school, elementary school pupils of the district, and other private individuals whose active involvement is so excellent. The contingent’s' outfits were made from crude materials from items which Lobo is known for. The innovative outfits were decorated and made from buli, corn, coconut husk, anahaw leaf, and shells. A large portion of the outfits were likely designed with atis-inspired props. The participants could make use of popular music to dance to. Each school’s best dancers take time and effort to lead other pupils to dance using modern choreography. Hours would be spent perfecting the dance and stunts routine. Props too add color and excitement to their presentations and to rival competitors. The plethora of sights and sounds of the Anihan Festival draws crowds of thousands to the town plaza to watch the event. Adding color to the festivity are the parade of creatively designed floats, with muses of competing tribes, and the Search for Anihan Festival Queen.",
+      "date": "September 27",
+      "province": "Batangas",
+      "city": "Lobo",
+      "created_at": "25-08-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 5,
+      "existingImage": "http://localhost:3001/images/714138d9feb129b9d428cb22b1acb201",
+      "image": "http://localhost:3001/images/a4e3705f6b6dd92e92c37ce4f0c745a1",
+      "title": "CALACAtchara Festival",
+      "description": "- The Calacatchara Festival derived from combining Calaca and Atchara, the town’s famous product. Atchara is an appetizer and/or side dish made of pickled raw pap aya. Usually runs for a week ending in October 24, the feast day of the town’s patron saint, St. Raphael the Archangel.",
+      "date": "May 1",
+      "province": "Batangas",
+      "city": "Calaca",
+      "created_at": "25-08-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 6,
+      "existingImage": "http://localhost:3001/images/2cab9158c2597ae049a900e5335d0385",
+      "image": "http://localhost:3001/images/04b44907bdec7ba66c5ad5d370dea329",
+      "title": "EL PASUBAT Festival",
+      "description": "- Celebrated annually during the month of April, EL PASUBAT Festival is the conglomeration of the trademarks of Taal, Batangas. EL PASUBAT stands for Empanada, Longganisa, Panutsa, Suman, Balisong, Barong Tagalog, Tapa, Tamales, Tawilis, Tulingan — the delicacies and crafts that Taal is known for.\n-The festival is one grandiose way of highlighting the products of Taal in a celebration made to ignite Taaleños’ pride of the things that contributed to the economic growth of the municipality and the unity that strengthens the people.",
+      "date": "April 28",
+      "province": "Batangas",
+      "city": "Taal",
+      "created_at": "25-08-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 7,
+      "existingImage": "http://localhost:3001/images/0952f514c87672bd0039bbc5181985ee",
+      "image": "http://localhost:3001/images/6a5af7786fcf438307d0e7fea0036f1e",
+      "title": "Kambingan Festival",
+      "description": "- The Kambingan Festival is the local way of honoring their town, and a town plaza night food market where people can buy foods. products given by goats are one of the town’s blessings. The annual celebration during August 12 is also a way of honoring their town where different activities are being held within the municipality.\n",
+      "date": "August 12",
+      "province": "Batangas",
+      "city": "Tuy",
+      "created_at": "25-08-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 8,
+      "existingImage": "http://localhost:3001/images/71175cad358c1095f2423157d6c760cb",
+      "image": "http://localhost:3001/images/d73e9f39f467dcb3869ecd01523c9b12",
+      "title": "Sublian Festival",
+      "description": "-The municipality of Bauan celebrates the Sublian every May 2nd. This festival aims to revive the centuries-old tradition of dancing the Subli, an indigenous dance of Bauan. This dance ritual is being done to pay homage to the Holy Cross of Bauan.",
+      "date": "May 2",
+      "province": "Batangas",
+      "city": "Bauan",
+      "created_at": "25-08-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 9,
+      "existingImage": "http://localhost:3001/images/8ef2c39b3ec0b02423991d122c873abe",
+      "image": "http://localhost:3001/images/1616203e9b386b42887c5add61d015e2",
+      "title": "Punlad Festival",
+      "description": "- Punlad Festival is a celebration of the town’s main produce — punla or saplings (or seedlings). Talisay is tagged as the seedling bowl of the nation where a lot of other towns and provinces are getting seedlings for their farmlands. Punlad came from their line “punla sa pag-unlad”.",
+      "date": "February 6",
+      "province": "Batangas",
+      "city": "Talisay",
+      "created_at": "25-08-2023",
+      "updated_at": "14-09-2023"
+    }
+  ],
+  "itinerary_favorites": [
+    {
+      "id": 2,
+      "place_id": 2,
+      "user_id": 1,
+      "created_at": "21-09-2023",
+      "updated_at": "21-09-2023"
+    },
+    {
+      "id": 3,
+      "place_id": 3,
+      "user_id": 1,
+      "created_at": "21-09-2023",
+      "updated_at": "21-09-2023"
+    },
+    {
+      "id": 7,
+      "place_id": 7,
+      "user_id": 2,
+      "created_at": "21-09-2023",
+      "updated_at": "21-09-2023"
+    },
+    {
+      "id": 8,
+      "place_id": 8,
+      "user_id": 2,
+      "created_at": "21-09-2023",
+      "updated_at": "21-09-2023"
+    }
+  ],
+  "itinerary_visited": [
+    {
+      "place_id": "3",
+      "user_id": 1,
+      "ratings": "0",
+      "comment": "dsfds",
+      "created_at": "21-09-2023",
+      "updated_at": "21-09-2023",
+      "id": 1
+    }
+  ],
+  "footer": [
+    {
+      "id": 1,
+      "description": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\"",
+      "updated_at": "22-09-2023"
+    }
+  ],
+  "learnmore": [
+    {
+      "id": 1,
+      "existingImage": "http://localhost:3001/images/8a00954a1591997ee601732f921dcbf4",
+      "image": "http://localhost:3001/images/8a00954a1591997ee601732f921dcbf4",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip .",
+      "created_at": "",
+      "updated_at": "18-09-2023"
+    },
+    {
+      "id": 2,
+      "existingImage": "http://localhost:3001/images/8421d362025c06f00a990f93bace9c98",
+      "image": "http://localhost:3001/images/f05018978ec3512270bbea5e0a3a9104",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip .",
+      "created_at": "",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 3,
+      "existingImage": "http://localhost:3001/images/54e52a5c12a7cefca2f6045d41b2bbc5",
+      "image": "http://localhost:3001/images/27eadceda07058a82961ec5a3f0bab5d",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip .",
+      "created_at": "",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 4,
+      "existingImage": "http://localhost:3001/images/922156b45219c246a3779a084cb4c3bc",
+      "image": "http://localhost:3001/images/ced0a7b1e869141c2a278b213110fe2f",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip .",
+      "created_at": "",
+      "updated_at": "14-09-2023"
+    }
+  ],
+  "thingstobring": [
+    {
+      "id": 1,
+      "existingImage": "http://localhost:3001/images/7fbef6865bd25fcd1df5c8f34249bdec",
+      "image": "http://localhost:3001/images/7fbef6865bd25fcd1df5c8f34249bdec",
+      "title": "OXYBENZONE-FREE SUNBLOCK",
+      "description": "Better reef-safe than sorry: keeping a tube of this stashed in your bag protects not just your skin, but nature as well.",
+      "created_at": "",
+      "updated_at": "18-09-2023"
+    },
+    {
+      "id": 2,
+      "existingImage": "http://localhost:3001/images/7059bb3da234ef8e580821d8fab67c1a",
+      "image": "http://localhost:3001/images/d95d66f5e30c66705379277e2d665e2a",
+      "title": "Refillable Tumbler",
+      "description": "Staying hydrated never looked this cool! Bring along your favorite reusable bottle for all your water consumption.",
+      "created_at": "",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 3,
+      "existingImage": "http://localhost:3001/images/d0236d1b1808a7671478a5a9d869e2d9",
+      "image": "http://localhost:3001/images/20dfd4fa8411a0f4cd3031cc83349cd9",
+      "title": "Reusable Straws & Cutlery",
+      "description": "Whether you’re going camping or eating takeout in transit, bringing these along makes meals all the more satisfying.",
+      "created_at": "",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 4,
+      "existingImage": "http://localhost:3001/images/8a3f695c40fa1d57d4f1d748d0082b7f",
+      "image": "http://localhost:3001/images/1066748e2c907330b8fefb994f3f22be",
+      "title": "A Trusty Ecobag",
+      "description": "Make sure it’s roomy enough for all your essentials! With a tote in tow, you’d never miss those single-use plastic bags.",
+      "created_at": "27-08-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 5,
+      "existingImage": "http://localhost:3001/images/06cf5e41819ffcc3d72ca3798b322fb4",
+      "image": "http://localhost:3001/images/54bf2f4d984cc943719b258cd6a9cb57",
+      "title": "E-boarding Tickets",
+      "description": "Going on a flight? No need for those wasteful printouts! Just save your details on your phone and show them at the airport. No fuss, no trash.",
+      "created_at": "27-08-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 6,
+      "existingImage": "http://localhost:3001/images/396bacec9ac2f57cee57b56b4b8086ca",
+      "image": "http://localhost:3001/images/0c275a24c66b12db58382c2254b8282a",
+      "title": "Deet-Free Insect Repellent",
+      "description": "When out exploring nature, it’s only fitting to use products that are natural as well! Opt for formulations that make use of minimal chemicals.",
+      "created_at": "27-08-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 7,
+      "existingImage": "http://localhost:3001/images/a1dbb2f168604e90f7373895afdecd1d",
+      "image": "http://localhost:3001/images/2fd11d7dee80bdfa23788eb9fe347212",
+      "title": "Rechargeable Batteries",
+      "description": "The disposable kinds become toxic waste when improperly thrown away. Skip the risk, and save up in the long run: just invest in batteries that will last you multiple cycles.",
+      "created_at": "27-08-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 8,
+      "existingImage": "http://localhost:3001/images/afaee7414df24c54d2e1b9cb36d6d14c",
+      "image": "http://localhost:3001/images/e4fdcb88a97a82454a242f9da1c851df",
+      "title": "Downloaded Maps on Phone",
+      "description": "Make your way through your adventures with digital maps! They’re easily saved on your devices, and they won’t end up as trash either!",
+      "created_at": "27-08-2023",
+      "updated_at": "14-09-2023"
+    }
+  ],
+  "whattoavoid": [
+    {
+      "id": 1,
+      "existingImage": "http://localhost:3001/images/5affd94d41ade1b9252de712cc29a4d5",
+      "image": "http://localhost:3001/images/5affd94d41ade1b9252de712cc29a4d5",
+      "title": "Overusing Electricity",
+      "description": "Too much power usage contributes to our carbon footprint. So why not set down your devices – simply unplug and enjoy your vacation!",
+      "created_at": "",
+      "updated_at": "18-09-2023"
+    },
+    {
+      "id": 2,
+      "existingImage": "http://localhost:3001/images/3cd3ed2166e8f2e721cdb4bed37c86e5",
+      "image": "http://localhost:3001/images/4a448d41ef89a67feea83e5ac5ae0683",
+      "title": "Wasting Food",
+      "description": "Only get what you can finish, and just get seconds if you want more. You can be sustainable starting with your own plate!",
+      "created_at": "27-08-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 3,
+      "existingImage": "http://localhost:3001/images/595aa04a270537c1ba7bba5cb71f5a37",
+      "image": "http://localhost:3001/images/38832aed5ca7bc11275cdd5e0d512288",
+      "title": "Touching Wildlife",
+      "description": "When guides warn guests against interacting with animals, it’s not only for human protection. Some creatures, like the whale sharks, are so sensitive that touching them causes harm.",
+      "created_at": "27-08-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 4,
+      "existingImage": "http://localhost:3001/images/ec331646edb4f8e5554e1888e54e68e2",
+      "image": "http://localhost:3001/images/45802adc76f481a17591f779a3fac581",
+      "title": "Leaving Trash Around",
+      "description": "Treat your destinations like your own home. Clean as you go, and set a great example: clean up after strangers as well.",
+      "created_at": "27-08-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 5,
+      "existingImage": "http://localhost:3001/images/cf1aa37fde98c7d6bdd1eabb16b7e025",
+      "image": "http://localhost:3001/images/85c655bef3b7c7a1a593640669e6e403",
+      "title": "Taking Shells and Sand Home",
+      "description": "Keep in mind that not everything is a souvenir. Let’s leave our nature as is, and just get better pasalubongs from small shops!",
+      "created_at": "27-08-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 6,
+      "existingImage": "http://localhost:3001/images/5c57987acecefb5fe472d31e2f723498",
+      "image": "http://localhost:3001/images/d96caeb62d33b181837c05eb9a6910d2",
+      "title": "Long Showers",
+      "description": "Here’s a fact that should be made more public: water is a finite resource. Humans have access to only 1% of the world’s fresh water, so conservation should be a priority especially when we travel.",
+      "created_at": "27-08-2023",
+      "updated_at": "14-09-2023"
+    }
+  ],
+  "stufftoremember": [
+    {
+      "id": 1,
+      "existingImage": "http://localhost:3001/images/ffe5f792055fdc145835ab5a3b7767f9",
+      "image": "http://localhost:3001/images/ffe5f792055fdc145835ab5a3b7767f9",
+      "title": "Understanding Every Site’s Rules",
+      "description": "Each place has regulations set for a reason. Knowing what these are and respecting them, we get to keep the place fun and enjoyable!",
+      "created_at": "27-08-2023",
+      "updated_at": "18-09-2023"
+    },
+    {
+      "id": 2,
+      "existingImage": "http://localhost:3001/images/23ecb5129066942fa050cfe95c6382fd",
+      "image": "http://localhost:3001/images/14808ce917485384b433aa73929ef1d3",
+      "title": "Research Before Visiting",
+      "description": "Though some travelers prefer spontaneity, it’s also a good choice to be prepared. Learn about the destinations beforehand so you can dress respectfully, converse with locals, and immerse yourself better!",
+      "created_at": "27-08-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 3,
+      "existingImage": "http://localhost:3001/images/3017f5c7976a94f6b0494951d9b7c426",
+      "image": "http://localhost:3001/images/fb00044361c1a00ac92e30a6a4a6e9cd",
+      "title": "Support Local Businesses",
+      "description": "Sustainability also means making sure that locals benefit from travelers. Bring small bills along and buy what you need from those quaint shops run by locals!",
+      "created_at": "27-08-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 4,
+      "existingImage": "http://localhost:3001/images/636d4cbe3876dac028fc46e749d955ea",
+      "image": "http://localhost:3001/images/c6cc1a70301e988518ba57e4017fa4d9",
+      "title": "Respect the Locals",
+      "description": "Ask permission before you take someone’s photograph. After all, you wouldn’t want total strangers",
+      "created_at": "27-08-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 5,
+      "existingImage": "http://localhost:3001/images/2ba55a3f676933ebc59f035ff5ac9f58",
+      "image": "http://localhost:3001/images/72c497b981a76f50c3348b4e5c6af24c",
+      "title": "Book DOT-Accredited Establishments",
+      "description": "Take the guesswork out of planning ahead: choose accommodations and activities that have already been vetted as safe and trustworthy by the country’s tourism authority.",
+      "created_at": "27-08-2023",
+      "updated_at": "14-09-2023"
+    },
+    {
+      "id": 6,
+      "existingImage": "http://localhost:3001/images/744b5a0a9466615d14ce62a5383035dd",
+      "image": "http://localhost:3001/images/9723806c14c53db1e33fd1da0d49a894",
+      "title": "Bring Only What’s Necessary",
+      "description": "Travel with your essentials, and just leave the rest at home. The lighter your bag, the easier it will be to move around on foot and on bike, and there’s no need to check stuff in too!",
+      "created_at": "27-08-2023",
+      "updated_at": "14-09-2023"
+    }
+  ]
+}
