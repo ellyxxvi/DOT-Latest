@@ -99,8 +99,8 @@
         </p>
 
         <div class="video-container">
-          <video loop class="video-element" id="video" controls>
-            <source src="image/places/video.mp4" type="video/mp4">
+          <video loop class="video-element" id="video" controls autoplay>
+            <source src="videos/FINAL TOURISM VIDEO.mp4" type="video/mp4">
           </video>
         </div>
       </div>
