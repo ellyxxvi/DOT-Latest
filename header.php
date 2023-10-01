@@ -41,7 +41,7 @@
 
                 <script>
                     const API_PROTOCOL = 'https'
-                    const API_HOSTNAME = 'kentjordan.xyz/api'
+                    const API_HOSTNAME = 'goexplorebatangas.com/api'
                     // Function to check if the user is authenticated
                     function checkAuthentication() {
                         var isAuthenticated = localStorage.getItem("access_token");

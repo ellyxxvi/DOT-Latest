@@ -6,7 +6,7 @@ $(document).ready(function () {
 });
 
 const API_PROTOCOL = 'https';
-const API_HOSTNAME = 'kentjordan.xyz/api';
+const API_HOSTNAME = 'goexplorebatangas.com/api';
 
 document.addEventListener('DOMContentLoaded', function () {
   const tableBody = document.getElementById('tableBody');

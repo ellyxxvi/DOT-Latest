@@ -5,7 +5,7 @@ $(document).ready(function () {
   });
 });
 const API_PROTOCOL = 'https'
-const API_HOSTNAME = 'kentjordan.xyz/api'
+const API_HOSTNAME = 'goexplorebatangas.com/api'
 
 document.addEventListener('DOMContentLoaded', function () {
   const tableBody = document.getElementById('tableBody');
@@ -94,7 +94,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   async function editRow(event) {
-    console.log('Edit button clicked.');
     const button = event.target;
     const row = button.closest('tr');
     const userIdCell = row.querySelector('td:first-child');
@@ -117,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (!response.ok) {
         const responseData = await response.text();
-        console.error(`Error response user: ${response.status} ${response.statusText}`, responseData);
+
       } else {
         const user = await response.json();
 
@@ -179,7 +178,6 @@ document.addEventListener('DOMContentLoaded', function () {
         // Optionally, refresh the user table
         populateTable();
       } else {
-        console.error('Error updating user data:', response.statusText);
         const responseData = await response.text();
         console.error(`Error updating user: ${response.status} ${response.statusText}`, responseData);
       }
