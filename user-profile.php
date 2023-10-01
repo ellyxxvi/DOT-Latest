@@ -166,21 +166,21 @@
                             <label for="edit-last-name" class="form-label">Last Name</label>
                             <input type="text" class="form-control" id="last_name" name="last_name">
                         </div>
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label for="gender">Gender</label>
                             <select class="form-control" name="gender" id="gender">
                                 <option value="Male">Male</option>
                                 <option value="Female">Female</option>
                             </select>
-                        </div>
-                        <div class="mb-3">
+                        </div> -->
+                        <!-- <div class="mb-3">
                             <label for="edit-email" class="form-label">Email</label>
                             <input type="text" class="form-control" id="email" name="email">
-                        </div>
-                        <div class="mb-3">
+                        </div> -->
+                        <!-- <div class="mb-3">
                             <label for="edit-password" class="form-label">Password</label>
                             <input type="password" class="form-control" id="password" name="password">
-                        </div>
+                        </div> -->
                         <div class="mb-3">
                             <label for="edit-from-county" class="form-label">Country</label>
                             <input type="text" class="form-control" id="from_country" name="from_country">

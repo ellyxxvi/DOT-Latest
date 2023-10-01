@@ -48,9 +48,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById('existingImage').value = data.profile_photo;
                 document.getElementById('first_name').value = data.first_name;
                 document.getElementById('last_name').value = data.last_name;
-                document.getElementById('gender').value = data.gender;
-                document.getElementById('email').value = data.email;
-                document.getElementById('password').value = data.password;
+                // document.getElementById('gender').value = data.gender;
+                // document.getElementById('email').value = data.email;
+                // document.getElementById('password').value = data.password;
                 document.getElementById('from_country').value = data.from_country;
                 document.getElementById('current_province').value = data.current_province;
                 document.getElementById('current_city').value = data.current_city;
@@ -176,7 +176,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (response.ok) {
                     console.log('Profile updated successfully');
                     // localStorage.setItem('user_data', JSON.stringify(updatedUser));
-                    // window.location.reload(); // Use window.location.reload() to reload the page
+                    window.location.reload(); 
                     editModal.hide();
                 } else {
                     console.error('Failed to update profile');

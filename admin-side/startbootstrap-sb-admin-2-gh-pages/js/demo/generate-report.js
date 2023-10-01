@@ -209,9 +209,9 @@ async function generateExcelReport() {
         });
 
         // Recent Activity
-        excelData.push([]);
-        excelData.push(['RECENT ACTIVITY']);
-        excelData.push(['User', 'Activity', 'Timestamp']);
+        // excelData.push([]);
+        // excelData.push(['RECENT ACTIVITY']);
+        // excelData.push(['User', 'Activity', 'Timestamp']);
 
 
  // Process favoritesData

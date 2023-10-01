@@ -144,9 +144,9 @@ document.addEventListener('DOMContentLoaded', function () {
       editForm.elements.id.value = user.id;
       editForm.elements.first_name.value = user.first_name;
       editForm.elements.last_name.value = user.last_name;
-      editForm.elements.gender.value = user.gender;
-      editForm.elements.email.value = user.email;
-      editForm.elements.password.value = user.password;
+      // editForm.elements.gender.value = user.gender;
+      // editForm.elements.email.value = user.email;
+      // editForm.elements.password.value = user.password;
       editForm.elements.from_country.value = user.from_country;
       editForm.elements.current_province.value = user.current_province;
       editForm.elements.current_city.value = user.current_city;

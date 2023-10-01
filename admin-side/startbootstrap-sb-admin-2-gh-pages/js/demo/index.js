@@ -161,9 +161,7 @@ async function fetchResortNames(accessToken) {
 
         const resortNames = {};
         if (Array.isArray(data)) {
-            // Filter places with the "hotels" category
-            const resort = data.filter(place => place.category === "resort");
-            resort.forEach(place => {
+            data.forEach(place => {
                 resortNames[place.id] = place.title;
             });
         }
@@ -197,7 +195,7 @@ async function populateAndSortResorts() {
     const resortNames = await fetchResortNames(accessToken);
 
     try {
-        const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/places/most-rated?limit=5`, {
+        const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/places/most-rated?category=resort&limit=5`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             }
@@ -210,24 +208,25 @@ async function populateAndSortResorts() {
         const data = await response.json();
 
         if (Array.isArray(data)) {
+            // Filter only resorts
+            const resorts = data.filter(place => place.category === "resort");
             resortsData.length = 0;
-            data.forEach(user => {
+
+            resorts.forEach(user => {
                 const resort = {
                     name: user.title,
                     ratings: user.avg_rating
                 };
 
-                //if (resort.ratings.length > 0 && resortNames[user.place_id] !== undefined) {
                 resortsData.push(resort);
-                //}
-
             });
 
-            //resortsData.sort((a, b) => calculateAverageRating(b.ratings) - calculateAverageRating(a.ratings));
+            // Sort resorts by average rating
+            resortsData.sort((a, b) => parseFloat(b.ratings) - parseFloat(a.ratings));
+
             resortList.innerHTML = "";
 
             resortsData.slice(0, 5).forEach((resort, index) => {
-                //const averageRating = calculateAverageRating(resort.ratings);
                 const listItem = document.createElement("li");
                 listItem.innerHTML = `
                     <span class="chart-progress-indicator chart-progress-indicator--increase">
@@ -235,7 +234,7 @@ async function populateAndSortResorts() {
                     </span> 
                     <span class="bold-rank">Top ${index + 1}:</span> ${resort.name}
                     <div class="progress wds-progress progress-bar-blue">
-                        <div class="progress-bar" style="width: ${resort.ratings * 20}%;"></div>
+                        <div class="progress-bar" style="width: ${parseFloat(resort.ratings) * 20}%;"></div>
                     </div>
                 `;
                 resortList.appendChild(listItem);
@@ -249,7 +248,6 @@ async function populateAndSortResorts() {
 }
 
 populateAndSortResorts();
-
 
 // User Activity Locations
 const locationList = document.getElementById("location-list");
