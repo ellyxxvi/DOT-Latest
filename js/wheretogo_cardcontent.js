@@ -18,7 +18,6 @@ function fetchDynamicData() {
     })
     .then(function(data) {
       // Now 'data' is a JavaScript object containing the JSON response
-      console.log("Response Data: ", data);
       updateDynamicElements(data);
     })
     .catch(function(error) {

@@ -38,8 +38,7 @@
                     <input type="text" placeholder="Email" name="email" id="email">
                     <input type="password" placeholder="Password" name="password" id="password">
                     <input type="button" value="Login" id="loginButton">
-                    <a href="">Forgot password?</a>
-                    <p>By proceeding, you agree to our <a href="">Terms of Use</a> and confirm you have read our <a href="">Privacy and Cookie Statement</a>.
+                    <p><br><br><br><br>By proceeding, you agree to our <a href="">Terms of Use</a> and confirm you have read our <a href="">Privacy and Cookie Statement</a>.
                         <br><br>This site is protected by reCAPTCHA and the <a href="https://policies.google.com/privacy?hl=en-US">Google Privacy Policy</a> and <a href="https://policies.google.com/terms?hl=en-US">Terms of Service</a> apply.
                     </p>
                 </div>

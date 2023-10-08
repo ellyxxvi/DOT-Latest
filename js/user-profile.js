@@ -16,7 +16,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     document.getElementById("confirmLogout").addEventListener("click", function () {
-        console.log("Click");
         localStorage.removeItem("access_token");
         localStorage.removeItem("user_data");
         window.location.href = "login_register.php";
@@ -143,7 +142,6 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .then(handleErrors)
             .then(data => {
-                console.log('Uploaded image URL:', data.http_img_url);
         
                 updatedUser.profile_photo = data.http_img_url;
                 sendEditRequest(updatedUser);
@@ -161,7 +159,6 @@ document.addEventListener("DOMContentLoaded", function () {
     function sendEditRequest(updatedUser) {
         const accessToken = localStorage.getItem('access_token');
         const userId = updatedUser.id;
-        console.log(JSON.stringify(updatedUser));
         delete updatedUser.id; // Remove the id property from updatedUser
 
         fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users/${userId}`, {
@@ -174,7 +171,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
             .then(response => {
                 if (response.ok) {
-                    console.log('Profile updated successfully');
+                    alert('Profile updated successfully');
                     // localStorage.setItem('user_data', JSON.stringify(updatedUser));
                     window.location.reload(); 
                     editModal.hide();
@@ -351,7 +348,7 @@ function populateUserData(user, preferenced_categories) {
     } else {
         console.error("nameHolder element not found.");
     }
-    console.log("User: " + JSON.stringify(user));
+    // console.log("User: " + JSON.stringify(user));
     const profileImg = document.querySelector(".profile-img img");
     if (profileImg) {
         profileImg.src = user.profile_photo;

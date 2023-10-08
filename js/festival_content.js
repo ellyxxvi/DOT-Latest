@@ -5,7 +5,6 @@ const festivalTitle = document.querySelector('.festival-title');
 const festivalDescription = document.querySelector('.festival-description');
 const carouselInner = document.querySelector('.carousel-inner');
 
-console.log('Script loaded.'); // Add this line
 
 function populateElements(data) {
   bgImage.style.backgroundImage = `url('${data.images}')`;
@@ -61,14 +60,12 @@ let festivalCity; // Declare festivalCity variable outside of the fetch blocks
 
 fetch(`${API_PROTOCOL}://${API_HOSTNAME}/events/${itemId}`)
   .then((response) => {
-    console.log('Festival Data Response Status:', response.status);
     if (!response.ok) {
       throw new Error('Failed to fetch festival data');
     }
     return response.json();
   })
   .then((data) => {
-    console.log('Festival Data:', data);
     populateElements(data);
 
     // Get the city information from the festival data
@@ -78,21 +75,17 @@ fetch(`${API_PROTOCOL}://${API_HOSTNAME}/events/${itemId}`)
     return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places?category=resort`);
   })
   .then((response) => {
-    console.log('Resorts Data Response Status:', response.status);
     if (!response.ok) {
       throw new Error('Failed to fetch resorts data');
     }
     return response.json();
   })
   .then((allResortsData) => {
-    console.log('All Resorts Data:', allResortsData);
 
     // Filter resort data based on the city of the festival
     const filteredResortsData = allResortsData.filter(
       (resort) => resort.city === festivalCity
     );
-
-    console.log('Filtered Resorts Data:', filteredResortsData);
 
     carouselInner.innerHTML = ''; // Clear previous content
 

@@ -69,11 +69,9 @@ if (isLoggedIn) {
   .then(responses => Promise.all(responses.map(response => response.json())))
   .then(([placesData, visitedData]) => {
     const boxContainer = document.querySelector('.box-container');
-    console.log("Loop started");
 
     visitedData.forEach(item => {
     const placeInfo = placesData.find(place => place.id == item.place_id);
-      console.log("PLACE INFO: " + JSON.stringify(placeInfo));
       if (placeInfo) {
         const box = document.createElement('div');
         box.classList.add('box');

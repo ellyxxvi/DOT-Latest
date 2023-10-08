@@ -75,18 +75,14 @@
 
                // Populate the placeRatingsMap with ratings data
                ratingsData.forEach(rating => {
-                    console.log("Rating:2 " + JSON.stringify(rating));
                     const placeId = rating.place_id;
                     const ratingValue = parseFloat(rating.avg_rating);
-                    console.log("Rating: " + ratingValue);
-                    console.log("ID: " + placeId + " " + placeRatingsMap.has(placeId));
 
                     if (!placeRatingsMap.has(placeId)) {
                          placeRatingsMap.set(placeId, [ratingValue]);
                     } else {
                          placeRatingsMap.get(placeId).push(ratingValue);
                     }
-                    console.log("ID2 GET: " + placeId + " " + placeRatingsMap.get(placeId));
                });
 
                // Calculate average ratings for each place
@@ -104,7 +100,6 @@
 
                // Generate card elements dynamically
                top5Places.forEach(place => {
-                    console.log("PLACE: " + JSON.stringify(place));
                     const cardElement = document.createElement("li");
                     cardElement.className = "card";
                     cardElement.style.backgroundImage = `url('${place.photos[0]}')`;

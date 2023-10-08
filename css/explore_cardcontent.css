@@ -263,7 +263,7 @@ section {
   cursor: pointer;
 }
 
-#copyButton {
+#copyContactButton {
   display: block;
   margin-top: 10px;
   background-color: #ffc107;
@@ -274,7 +274,21 @@ section {
   cursor: pointer;
 }
 
-#copyButton:hover {
+#copyContactButton:hover {
+  background-color: #ff9800;
+}
+#copyAddressButton {
+  display: block;
+  margin-top: 10px;
+  background-color: #ffc107;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+#copyAddressButton:hover {
   background-color: #ff9800;
 }
 

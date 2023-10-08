@@ -1,5 +1,5 @@
-const API_PROTOCOL = 'https';
-const API_HOSTNAME = 'kentjordan.xyz/api';
+const API_PROTOCOL = 'https'
+const API_HOSTNAME = 'goexplorebatangas.com/api'
 
 const categoryToIcon = {
   'swim': 'fas fa-water',
@@ -135,7 +135,6 @@ async function fetchAndGenerateCardsForCity(city) {
 function refreshContent() {
   // Read the selected city from local storage
   const selectedCity = localStorage.getItem('selectedCity') || 'DefaultCity';
-  console.log("Selected city from local storage:", selectedCity); 
   fetchAndGenerateCardsForCity(selectedCity);
 }
 

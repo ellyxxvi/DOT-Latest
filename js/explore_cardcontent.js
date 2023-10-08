@@ -1,52 +1,42 @@
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("Script loaded and running!");
     const filterButtons = document.querySelectorAll(".filter-nav button");
     const commentCardsContainer = document.querySelector(".comment-cards-container");
     const addToFavoritesBtn = document.getElementById("add-to-favorites");
-    const socialIcon = document.getElementById("socialIcon");
     const queryParams = new URLSearchParams(window.location.search);
     const desiredServiceId = queryParams.get("id");
 
     // ADD to visited
     addVisited(desiredServiceId);
 
-//    const isServiceFavorited = localStorage.getItem("favoriteService_" + desiredServiceId);
+    //    const isServiceFavorited = localStorage.getItem("favoriteService_" + desiredServiceId);
     const favoritesListPromise = fetchFavorites();
     favoritesListPromise
-    .then(favoritesList => {
-        // Use the favoritesList here
-        console.log("Favorites List: " + JSON.stringify(favoritesList));
-        
-        // Use Promise.all to handle multiple asynchronous calls
-        const checkingResultsPromises = favoritesList.map(item =>
-        checkIfcurrentPlaceisFavorite(item)
-        );
+        .then(favoritesList => {
+            // Use Promise.all to handle multiple asynchronous calls
+            const checkingResultsPromises = favoritesList.map(item =>
+                checkIfcurrentPlaceisFavorite(item)
+            );
 
-        return Promise.all(checkingResultsPromises);
-    })
-    .then(checkingResults => {
-        // checkingResults is an array containing the results of all checkIfcurrentPlaceisFavorite calls
-        console.log("Checking Results: " + JSON.stringify(checkingResults));
+            return Promise.all(checkingResultsPromises);
+        })
+        .then(checkingResults => {
+            const isAnyFavorite = checkingResults.some(isFavorite => isFavorite);
+            if (isAnyFavorite) {
+                addToFavoritesBtn.classList.add("added");
+                addToFavoritesBtn.innerHTML = '<i class="fas fa-check"></i> Added to Favorites';
+            } else {
 
-        // You can now work with the checkingResults array
-        // For example, you can check if any item is not a favorite:
-        const isAnyFavorite = checkingResults.some(isFavorite => isFavorite);
-        if (isAnyFavorite) {
-            addToFavoritesBtn.classList.add("added");
-            addToFavoritesBtn.innerHTML = '<i class="fas fa-check"></i> Added to Favorites';
-        } else {
-           
-        }
+            }
 
 
         })
-    .catch(error => {
-        // Handle errors here
-        console.error("Error fetching favorites: " + error);
-        // Handle the error appropriately
-    });
+        .catch(error => {
+            // Handle errors here
+            console.error("Error fetching favorites: " + error);
+            // Handle the error appropriately
+        });
 
-    const isServiceFavorited = false;   
+    const isServiceFavorited = false;
     // Call someFunction somewhere in your code
 
     let commentCards = document.querySelectorAll(".comment-card");
@@ -56,17 +46,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    socialIcon.addEventListener("click", function () {
-        const desiredService = dynamicData.find(service => service.id === desiredServiceId);
-        if (desiredService && desiredService.website) {
-            const externalLink = desiredService.website;
-            window.open(externalLink, "_blank");
-        } else {
-            console.log("Website URL not available for this service.");
-        }
-    });
+    // socialIcon.addEventListener("click", function () {
+    //     const desiredService = dynamicData.find(service => service.id === desiredServiceId);
+    //     if (desiredService && desiredService.website) {
+    //         const externalLink = desiredService.website;
+    //         window.open(externalLink, "_blank");
+    //     } else {
+    //         console.log("Website URL not available for this service.");
+    //     }
+    // });
 
-        // Check if the user is logged in
+    // Check if the user is logged in
     const isLoggedIn = localStorage.getItem('access_token') !== null;
 
     // Check if the user is logged in and set the button accordingly
@@ -99,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Increment the counter for the next added item
             addItemCounter++;
-           
+
             const favoriteData = {
                 place_id: desiredServiceId,
                 user_id: user_id.id,
@@ -169,7 +159,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function calculateTotalRating(placeComments) {
         if (placeComments.length === 0) {
-            console.log("No ratings available for this service.");
             return;
         }
 
@@ -241,11 +230,9 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(commentsData => {
                 // Filter comments for the desired place_id
                 const placeComments = commentsData.all;
-                console.log("Comments: " + JSON.stringify(commentsData));
                 calculateTotalRating(placeComments);
 
                 if (placeComments.length === 0) {
-                    console.log("No comments available for this service.");
                     return;
                 }
 
@@ -300,14 +287,10 @@ document.addEventListener("DOMContentLoaded", function () {
             // Filter comment cards based on selected rating
             currentCommentCards.forEach(card => {
                 const cardRating = card.getAttribute("data-rating");
-                console.log("Selected Rating:", selectedRating);
-                console.log("Card Rating:", cardRating);
 
                 if (selectedRating === "all" || cardRating === selectedRating) {
-                    console.log("Match found");
                     card.classList.remove("none");
                 } else {
-                    console.log("No match found");
                     card.classList.add("none");
                 }
             });
@@ -315,18 +298,13 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    
+
     //data buttons
     const contactButton = document.getElementById("contact-icon");
-    const contactModal = document.getElementById("contactModal");
+    // const contactModal = document.getElementById("contactModal");
     const closeModal = document.querySelector(".close-modal");
     const copyButton = document.getElementById("copyButton");
     const contactInfo = document.getElementById("contactInfo");
-
-    const linksButton = document.getElementById("socialIcon");
-    const linksModal = document.getElementById("LinksModal");
-    const linksInfo = document.getElementById("linksInfo");
-    const closeModal1 = document.querySelector(".close-modal1");
 
     const addressButton = document.getElementById("address-icon");
     const addressModal = document.getElementById("addressModal");
@@ -352,35 +330,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }
 
-    //social links button
-    linksButton.addEventListener("click", async function () {
-        const desiredPlaceId = queryParams.get("id");
-        const fetchedPlaceData = await fetchPlaceData(desiredPlaceId);
-
-        if (fetchedPlaceData && fetchedPlaceData.social_links && fetchedPlaceData.social_links.links) {
-            linksInfo.innerHTML = ''; 
-
-            const links = Array.isArray(fetchedPlaceData.social_links.links)
-                ? fetchedPlaceData.social_links.links
-                : [fetchedPlaceData.social_links.links]; 
-
-            links.forEach(link => {
-                const linkElement = document.createElement('a');
-                linkElement.href = link.startsWith('http') ? link : `https://${link}`;
-                linkElement.textContent = link;
-                linkElement.target = '_blank'; 
-                linkElement.style.display = 'block'; 
-                linksInfo.appendChild(linkElement);
-            });
-        } else {
-            linksInfo.textContent = "No social links available.";
-        }
-
-        linksModal.style.display = "block";
-    });
-
-
-    // contact button
+    // Contact button
     contactButton.addEventListener("click", async function () {
         const desiredPlaceId = queryParams.get("id");
         const fetchedPlaceData = await fetchPlaceData(desiredPlaceId);
@@ -390,12 +340,12 @@ document.addEventListener("DOMContentLoaded", function () {
             contactInfo.textContent = "Contact information not available.";
         }
 
-        copyButton.innerHTML = '<i class="fas fa-copy"></i> Copy';
-        copyButton.disabled = false;
+        copyContactButton.innerHTML = '<i class="fas fa-copy"></i> Copy';
+        copyContactButton.disabled = false;
         contactModal.style.display = "block";
     });
 
-    //address button
+    // Address button
     addressButton.addEventListener("click", async function () {
         try {
             const desiredPlaceId = queryParams.get("id");
@@ -419,29 +369,67 @@ document.addEventListener("DOMContentLoaded", function () {
     closeModal.addEventListener("click", function () {
         contactModal.style.display = "none";
     });
-    // Function to close the modal links
-    closeModal1.addEventListener("click", function () {
-        linksModal.style.display = "none";
-    });
+
+    // // Function to close the modal links
+    // closeModal1.addEventListener("click", function () {
+    //     linksModal.style.display = "none";
+    // });
+
     // Function to close the modal address
     closeModal2.addEventListener("click", function () {
-
         addressModal.style.display = "none";
     });
 
-
-    // Function to copy contact information or links to clipboard
-    copyButton.addEventListener("click", function () {
+    // Function to copy contact information to clipboard
+    copyContactButton.addEventListener("click", function () {
         const textToCopy = contactInfo.textContent;
         navigator.clipboard.writeText(textToCopy)
             .then(() => {
-                copyButton.innerHTML = '<i class="fas fa-check"></i> Copied!';
-                copyButton.disabled = true;  // Disable the button after copying
+                copyContactButton.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                copyContactButton.disabled = true;  // Disable the button after copying
             })
             .catch(err => {
                 console.error("Copy failed:", err);
             });
     });
+
+    // Function to copy address information to clipboard
+    copyAddressButton.addEventListener("click", function () {
+        const textToCopy = addressInfo.textContent;
+        navigator.clipboard.writeText(textToCopy)
+            .then(() => {
+                copyAddressButton.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                copyAddressButton.disabled = true;  // Disable the button after copying
+            })
+            .catch(err => {
+                console.error("Copy failed:", err);
+            });
+    });
+    const facebookButton = document.getElementById("facebookIcon");
+    facebookButton.addEventListener("click", async function () {
+        const desiredPlaceId = queryParams.get("id");
+        const fetchedPlaceData = await fetchPlaceData(desiredPlaceId);
+        if (fetchedPlaceData && fetchedPlaceData.social_links && fetchedPlaceData.social_links.fb) {
+            window.open(fetchedPlaceData.social_links.fb, "_blank");
+        } else {
+            console.log("Facebook link not available.");
+            // Handle the case when the Facebook link is not available.
+        }
+    });
+
+    // Website button
+    const websiteButton = document.getElementById("websiteIcon");
+    websiteButton.addEventListener("click", async function () {
+        const desiredPlaceId = queryParams.get("id");
+        const fetchedPlaceData = await fetchPlaceData(desiredPlaceId);
+        if (fetchedPlaceData && fetchedPlaceData.social_links && fetchedPlaceData.social_links.website) {
+            window.open(fetchedPlaceData.social_links.website, "_blank");
+        } else {
+            console.log("Website link not available.");
+            // Handle the case when the website link is not available.
+        }
+    });
+
 
 
     const dynamicData = [];
@@ -477,7 +465,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // Log the 'photos' property of each item in the 'mappedData' array
                 mappedData.forEach(item => {
-                    console.log('Photos:', item.photos);
+                   
                 });
 
                 dynamicData.push(...mappedData);
@@ -490,7 +478,6 @@ document.addEventListener("DOMContentLoaded", function () {
     fetchServicesData();
 
     function getUserId() {
-        //console.log("ID: " + userData);
         const userData = JSON.parse(localStorage.getItem('user_data'));
         if (userData && userData.id) {
             return userData.id;
@@ -504,100 +491,86 @@ document.addEventListener("DOMContentLoaded", function () {
         return accessToken;
     }
 
-    
+
     function fetchFavorites() {
         const accessToken = getAccessTokenFromLocalStorage();
-      
-        // Return a Promise
         return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/itineraries/items/`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${accessToken}`
-          },
-        })
-        .then(response => {
-          if (!response.ok) {
-            console.log("DATA1 " + JSON.stringify(response.json()));
-            throw new Error('Network response was not ok');
-          }
-          return response.json(); // Parse the response body as JSON
-        })
-        .then(data => {
-          const copy = [];
-          data.forEach(function (item) {
-            copy.push(item.id);
-          });
-          console.log("DATA copy: " + JSON.stringify(copy));
-          return copy;
-        })
-        .catch(error => {
-          console.log("DATA: " + JSON.stringify(error));
-          // alert('Error adding to favorites: ' + error);
-          throw error; // Rethrow the error to be handled later if needed
-        });
-      }
-      
-      function checkIfcurrentPlaceisFavorite(favoritesID){
-        const accessToken = getAccessTokenFromLocalStorage();
-
-         // Add the service to favorites
-         return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/itineraries/item/${favoritesID}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             },
         })
             .then(response => {
-                
                 if (!response.ok) {
-                    console.log("DATA4 " + JSON.stringify(response.json()));
                     throw new Error('Network response was not ok');
                 }
-                return response.json(); // Parse the response body as JSON
-
-            }).then(data => {
-                console.log("DATA5: " + JSON.stringify(data));
-                if(desiredServiceId == data.place_id){
-                    console.log("Favorite to");
-                    addToFavoritesBtn.setAttribute("favorite-id", data.id);
-                    return true;
-                }else{
-                    console.log("HINDI");
-                    return false;
-                    
-                }
-                
+                return response.json(); 
+            })
+            .then(data => {
+                const copy = [];
+                data.forEach(function (item) {
+                    copy.push(item.id);
+                });
+                return copy;
             })
             .catch(error => {
-                console.log("DATA6: " + JSON.stringify(error));
-                //alert('Error adding to favorites: ' + error);
+                // alert('Error adding to favorites: ' + error);
+                throw error; // Rethrow the error to be handled later if needed
             });
     }
-      
+
+    function checkIfcurrentPlaceisFavorite(favoritesID) {
+        const accessToken = getAccessTokenFromLocalStorage();
+
+        // Add the service to favorites
+        return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/itineraries/item/${favoritesID}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            },
+        })
+            .then(response => {
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json(); 
+
+            }).then(data => {
+                if (desiredServiceId == data.place_id) {
+                    addToFavoritesBtn.setAttribute("favorite-id", data.id);
+                    return true;
+                } else {
+                    return false;
+
+                }
+
+            })
+            .catch(error => {
+                alert('Error adding to favorites: ' + error);
+            });
+    }
+
     function addVisited(serviceId) {
         const accessToken = localStorage.getItem('access_token');
-      console.log("Added " + serviceId);
         // Return a Promise
         return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/visit-place/${serviceId}/user`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${accessToken}`
-          },
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            },
         })
-        .then(response => {
-          if (!response.ok) {
-            console.log("DATA1 " + JSON.stringify(response.json()));
-            throw new Error('Network response was not ok');
-          }
-          return response.json(); // Parse the response body as JSON
-        })
-        .then(data => {
-         
-        })
-        .catch(error => {
-          console.log("DATA: " + JSON.stringify(error));
-          // alert('Error adding to favorites: ' + error);
-          throw error; // Rethrow the error to be handled later if needed
-        });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json(); 
+            })
+            .then(data => {
+
+            })
+            .catch(error => {
+                throw error; 
+            });
     }
 });

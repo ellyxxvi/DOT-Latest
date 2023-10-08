@@ -122,7 +122,6 @@ function registerUser(user) {
         return response.json();
     })
     .then(data => {
-        console.log('User created:', data);
         localStorage.setItem('access_token', (data.access_token));
         //localStorage.setItem('user_id', (data.id));
        
@@ -152,7 +151,6 @@ function collectSelectedPreferences() {
 // Function to save user preferences
 function saveUserPreferences(selectedPreferences) {
     const token = localStorage.getItem('access_token');
-    console.log('Access token:', token);
 
     const userPreference = {
         preferenced_categories: selectedPreferences.map(pref => pref.category)
@@ -177,7 +175,6 @@ function saveUserPreferences(selectedPreferences) {
         return response.json();
     })
     .then(data => {
-        console.log('User preferences saved:', data);
         alert('New user added. Please proceed to log in to your account.');
         window.location.reload();
     })

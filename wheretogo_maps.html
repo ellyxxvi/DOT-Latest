@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Tagaytay City Map</title>
+    <title>City Map</title>
     <style>
         body {
             margin: 40;
@@ -85,29 +85,66 @@
     </div>
 
     <script>
-        function initMap() {
-            var map = L.map('map').setView([14.1153, 120.9629], 13);
+function initMap() {
+    var map = L.map('map').setView([13.9450, 121.1312], 9);
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-            }).addTo(map);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+    }).addTo(map);
 
-            var marker = L.marker([14.1153, 120.9629]).addTo(map);
-            marker.bindPopup("Philippines");
+    // Define an array of places with their coordinates
+    var places = [
+        { lat: 13.7291, lon: 120.8859, name: "Camp Netanya Resort and Spa" },
+        { lat: 13.7264, lon: 120.8832, name: "Aquaventure Reef Club" },
+        { lat: 13.7070, lon: 120.8776, name: "Casita Ysabel" },
+        { lat: 13.7212, lon: 120.8748, name: "Eagle Point Beach and Dive Resort" },
+        { lat: 13.7309, lon: 120.8863, name: "La Chevrerie resort and Spa" },
+        { lat: 13.7973, lon: 120.9196, name: "Sadayo Beach Resort" },
+        { lat: 13.8037, lon: 120.9123, name: "Camp Raya Adventure Resort" },
+        { lat: 13.7832, lon: 120.9273, name: "Destino Beach Club Dive Resort and Hotel" },
+        { lat: 13.7967, lon: 120.9201, name: "New Yorkers Resort" },
+        { lat: 13.7953, lon: 120.9207, name: "La Thalia Beach Resort" },
+        { lat: 13.8001, lon: 120.6338, name: "Stilts Calatagan Resort" },
+        { lat: 13.7986, lon: 120.6376, name: "Manuel Uy Beach Resort" },
+        { lat: 14.1334, lon: 120.5797, name: "Punta Fuego" },
+        { lat: 13.5512, lon: 121.0700, name: "Verde Island" },
+        { lat: 14.0568, lon: 120.4920, name: "Fortune Island" },
+        { lat: 13.6872, lon: 120.8323, name: "Sepoc Beach" },
+        { lat: 14.1252, lon: 120.5988, name: "Tali Beach" },
+        { lat: 14.1940, lon: 120.5873, name: "Santelmo Cove" },
+        { lat: 13.7560, lon: 120.9186, name: "Anilao Beach Club" },
+        { lat: 13.6462, lon: 120.8664, name: "Masasa Beach" },
+        // { lat: , lon: , name: " " },
+        // { lat: , lon: , name: " " },
+        // { lat: , lon: , name: " " },
+        // { lat: , lon: , name: " " },
+        // { lat: , lon: , name: " " },
+        // { lat: , lon: , name: " " },
+        // { lat: , lon: , name: " " },
+        // { lat: , lon: , name: " " },
+        // { lat: , lon: , name: " " },
+        // { lat: , lon: , name: " " },
+        // Add more places as needed
+    ];
 
-            // Show the map container with animation
-            document.getElementById('mapContainer').style.opacity = 1;
-            document.getElementById('mapContainer').style.transform = 'translateY(0)';
-        }
+    // Loop through the places array and create markers for each place
+    places.forEach(function (place) {
+        var marker = L.marker([place.lat, place.lon]).addTo(map);
+        marker.bindPopup(place.name);
+    });
+
+    // Show the map container with animation
+    document.getElementById('mapContainer').style.opacity = 1;
+    document.getElementById('mapContainer').style.transform = 'translateY(0)';
+}
+
+window.onload = function () {
+    initMap();
+};
+
     </script>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-
-    <script>
-        window.onload = function () {
-            initMap();
-        };
-    </script>
 </body>
 </html>

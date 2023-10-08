@@ -38,58 +38,71 @@
                 <a class="nav-search-icon" href="search_page.php">
                     <i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i>
                 </a>
-
-                <script>
-                    const API_PROTOCOL = 'https'
-                    const API_HOSTNAME = 'goexplorebatangas.com/api'
-                    // Function to check if the user is authenticated
-                    function checkAuthentication() {
-                        var isAuthenticated = localStorage.getItem("access_token");
-
-                        if (isAuthenticated != null) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-
-                    // Function to redirect the user to the login page
-                    function redirectToLogin() {
-                        window.location.href = 'login_register.php';
-                    }
-
-                    // Function to check access to the "favorites" page
-                    function checkFavoritesAccess() {
-                        var isAuthenticated = checkAuthentication();
-
-                        if (isAuthenticated) {
-                            return true;
-                        } else {
-                            redirectToLogin();
-                            return false;
-                        }
-                    }
-                    document.addEventListener('DOMContentLoaded', () => {
-                        var isAuthenticated = checkAuthentication();
-                        var navUserIcon = document.createElement("a");
-                        var icon = document.createElement("i");
-                        icon.className = "fa-solid fa-user";
-                        icon.style.color = "#ffffff";
-                        navUserIcon.appendChild(icon);
-
-                        if (isAuthenticated) {
-                            navUserIcon.className = "nav-user-icon";
-                            navUserIcon.href = "itinerary_favorites.php";
-                        } else {
-                            navUserIcon.className = "nav-user-icon";
-                            navUserIcon.href = "login_register.php";
-                        }
-
-                        var navContainer = document.getElementById("nav-container");
-                        navContainer.appendChild(navUserIcon);
-                    });
-                </script>
             </div>
+
+            <script>
+                const API_PROTOCOL = 'https'
+                const API_HOSTNAME = 'goexplorebatangas.com/api'
+// Function to check if the user is authenticated
+function checkAuthentication() {
+                    var isAuthenticated = localStorage.getItem("access_token");
+
+                    if (isAuthenticated != null) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+
+                // Function to redirect the user to the login page
+                function redirectToLogin() {
+                    window.location.href = 'login_register.php';
+                }
+
+                // Function to check access to the "favorites" page
+                function checkFavoritesAccess() {
+                    var isAuthenticated = checkAuthentication();
+
+                    if (isAuthenticated) {
+                        return true;
+                    } else {
+                        redirectToLogin();
+                        return false;
+                    }
+                }
+
+                // Get the current page's URL
+                var currentPageURL = window.location.href;
+
+                // Find the navigation link that matches the current page's URL
+                const navLinks = document.querySelectorAll('.nav-links a');
+                navLinks.forEach((link) => {
+                    if (link.href === currentPageURL) {
+                        link.classList.add('active');
+                    }
+                });
+
+                document.addEventListener('DOMContentLoaded', () => {
+                    var isAuthenticated = checkAuthentication();
+                    var navUserIcon = document.createElement("a");
+                    var icon = document.createElement("i");
+                    icon.className = "fa-solid fa-user";
+                    icon.style.color = "#ffffff";
+                    navUserIcon.appendChild(icon);
+
+                    if (isAuthenticated) {
+                        navUserIcon.className = "nav-user-icon";
+                        navUserIcon.href = "itinerary_favorites.php";
+                    } else {
+                        navUserIcon.className = "nav-user-icon";
+                        navUserIcon.href = "login_register.php";
+                    }
+
+                    var navContainer = document.getElementById("nav-container");
+                    navContainer.appendChild(navUserIcon);
+                });
+            </script>
+        </div>
         </div>
     </header>
 </body>

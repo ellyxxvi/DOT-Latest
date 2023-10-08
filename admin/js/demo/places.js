@@ -34,79 +34,84 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function populateTable(searchKeyword = '') {
       const searchUrl = `${API_PROTOCOL}://${API_HOSTNAME}/places`;
-  
+    
       fetch(searchUrl)
-          .then(response => {
-              if (!response.ok) {
-                  throw new Error(`HTTP error! Status: ${response.status}`);
-              }
-              return response.json();
-          })
-          .then(data => {
-              const filteredData = data.filter(user => {
-                  const lowerKeyword = searchKeyword.toLowerCase();
-                  const contact = (typeof user.contact === 'string') ? user.contact : '';
-                  return (
-                      user.title.toLowerCase().includes(lowerKeyword) ||
-                      user.category.toLowerCase().includes(lowerKeyword) ||
-                      user.province.toLowerCase().includes(lowerKeyword) ||
-                      user.city.toLowerCase().includes(lowerKeyword) ||
-                      user.barangay.toLowerCase().includes(lowerKeyword) ||
-                      contact.toLowerCase().includes(lowerKeyword) 
-                  );
-              });
-  
-              tableBody.innerHTML = '';
-  
-              if (filteredData.length === 0) {
-                  const noResultsRow = document.createElement('tr');
-                  noResultsRow.innerHTML = `
-                      <td colspan="13" style="text-align: center;">There are no relevant search results.</td>
-                  `;
-                  tableBody.appendChild(noResultsRow);
-              } else {
-                  // Populate the table with search results
-                  filteredData.forEach(user => {
-                      const row = document.createElement('tr');
-                      row.innerHTML = `
-                          <td>${user.id}</td>
-                          <td><img src="${user.photos}" alt="" class="img-thumbnail" width="100px"></td>
-                          <td>${user.title}</td>
-                          <td>${user.description}</td>
-                          <td>${user.category}</td>
-                          <td>${user.province}</td>
-                          <td>${user.city}</td>
-                          <td>${user.barangay}</td>
-                          <td>${user.contact}</td>
-                          <td>${user.social_links ? user.social_links.links : ''}</td>
-                          <td>${user.created_at}</td>
-                          <td>${user.updated_at}</td>
-                          <td>
-                              <button class="btn btn-primary btn-sm edit-button" data-user-id="${user.id}">
-                                  <i class="fa fa-pen"></i>
-                              </button>
-                              <button class="btn btn-danger btn-sm delete-button">
-                                  <i class="fa fa-trash"></i>
-                              </button>
-                          </td>
-                      `;
-                      tableBody.appendChild(row);
-                  });
-              }
-  
-              const deleteButtons = document.querySelectorAll('.delete-button');
-              deleteButtons.forEach(button => {
-                  button.addEventListener('click', deleteRow);
-              });
-  
-              const editButtons = document.querySelectorAll('.edit-button');
-              editButtons.forEach(button => {
-                  button.addEventListener('click', editRow);
-              });
-  
-          })
-          .catch(error => console.error('Error fetching data:', error));
-  }
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          const filteredData = data.filter(user => {
+            const lowerKeyword = searchKeyword.toLowerCase();
+            const contact = (typeof user.contact === 'string') ? user.contact : '';
+            return (
+              user.title.toLowerCase().includes(lowerKeyword) ||
+              user.category.toLowerCase().includes(lowerKeyword) ||
+              user.province.toLowerCase().includes(lowerKeyword) ||
+              user.city.toLowerCase().includes(lowerKeyword) ||
+              user.barangay.toLowerCase().includes(lowerKeyword) ||
+              contact.toLowerCase().includes(lowerKeyword)
+            );
+          });
+    
+          tableBody.innerHTML = '';
+    
+          if (filteredData.length === 0) {
+            const noResultsRow = document.createElement('tr');
+            noResultsRow.innerHTML = `
+              <td colspan="13" style="text-align: center;">There are no relevant search results.</td>
+            `;
+            tableBody.appendChild(noResultsRow);
+          } else {
+            // Populate the table with search results
+            filteredData.forEach(user => {
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                <td>${user.id}</td>
+                <td><img src="${user.photos}" alt="" class="img-thumbnail" width="100px"></td>
+                <td>${user.title}</td>
+                <td>${user.description}</td>
+                <td>${user.category}</td>
+                <td>${user.province}</td>
+                <td>${user.city}</td>
+                <td>${user.barangay}</td>
+                <td>${user.contact}</td>
+                <td>
+                  <ul>
+                    <li>Facebook: <a href="${user.social_links ? user.social_links.fb : ''}" target="_blank">${user.social_links ? user.social_links.fb : ''}</a></li>
+                    <li>Website: <a href="${user.social_links ? user.social_links.website : ''}" target="_blank">${user.social_links ? user.social_links.website : ''}</a></li>
+                  </ul>
+                </td>
+                <td>${user.created_at}</td>
+                <td>${user.updated_at}</td>
+                <td>
+                  <button class="btn btn-primary btn-sm edit-button" data-user-id="${user.id}">
+                    <i class="fa fa-pen"></i>
+                  </button>
+                  <button class="btn btn-danger btn-sm delete-button">
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </td>
+              `;
+              tableBody.appendChild(row);
+            });
+          }
+    
+          const deleteButtons = document.querySelectorAll('.delete-button');
+          deleteButtons.forEach(button => {
+            button.addEventListener('click', deleteRow);
+          });
+    
+          const editButtons = document.querySelectorAll('.edit-button');
+          editButtons.forEach(button => {
+            button.addEventListener('click', editRow);
+          });
+        })
+        .catch(error => console.error('Error fetching data:', error));
+    }
+    
   
 
   populateTable();
@@ -154,24 +159,28 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     })
     .then(user => {
-        editForm.elements.id.value = user.id;
-        editForm.elements.title.value = user.title;
-        editForm.elements.description.value = user.description;
-        editForm.elements.category.value = user.category;
-        editForm.elements.province.value = user.province;
-        editForm.elements.city.value = user.city;
-        editForm.elements.barangay.value = user.barangay;
-        editForm.elements.contact.value = user.contact;
-        editForm.elements.social_links.value = user.social_links.links;
-        
-        const existingImageURL = user.photos; 
-        const imagePreview = document.getElementById('edit-image-preview');
-        imagePreview.src = existingImageURL;
-
-        editForm.elements.existingImage.value = existingImageURL;
-
-        editModal.show();
-    })
+      editForm.elements.id.value = user.id;
+      editForm.elements.title.value = user.title;
+      editForm.elements.description.value = user.description;
+      editForm.elements.category.value = user.category;
+      editForm.elements.province.value = user.province;
+      editForm.elements.city.value = user.city;
+      editForm.elements.barangay.value = user.barangay;
+      editForm.elements.contact.value = user.contact;
+  
+      // Adapt social_links to match your form structure
+      editForm.elements.fb_link.value = user.social_links.fb;
+      editForm.elements.website_link.value = user.social_links.website;
+  
+      const existingImageURL = user.photos;
+      const imagePreview = document.getElementById('edit-image-preview');
+      imagePreview.src = existingImageURL;
+  
+      editForm.elements.existingImage.value = existingImageURL;
+  
+      editModal.show();
+  })
+  
     .catch(error => console.error('Error fetching user data:', error));
 }
 
@@ -180,27 +189,36 @@ editForm.addEventListener('submit', event => {
   event.preventDefault();
   const formData = new FormData(editForm);
   const updatedUser = {};
-  formData.delete('created_at'); 
-  formData.delete('existingImage'); 
+  formData.delete('created_at');
+  formData.delete('existingImage');
+  
+  // Convert the contacts field to an array
+  updatedUser.contact = formData.get('contact').split(',').map(contact => contact.trim());
+
+  // Create the social_links object with fb_link and website_link
+  updatedUser.social_links = {
+    fb: formData.get('fb_link').trim(),
+    website: formData.get('website_link').trim(),
+  };
+
+  // Exclude fb_link and website_link from the top level of the updatedUser object
+  formData.delete('contact');
+  formData.delete('fb_link');
+  formData.delete('website_link');
+
   formData.forEach((value, key) => {
-    if (key === 'contact') {
-      updatedUser[key] = value.split(',').map(item => item.trim());
-    } else if(key === 'social_links') {
-      updatedUser[key] = {};
-      updatedUser[key]['links'] = value.split(',').map(item => item.trim());
-    } else {
-      updatedUser[key] = value;
-    }
-    console.log("Updated user: " + JSON.stringify(updatedUser));
+    updatedUser[key] = value;
   });
+
+  console.log("Updated user:", updatedUser);
+
   const accessToken = getAccessTokenFromLocalStorage();
   const imageInput = editForm.querySelector('input[type="file"]');
   const imageFile = imageInput.files[0];
 
   if (!imageFile) {
-
     updatedUser.photos = [editForm.elements.existingImage.value];
-    sendEditRequest(updatedUser, accessToken); 
+    sendEditRequest(updatedUser, accessToken);
   } else {
     const formDataForImage = new FormData();
     formDataForImage.append('photo', imageFile);
@@ -218,7 +236,7 @@ editForm.addEventListener('submit', event => {
         console.log('Uploaded image URL:', data.http_img_url);
 
         updatedUser.photos = [data.http_img_url];
-        
+
         sendEditRequest(updatedUser, accessToken);
       })
       .catch(error => {
@@ -258,7 +276,6 @@ function sendEditRequest(updatedUser, accessToken) {
   addButton.addEventListener('click', () => {
     addEventModal.show();
   });
-
 // Handle form submission and add new item
 addAccountButton.addEventListener('click', async () => {
   const form = document.getElementById('add-user-form');
@@ -268,6 +285,7 @@ addAccountButton.addEventListener('click', async () => {
   const accessToken = getAccessTokenFromLocalStorage();
 
   if (!imageFile) {
+    alert('Please select an image file.');
     console.error('Please select an image file.');
     return;
   }
@@ -290,18 +308,29 @@ addAccountButton.addEventListener('click', async () => {
 
     const imageUploadData = await imageUploadResponse.json();
     console.log('Uploaded image URL:', imageUploadData.http_img_url);
-    // Convert the contacts and social_links fields to arrays
+
+    // Convert the contacts field to an array
     const contact = formData.get('contact').split(',').map(contact => contact.trim());
-    const socialLinks = formData.get('social_links').split(',').map(social_links => social_links.trim());
+
+    // Create an object for social_links
+    const socialLinks = {
+      fb: formData.get('fb_link').trim(),
+      website: formData.get('website_link').trim()
+    };
 
     const user = {
       ...Object.fromEntries(formData.entries()),
       photos: [imageUploadData.http_img_url],
-      contact: contact, 
-      social_links: {
-        links: socialLinks, 
-      },
+      contact: contact,
+      social_links: socialLinks,
     };
+
+    // Remove the "fb_link" and "website_link" properties from the user object
+    delete user.fb_link;
+    delete user.website_link;
+
+    // Log user inputs
+    console.log('User Inputs:', user);
 
     const addUserResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places`, {
       method: 'POST',
@@ -311,6 +340,9 @@ addAccountButton.addEventListener('click', async () => {
       },
       body: JSON.stringify(user),
     });
+
+    // Log the data sent to the server
+    console.log('Data Sent to Server:', JSON.stringify(user));
 
     // Log the response from the server
     console.log('Response from server:', addUserResponse.status, addUserResponse.statusText);

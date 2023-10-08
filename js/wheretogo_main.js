@@ -15,7 +15,6 @@ function fetchServicesData() {
 
 // Function to generate the service card HTML
 function generateServiceCard(service) {
-  console.log("i am working");
   return `
     <div class="column">
       <a href="wheretogo_cardcontent.php?id=${service.id}" class="card-link">

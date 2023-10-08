@@ -35,7 +35,7 @@
         </div>
         <li><a href="#" class="category-link swim-beaches" data-category="swim"><i class="fa-solid fa-water"></i><p>Swim and Beaches</p></a></li>
         <li><a href="#" class="category-link nature-trip" data-category="nature"><i class="fa-solid fa-leaf"></i><p>Nature Trip</p></a></li>
-        <li><a href="#" class="category-link tourist-spots" data-category="tourist"><i class="fa-solid fa-location-dot"></i><p>Tourist Spots</p></a></li>
+        <li><a href="#" class="category-link tourist-spots" data-category="tourists"><i class="fas fa-map-marker-alt"></i><p>Tourist Spots</p></a></li>
         <li><a href="#" class="category-link hotel" data-category="resort"><i class="fa-solid fa-hotel"></i><p>Hotel</p></a></li>
         <li><a href="#" class="category-link churches" data-category="churches"><i class="fa-solid fa-church"></i><p>Churches</p></a></li>
         <!-- <li><a href="#" class="category-link events-culture" data-category="events"><i class="fa-solid fa-calendar-days"></i><p>Events and Culture</p></a></li> -->

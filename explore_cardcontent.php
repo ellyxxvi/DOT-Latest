@@ -43,9 +43,13 @@
             <button class="icon-button" id="contact-icon">
                 <i class="fas fa-phone"></i> Contact
             </button>
-            <button class="icon-button" id="socialIcon">
-                <i class="fas fa-globe"></i> Social Links
+            <button class="icon-button" id="facebookIcon">
+                <i class="fab fa-facebook"></i> Facebook
             </button>
+            <button class="icon-button" id="websiteIcon">
+                <i class="fas fa-globe"></i> Website
+            </button>
+
             <button class="icon-button" id="address-icon">
                 <i class="fas fa-map-marker-alt"></i> Address
             </button>
@@ -58,7 +62,7 @@
             <span class="close-modal">&times;</span>
             <h2>Contact Information</h2>
             <p id="contactInfo"></p>
-            <button id="copyButton">
+            <button id="copyContactButton">
                 <i class="fas fa-copy"></i> Copy
             </button>
         </div>
@@ -75,6 +79,9 @@
             <span class="close-modal2">&times;</span>
             <h2>Address Information</h2>
             <p id="addressInfo"></p>
+            <button id="copyAddressButton">
+                <i class="fas fa-copy"></i> Copy
+            </button>
         </div>
     </div>
 
@@ -102,7 +109,7 @@
     <!-- <script src="/DOT-Latest/admin-side/startbootstrap-sb-admin-2-gh-pages/js/demo/index.js"></script> -->
 </body>
 
-   
+
 
 
 </html>

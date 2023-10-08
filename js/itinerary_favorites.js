@@ -60,7 +60,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const access_token = localStorage.getItem('access_token');
 
     selectedUserId = parseJwt(access_token);
-    console.log("Get user ID: " + JSON.stringify(selectedUserId.id));
     
     if (selectedUserId !== null) {
       // Fetch favorites data for the logged-in user
@@ -72,18 +71,14 @@ document.addEventListener("DOMContentLoaded", function () {
        })
         .then(response => response.json())
         .then(data => {
-          console.log("Favorites: " + JSON.stringify(data));
           const placesData = data; // No need to push items into a new array
 
           if (Array.isArray(placesData)) {
             placesData.forEach(place => {
-              console.log("Test place " + JSON.stringify(place));
              
-              
               // Fetch additional data for this place by its ID
               fetchPlaceDataById(place.id)
               .then(placeData => {
-                console.log("Additional Data for Place " + place.id + ": " + JSON.stringify(placeData));
                 if (placeData.id === place.id) {
                   place.place_id = placeData.place_id;
                 }
@@ -118,7 +113,6 @@ document.addEventListener("DOMContentLoaded", function () {
   
 
   function createBox(place) {
-    console.log("CreateBox: " + JSON.stringify(place));
     const box = document.createElement('div');
     box.id = `box-${place.id}`;
     const addToFavoritesButton = document.createElement('button');
@@ -196,10 +190,8 @@ document.addEventListener("DOMContentLoaded", function () {
     if (completedButton) {
       ratingModal.show();
       selectedPlaceId = completedButton.getAttribute('data-place-id');
-      console.log('Selected Place ID:', selectedPlaceId);
     } else if (deleteButton) {
       selectedPlaceId = deleteButton.getAttribute('data-favorites-id');
-      console.log('Deleting Place ID:', selectedPlaceId);
 
       // Perform delete action
       const boxToRemove = document.getElementById(`box-${selectedPlaceId}`);
@@ -335,7 +327,6 @@ function fetchPlaceDataById(placeId) {
 // Function to fetch feedback data for a specific user and place_id
 function fetchFeedbackDataByUserIdAndPlaceId(userId, placeId) {
   const accessToken = localStorage.getItem('access_token');
-  console.log("fetchFeedbackDataByUserIdAndPlaceId : " + userId + " || " + placeId);
   return fetch(`https://kentjordan.xyz/api/feedbacks/user/${userId}`, {
     method: 'GET',
     headers: {

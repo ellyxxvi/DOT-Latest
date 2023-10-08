@@ -24,9 +24,7 @@
 
                         <div class="col-md-4 col-sm-6 col-xs-12">
                             <ul class="social-icons">
-                                <li><a class="facebook" href="#"><i class="fa fa-facebook"></i></a></li>
-                                <li><a class="twitter" href="#"><i class="fa fa-twitter"></i></a></li>
-                                <li><a class="linkedin" href="#"><i class="fa fa-linkedin"></i></a></li>
+                                <li><a class="facebook" href="https://www.facebook.com/BatangasPTCAO"><i class="fa fa-facebook"></i></a></li>
                             </ul>
                         </div>
                     </div>
