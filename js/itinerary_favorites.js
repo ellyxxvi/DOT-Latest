@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const favoritesButton = document.getElementById("favoritesButton");
   const visitedButton = document.getElementById("visitedButton");
   const accountButton = document.getElementById("accountButton");
+  const builderButton = document.getElementById("builderButton");
   const completedButtons = document.querySelectorAll('.completed-button');
   const ratingModal = new bootstrap.Modal(document.getElementById('ratingModal'));
   const saveRatingButton = document.getElementById('saveRating');
@@ -20,6 +21,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   accountButton.addEventListener("click", function () {
     window.location.href = "user-profile.php";
+  });
+  builderButton.addEventListener("click", function () {
+    window.location.href = "itinerary-builder.php";
   });
 
   const images = [

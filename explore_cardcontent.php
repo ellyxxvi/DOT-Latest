@@ -14,7 +14,9 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/explore_cardcontent.css" />
     <script src="https://kit.fontawesome.com/e173e574d6.js" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
 
     <link rel="icon" href="image/LOGO (2).png" type="image/png">
 
@@ -23,6 +25,10 @@
 <body>
     <section class="iframe-container">
         <div class="background-image"></div>
+        <div id="imageModal" class="modal">
+            <span class="close" onclick="closeImageModal()">&times;</span>
+            <img id="modalImage" class="modal-content">
+        </div>
         <h3></h3>
         </div>
         </div>
@@ -54,8 +60,18 @@
                 <i class="fas fa-map-marker-alt"></i> Address
             </button>
         </div>
-
     </section>
+
+
+
+    <section class="image-gallery">
+        <div class="container">
+            <div class="row gallery" id="dynamic-gallery">
+                <!-- Images will be generated here -->
+            </div>
+        </div>
+    </section>
+
 
     <div class="modal" id="contactModal">
         <div class="modal-content">
@@ -106,10 +122,9 @@
     </section>
     <?php include 'footer.php'; ?>
     <script src="js/explore_cardcontent.js"></script>
-    <!-- <script src="/DOT-Latest/admin-side/startbootstrap-sb-admin-2-gh-pages/js/demo/index.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.5/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
 </body>
-
-
-
-
 </html>

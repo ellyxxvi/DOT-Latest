@@ -21,15 +21,18 @@ function generateServiceCard(service) {
   const iconClass = iconMappings[service.category] || 'fas fa-map-marker-alt';
 
   const words = service.description.split(" ");
-      const truncatedDescription = words.length > 15 ? 
-                                   words.slice(0, 15).join(" ") + "..." : 
-                                   service.description;
+  const truncatedDescription = words.length > 15 ?
+    words.slice(0, 15).join(" ") + "..." :
+    service.description;
+
+  // Extract the first image URL from the array
+  const firstImage = service.backgroundImage[0] || ''; // Use an empty string as a fallback if no images are available
 
   return `
     <div class="column card-link" service-id="${service.id}">
       <a href="explore_cardcontent.php?id=${service.id}">
         <div class="card">
-          <div class="background-image" style="background-image: url('${service.backgroundImage}');"></div>
+          <div class="background-image" style="background-image: url('${firstImage}');"></div>
           <div class="icon-wrapper">
             <i class="${iconClass}"></i>
           </div>

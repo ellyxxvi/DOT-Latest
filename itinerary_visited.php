@@ -41,7 +41,7 @@
                 <h2>BATANGAS PHILIPPINES</h2>
               </div>
               <div class="row">
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+                <p>Where Heritage Meets Nature, a Paradise to Treasure!</p>
               </div>
             </div>
           </div>
@@ -58,6 +58,11 @@
           <li class="nav-item">
             <button class="nav-link btn btn-link animate" id="visitedButton">
               <i class="fas fa-check"></i> Visited
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link btn btn-link animate" id="builderButton">
+              <i class="fas fa-calendar"></i> Itinerary Builder
             </button>
           </li>
           <li class="nav-item">

@@ -2,9 +2,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const favoritesButton = document.getElementById("favoritesButton");
     const visitedButton = document.getElementById("visitedButton");
     const accountButton = document.getElementById("accountButton");
+    const builderButton = document.getElementById("builderButton");
     //const boxContainer = document.querySelector('.box-container');
     const editProfileButton = document.querySelector('.edit-profile-button');
     const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+
+    builderButton.addEventListener("click", function () {
+        window.location.href = "itinerary-builder.php";
+      });
 
     // Function to handle errors
     function handleErrors(response) {

@@ -78,6 +78,31 @@ body {
     display: inline-block;
   }
 
+  /* Start Gallery CSS */
+.container{
+  padding: 50px;
+}
+.thumb {
+	margin-bottom: 15px;
+}
+.thumb:last-child {
+	margin-bottom: 0;
+}
+
+.thumb 
+figure img {
+  -webkit-filter: grayscale(100%);
+  filter: grayscale(100%);
+  -webkit-transition: .3s ease-in-out;
+  transition: .3s ease-in-out;
+}
+.thumb 
+figure:hover img {
+  -webkit-filter: grayscale(0);
+  filter: grayscale(0);
+}
+
+
   @media screen and (max-width: 768px) {
     .festival-details {
       padding: 20px;

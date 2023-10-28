@@ -1,3 +1,53 @@
+// //START OF IMAGE GALLERY
+// $(document).ready(function () {
+//     $(".gallery").magnificPopup({
+//         delegate: "a",
+//         type: "image",
+//         tLoading: "Loading image #%curr%...",
+//         mainClass: "mfp-img-mobile",
+//         gallery: {
+//             enabled: true,
+//             navigateByImgClick: true,
+//             preload: [0, 1]
+//         },
+//         image: {
+//             tError: '<a href="%url%">The image #%curr%</a> could not be loaded.'
+//         }
+//     });
+// });
+
+// // Define an array of image URLs
+// const imageUrls = [
+//     'https://picsum.photos/940/650?random=1',
+//     'https://picsum.photos/940/650?random=2',
+//     'https://picsum.photos/940/650?random=3',
+//     'https://picsum.photos/940/650?random=4'
+// ];
+
+// const galleryContainer = document.getElementById('dynamic-gallery');
+
+// imageUrls.forEach((imageUrl, index) => {
+//     const col = document.createElement('div');
+//     col.className = 'col-lg-3 col-md-4 col-xs-6 thumb';
+
+//     const link = document.createElement('a');
+//     link.href = imageUrl;
+
+//     const figure = document.createElement('figure');
+
+//     const image = document.createElement('img');
+//     image.className = 'img-fluid img-thumbnail';
+//     image.src = imageUrl;
+//     image.alt = 'Random Image';
+
+//     figure.appendChild(image);
+//     link.appendChild(figure);
+//     col.appendChild(link);
+
+//     galleryContainer.appendChild(col);
+// });
+// //END OF IMAGE GALLERY
+
 document.addEventListener("DOMContentLoaded", function () {
     const filterButtons = document.querySelectorAll(".filter-nav button");
     const commentCardsContainer = document.querySelector(".comment-cards-container");
@@ -44,17 +94,6 @@ document.addEventListener("DOMContentLoaded", function () {
     function updateCommentCards() {
         commentCards = document.querySelectorAll(".comment-card");
     }
-
-
-    // socialIcon.addEventListener("click", function () {
-    //     const desiredService = dynamicData.find(service => service.id === desiredServiceId);
-    //     if (desiredService && desiredService.website) {
-    //         const externalLink = desiredService.website;
-    //         window.open(externalLink, "_blank");
-    //     } else {
-    //         console.log("Website URL not available for this service.");
-    //     }
-    // });
 
     // Check if the user is logged in
     const isLoggedIn = localStorage.getItem('access_token') !== null;
@@ -195,83 +234,160 @@ document.addEventListener("DOMContentLoaded", function () {
 
         return stars.join("");
     }
+    
+    async function fetchImageUrls(desiredPlaceId) {
+        console.log('fetchImageUrls called'); // Log to check if this function is called
+        
+        const apiUrl = `${API_PROTOCOL}://${API_HOSTNAME}/public/images/${desiredPlaceId}`;
+        
+        try {
+            const response = await fetch(apiUrl);
+            console.log('API Response:', response); // Log the response to inspect it
+    
+            if (!response.ok) {
+                throw new Error(`Error fetching image URLs: ${response.status} ${response.statusText}`);
+            }
+    
+            const data = await response.json();
+            const imageUrl = data || [];
+            console.log('Fetched image URLs:', imageUrl); // Log the fetched image URLs
+            return imageUrl;
+        } catch (error) {
+            console.error('Error fetching image data:', error);
+            return [];
+        }
+    }
+    
+    
+// Function to initialize the Magnific Popup gallery
+function initializeImageGallery(imageUrls) {
+    console.log('initializeImageGallery called');
+    const galleryContainer = document.getElementById('dynamic-gallery');
+
+    imageUrls.slice(1, 5).forEach((imageUrl, index) => {
+        const col = document.createElement('div');
+        col.className = 'col-lg-3 col-md-4 col-xs-6 thumb';
+
+        const link = document.createElement('a');
+        link.href = imageUrl;
+
+        const figure = document.createElement('figure');
+
+        const image = document.createElement('img');
+        image.className = 'img-fluid img-thumbnail';
+        image.src = imageUrl;
+        image.alt = `Image ${index + 1}`;
+
+        figure.appendChild(image);
+        link.appendChild(figure);
+        col.appendChild(link);
+
+        galleryContainer.appendChild(col);
+    });
+
+    // Initialize Magnific Popup for the gallery container (if you're using a library)
+    $(".gallery").magnificPopup({
+        delegate: "a",
+        type: "image",
+        tLoading: "Loading image #%curr%...",
+        mainClass: "mfp-img-mobile",
+        gallery: {
+            enabled: true,
+            navigateByImgClick: true,
+            preload: [0, 1]
+        },
+        image: {
+            tError: '<a href="%url%">The image #%curr%</a> could not be loaded.'
+        }
+    });
+}
 
 
-    function processData() {
+async function processData() {
+    console.log('processData called');
+    try {
         const queryParams = new URLSearchParams(window.location.search);
         const desiredPlaceId = queryParams.get("id");
 
         // Find the desired service using the ID
-        const desiredService = dynamicData.find(service => service.id === desiredPlaceId);
+        const desiredService = dynamicData.find((service) => service.id === desiredPlaceId);
 
         if (!desiredService) {
             console.error("Service not found for ID:", desiredPlaceId);
             return;
         }
 
+        console.log('Desired Service:', desiredService);
+
+        // Fetch image URLs for the desired place
+        const imageUrls = await fetchImageUrls(desiredPlaceId);
+
         // Select DOM elements
         const backgroundElement = document.querySelector(".background-image");
         const titleElement = document.querySelector("h3");
         const paragraphElement = document.querySelector(".dynamic-paragraph");
 
-        // Set background image, title, and description
-        backgroundElement.style.backgroundImage = `url('${desiredService.photos[0] || ''}')`;
+        let imageUrl = ""; // Default to an empty string
+
+        // Check if desiredService.photos is an array of arrays
+        if (Array.isArray(desiredService.photos) && desiredService.photos.length > 0) {
+            // Extract the first image URL from the first array
+            const firstImageArray = desiredService.photos[0];
+            if (Array.isArray(firstImageArray) && firstImageArray.length > 0) {
+                imageUrl = firstImageArray[0];
+            }
+        }
+
+        // Set the background image to the first image in the photos array
+        backgroundElement.style.backgroundImage = `url("${imageUrl}")`;
         titleElement.textContent = desiredService.title;
         paragraphElement.textContent = desiredService.description;
 
+        // Initialize the image gallery with the retrieved image URLs
+        initializeImageGallery(imageUrls);
+
         // Fetch comments for the desired service from the server
-        fetch(`${API_PROTOCOL}://${API_HOSTNAME}/feedbacks/place/${desiredPlaceId}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Error fetching comments: ${response.status} ${response.statusText}`);
-                }
-                return response.json();
-            })
-            .then(commentsData => {
-                // Filter comments for the desired place_id
-                const placeComments = commentsData.all;
-                calculateTotalRating(placeComments);
+        const commentsResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/feedbacks/place/${desiredPlaceId}`);
+        if (!commentsResponse.ok) {
+            throw Error(`Error fetching comments: ${commentsResponse.status} ${commentsResponse.statusText}`);
+        }
+        const commentsData = await commentsResponse.json();
+        const placeComments = commentsData.all;
+        calculateTotalRating(placeComments);
 
-                if (placeComments.length === 0) {
-                    return;
-                }
+        if (placeComments.length > 0) {
+            // Clear existing comment cards
+            commentCardsContainer.innerHTML = "";
 
-                // Clear existing comment cards
-                commentCardsContainer.innerHTML = "";
+            // Create and append comment cards
+            placeComments.forEach((comment) => {
+                const commentCard = document.createElement("div");
+                commentCard.classList.add("comment-card");
+                commentCard.setAttribute("data-rating", comment.rating);
+                commentCard.classList.add(`rating-${comment.rating}`);
 
-                // Create and append comment cards
-                placeComments.forEach(comment => {
-                    const commentCard = document.createElement("div");
-                    commentCard.classList.add("comment-card");
-                    commentCard.setAttribute("data-rating", comment.rating);
-                    commentCard.classList.add(`rating-${comment.rating}`);
-
-                    commentCard.innerHTML = `
-                        <div class="comment-content">
-                            <div class="rating">
-                                ${generateStars(comment.rating)}
-                            </div>
-                            <h3 class="comment-title">${desiredService.title}</h3>
-                            <p>${comment.comment}</p>
-                            <p class="comment-date">${comment.created_at}</p>
+                commentCard.innerHTML = `
+                    <div class="comment-content">
+                        <div class "rating">
+                            ${generateStars(comment.rating)}
                         </div>
-                    `;
-                    commentCardsContainer.appendChild(commentCard);
-                });
-            })
-            .catch(error => {
-                console.error("Error fetching comments:", error);
-
-                // Log the detailed error response
-                error.response.text().then(text => {
-                    console.error("Detailed error response:", text);
-                });
+                        <h3 class="comment-title">${desiredService.title}</h3>
+                        <p>${comment.comment}</p>
+                        <p class="comment-date">${comment.created_at}</p>
+                    </div>
+                `;
+                commentCardsContainer.appendChild(commentCard);
             });
+        }
 
         updateCommentCards();
+    } catch (error) {
+        console.error("Error in processData:", error);
     }
+}
 
 
+    
     // Function to filter comment cards based on selected rating
     filterButtons.forEach(button => {
         button.addEventListener("click", function () {
@@ -465,7 +581,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // Log the 'photos' property of each item in the 'mappedData' array
                 mappedData.forEach(item => {
-                   
+
                 });
 
                 dynamicData.push(...mappedData);
@@ -504,7 +620,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-                return response.json(); 
+                return response.json();
             })
             .then(data => {
                 const copy = [];
@@ -534,7 +650,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-                return response.json(); 
+                return response.json();
 
             }).then(data => {
                 if (desiredServiceId == data.place_id) {
@@ -564,13 +680,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-                return response.json(); 
+                return response.json();
             })
             .then(data => {
 
             })
             .catch(error => {
-                throw error; 
+                throw error;
             });
     }
 });

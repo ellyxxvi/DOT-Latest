@@ -37,7 +37,8 @@
             <!-- Sidebar - Brand -->
             <div class="nav-logo d-flex align-items-center justify-content-center">
                 <a href="index.html">
-                    <img src="image/LOGO (5).png" alt="Go Explore Logo" class="logo-image mx-3 d-none d-md-block" style="width: 150px; height: auto; object-fit: cover; justify-content: center; align-items: center;">
+                    <img src="image/LOGO (5).png" alt="Go Explore Logo" class="logo-image mx-3 d-none d-md-block"
+                        style="width: 150px; height: auto; object-fit: cover; justify-content: center; align-items: center;">
                 </a>
             </div>
 
@@ -242,7 +243,7 @@
                                     <div class="mb-3">
                                         <label for="eventImage" class="form-label">Places Image</label>
                                         <input type="file" class="form-control" id="photos" name="photos"
-                                            accept="photos/*">
+                                            accept="photos/*" multiple>
                                     </div>
                                     <div class="mb-3">
                                         <label for="eventTitle" class="form-label">Title</label>
@@ -283,14 +284,15 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="eventCity" class="form-label">Contact</label>
-                                        <input type="text" class="form-control" id="contact" name="contact"
-                                            required>
+                                        <input type="text" class="form-control" id="contact" name="contact" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="eventCity" class="form-label">Social Links</label>
-                                        <input type="text" class="form-control" id="fb_link" name="fb_link" placeholder="Facebook Link" required>
-                                        <input type="text" class="form-control mt-2" id="website_link" name="website_link" placeholder="Website Link" required>
-                                    </div>                                  
+                                        <input type="text" class="form-control" id="fb_link" name="fb_link"
+                                            placeholder="Facebook Link" required>
+                                        <input type="text" class="form-control mt-2" id="website_link"
+                                            name="website_link" placeholder="Website Link" required>
+                                    </div>
                                 </form>
                             </div>
                             <div class="modal-footer">
@@ -313,13 +315,23 @@
                         <div class="modal-body">
                             <form id="edit-user-form" enctype="multipart/form-data">
                                 <input type="hidden" name="id" id="edit-id">
-                                <img id="edit-image-preview" src="" alt="Image Preview" class="img-thumbnail" width="100px">
+                                <!-- Display up to 5 image previews -->
+                                <img id="edit-image-preview-1" src="" alt="Image Preview" class="img-thumbnail"
+                                    width="100px">
+                                <img id="edit-image-preview-2" src="" alt="Image Preview" class="img-thumbnail"
+                                    width="100px">
+                                <img id="edit-image-preview-3" src="" alt="Image Preview" class="img-thumbnail"
+                                    width="100px">
+                                <img id="edit-image-preview-4" src="" alt="Image Preview" class="img-thumbnail"
+                                    width="100px">
+                                <img id="edit-image-preview-5" src="" alt="Image Preview" class="img-thumbnail"
+                                    width="100px">
 
                                 <div class="mb-3">
                                     <label class="form-label">Image</label>
                                     <div class="input-group">
                                         <input type="file" class="form-control" id="photos" name="photos"
-                                            accept="photos/*">
+                                            accept="photos/*" multiple>
                                         <input type="text" class="form-control" id="PlacesExistingImage"
                                             name="existingImage" placeholder="Existing Image URL">
                                     </div>
@@ -367,9 +379,11 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="eventCity" class="form-label">Social Links</label>
-                                    <input type="text" class="form-control" id="fb_link" name="fb_link" placeholder="Facebook Link" required>
-                                    <input type="text" class="form-control mt-2" id="website_link" name="website_link" placeholder="Website Link" required>
-                                </div>    
+                                    <input type="text" class="form-control" id="fb_link" name="fb_link"
+                                        placeholder="Facebook Link" required>
+                                    <input type="text" class="form-control mt-2" id="website_link" name="website_link"
+                                        placeholder="Website Link" required>
+                                </div>
                                 <input type="hidden" name="created_at">
                                 <input type="hidden" name="updated_at">
                                 <button type="submit" class="btn btn-primary">Save Changes</button>

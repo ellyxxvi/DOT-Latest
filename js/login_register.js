@@ -45,23 +45,15 @@ let registrationSuccessful = false;
 document.addEventListener('DOMContentLoaded', () => {
     const registerButton = document.getElementById('registerButton');
     const savePreferencesButton = document.getElementById('savePreferences');
-
-    // Event listener for registering
     registerButton.addEventListener('click', () => {
-        // Collect form data
         const user = collectUserData();
-
-        // Send POST request to JSON server to add the user
         registerUser(user);
     });
 
-    // Event listener for saving preferences
     savePreferencesButton.addEventListener('click', () => {
-        // Check if registration was successful before opening the preference modal
         if (registrationSuccessful) {
             const selectedPreferences = collectSelectedPreferences();
 
-            // Save user preferences to the correct URL
             saveUserPreferences(selectedPreferences);
         } else {
             alert('User registration must be successful before saving preferences.');
@@ -93,7 +85,7 @@ function collectUserData() {
         current_province,
         current_city,
         current_barangay,
-        role: "REGULAR" // Add the role field with the value "REGULAR"
+        role: "REGULAR" 
     };
 
     return user;
@@ -123,10 +115,7 @@ function registerUser(user) {
     })
     .then(data => {
         localStorage.setItem('access_token', (data.access_token));
-        //localStorage.setItem('user_id', (data.id));
-       
 
-        // Set the registrationSuccessful flag to true
         registrationSuccessful = true;
     })
     .catch(error => {

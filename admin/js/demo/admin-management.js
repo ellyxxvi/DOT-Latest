@@ -226,6 +226,7 @@ document.addEventListener('DOMContentLoaded', function () {
     user['current_province'] = "test";
     user['current_city'] = "test";
     user['current_barangay'] = "test";
+    
 
     const password = user['password'];
     if (password && password.length < 8) {

@@ -1,3 +1,53 @@
+//START OF IMAGE GALLERY
+$(document).ready(function () {
+  $(".gallery").magnificPopup({
+      delegate: "a",
+      type: "image",
+      tLoading: "Loading image #%curr%...",
+      mainClass: "mfp-img-mobile",
+      gallery: {
+          enabled: true,
+          navigateByImgClick: true,
+          preload: [0, 1]
+      },
+      image: {
+          tError: '<a href="%url%">The image #%curr%</a> could not be loaded.'
+      }
+  });
+});
+
+// Define an array of image URLs
+const imageUrls = [
+  'https://picsum.photos/940/650?random=1',
+  'https://picsum.photos/940/650?random=2',
+  'https://picsum.photos/940/650?random=3',
+  'https://picsum.photos/940/650?random=4'
+];
+
+const galleryContainer = document.getElementById('dynamic-gallery');
+
+imageUrls.forEach((imageUrl, index) => {
+  const col = document.createElement('div');
+  col.className = 'col-lg-3 col-md-4 col-xs-6 thumb';
+
+  const link = document.createElement('a');
+  link.href = imageUrl;
+
+  const figure = document.createElement('figure');
+
+  const image = document.createElement('img');
+  image.className = 'img-fluid img-thumbnail';
+  image.src = imageUrl;
+  image.alt = 'Random Image';
+
+  figure.appendChild(image);
+  link.appendChild(figure);
+  col.appendChild(link);
+
+  galleryContainer.appendChild(col);
+});
+//END OF IMAGE GALLERY
+
 // Find the elements to populate
 const bgImage = document.querySelector('.bg-image');
 const overlayTitle = document.querySelector('.overlay-title');

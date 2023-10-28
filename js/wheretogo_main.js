@@ -1,3 +1,4 @@
+// const cityOptions = document.querySelectorAll('.city-option'); // Define cityOptions here
 
 function fetchServicesData() {
   return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/where-to-go`)
@@ -38,9 +39,27 @@ function generateServiceCards() {
       const serviceCardHtml = generateServiceCard(service);
       servicesContainer.innerHTML += serviceCardHtml;
     }
+
+    // Add event listeners to each service card to save the clicked title
+    const serviceCards = document.querySelectorAll('.card h3');
+    serviceCards.forEach(card => {
+      card.addEventListener('click', function() {
+        const clickedTitle = this.textContent;
+        localStorage.setItem('clickedTitle', clickedTitle);
+      });
+    });
   });
 }
 
+// cityOptions.forEach(option => {
+//   option.addEventListener('click', () => {
+//     const selectedCity = option.getAttribute('data-city');
+//     localStorage.setItem('selectedCity', selectedCity);
+//     // Clear existing cards in the carousel
+//     carousel.innerHTML = '';
+//     fetchAndGenerateCardsForCity(selectedCity);
+//   });
+// });
+
 // Call the function to generate service cards
 generateServiceCards();
-

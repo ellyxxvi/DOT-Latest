@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
   const favoritesButton = document.getElementById("favoritesButton");
   const visitedButton = document.getElementById("visitedButton");
+  const builderButton = document.getElementById("builderButton");
 
   // Add event listeners to the buttons
   favoritesButton.addEventListener("click", function() {
@@ -12,6 +13,9 @@ document.addEventListener("DOMContentLoaded", function () {
   });
   accountButton.addEventListener("click", function () {
     window.location.href = "user-profile.php";
+  });
+  builderButton.addEventListener("click", function () {
+    window.location.href = "itinerary-builder.php";
   });
 
   const carouselInner = document.querySelector('.carousel-inner');

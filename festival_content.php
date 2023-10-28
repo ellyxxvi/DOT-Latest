@@ -10,6 +10,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/festival_content.css" rel="stylesheet">
     <link rel="icon" href="image/LOGO (2).png" type="image/png">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -20,6 +23,13 @@
     </div>
 
     <div class="festival-title"></div>
+    <section class="image-gallery">
+    <div class="container">
+        <div class="row gallery" id="dynamic-gallery">
+            <!-- Images will be generated here -->
+        </div>
+    </div>
+    </section>
     <div class="festival-details">
         <div class="festival-description"></div>
     </div>
@@ -27,6 +37,9 @@
     <?php include 'footer.php'; ?>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.5/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
     <script src="js/festival_content.js"></script>
 </body>
 
