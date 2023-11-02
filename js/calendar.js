@@ -17,7 +17,7 @@ $(document).ready(function () {
         if (clickedFestival) {
             // Update the template with the clicked item's details
             populateElements({
-                imageSrc: clickedFestival.images,
+                imageSrc: clickedFestival.images[0], // Display the first image URL
                 overlayTitle: clickedFestival.title,
                 festivalTitle: clickedFestival.title,
                 festivalDescription: clickedFestival.description,
@@ -40,19 +40,19 @@ $(document).ready(function () {
             })
             .then(responseData => {
                 data = responseData;
-    
+
                 const galleryItems = data.slice(startIndex, startIndex + itemsPerPage);
-    
+
                 galleryItems.forEach(item => {
                     // Format the date using formatDateToMonthAndDay function
                     const formattedDate = formatDateToMonthAndDay(item.date);
-    
+
                     // Build and append gallery item HTML
                     const itemHtml = `
                         <a href="festival_content.php?item_id=${item.id}" class="gallery-item-link" data-item-id="${item.id}">
                             <div class="gallery-item">
                                 <div class="image-wrapper">
-                                    <img src="${item.images}" alt="Image ${item.id}">
+                                    <img src="${item.images[0]}" alt="Image ${item.id}"> <!-- Display the first image URL -->
                                 </div>
                                 <div class="item-overlay">
                                     <div class="calendar-icon">
@@ -67,15 +67,15 @@ $(document).ready(function () {
                     `;
                     galleryContainer.append(itemHtml);
                 });
-    
+
                 startIndex += itemsPerPage;
-    
+
                 if (startIndex >= data.length) {
                     loadMoreButton.hide();
                 } else {
                     loadMoreButton.show();
                 }
-    
+
                 galleryItemLinks.forEach(link => {
                     $(link).on('click', function (event) {
                         handleGalleryItemClick(event, parseInt($(this).data('item-id')));
@@ -84,14 +84,13 @@ $(document).ready(function () {
             })
             .catch(error => console.error('Error fetching data:', error));
     }
-    
+
     // Function to format a date to "Month Day" format
     function formatDateToMonthAndDay(dateString) {
         const date = new Date(dateString);
         const options = { month: 'long', day: 'numeric' };
         return date.toLocaleDateString(undefined, options);
     }
-    
 
     // Load more button click event
     loadMoreButton.click(function () {
@@ -109,26 +108,26 @@ $(document).ready(function () {
 
     function updateCalendar(month) {
         galleryContainer.empty();
-    
+
         // Ensure data is defined and not null before filtering
         if (data) {
             let festivalsToRender = (month === 'all') ? data : data.filter(festival => {
                 const festivalMonth = getMonthFromDateString(festival.date);
                 return festivalMonth === parseInt(month);
             });
-    
+
             const currentlyDisplayedItems = galleryContainer.find('.gallery-item').length;
             startIndex = currentlyDisplayedItems;
-    
+
             loadMoreButton.show();
-    
+
             festivalsToRender.slice(startIndex, startIndex + itemsPerPage).forEach(item => {
                 const formattedDate = formatDateToMonthAndDay(item.date); // Format the date here
                 const itemHtml = `
                     <a href="festival_content.php?item_id=${item.id}" class="gallery-item-link" data-item-id="${item.id}">
-                        <div class="gallery-item">
+                        <div class "gallery-item">
                             <div class="image-wrapper">
-                                <img src="${item.images}" alt="Image ${item.id}">
+                                <img src="${item.images[0]}" alt="Image ${item.id}"> <!-- Display the first image URL -->
                             </div>
                             <div class="item-overlay">
                                 <div class="calendar-icon">
@@ -143,9 +142,9 @@ $(document).ready(function () {
                 `;
                 galleryContainer.append(itemHtml);
             });
-    
+
             startIndex += itemsPerPage;
-    
+
             if (startIndex >= festivalsToRender.length) {
                 loadMoreButton.hide();
             }
@@ -161,7 +160,7 @@ $(document).ready(function () {
     }
 });
 
-// INCOMING FESTIVAL
+
 const carouselInner = document.querySelector('.carousel-inner');
 
 function populateCarousel() {
@@ -204,7 +203,7 @@ function populateCarousel() {
                     const img = document.createElement('img');
                     img.classList.add('img-fluid');
                     img.alt = '100%x280';
-                    img.src = incomingFestivals[j].images;
+                    img.src = incomingFestivals[j].images[0]; // Display the first image URL
 
                     const cardBody = document.createElement('div');
                     cardBody.classList.add('card-body');

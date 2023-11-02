@@ -45,7 +45,7 @@ body {
 }
 
 .festival-details {
-    padding: 80px;
+    padding: 50px;
     margin-left: 200px;
     margin-right: 200px;
     text-align: center;
@@ -63,7 +63,7 @@ body {
 
   .festival-description {
     font-size: 18px;
-    margin-top: 10px;
+    /* margin-top: 10px; */
   }
   .wheretostay-container{
     background-color: rgb(46, 46, 46);

@@ -126,14 +126,14 @@ document.addEventListener("DOMContentLoaded", function () {
       addToFavorites(place.id);
     });
     var disabled = "";
-    if(place.disable_button == true) {
+    if (place.disable_button == true) {
       disabled = "disabled";
     }
-
+  
     box.classList.add('box');
     box.innerHTML = `
       <div class="image">
-        <img src="${place.photos}" alt="">
+        <img src="${place.photos[0]}" alt="">
         <span class="heart-icon">
           <i class="fas fa-heart"></i>
         </span>
@@ -151,9 +151,10 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
       </div>
     `;
-
+  
     return box;
   }
+  
 
   function addToFavorites(placeId) {
     // const selectedUserId = 5;
@@ -331,7 +332,7 @@ function fetchPlaceDataById(placeId) {
 // Function to fetch feedback data for a specific user and place_id
 function fetchFeedbackDataByUserIdAndPlaceId(userId, placeId) {
   const accessToken = localStorage.getItem('access_token');
-  return fetch(`https://kentjordan.xyz/api/feedbacks/user/${userId}`, {
+  return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/feedbacks/user/${userId}`, {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${accessToken}`
@@ -339,27 +340,21 @@ function fetchFeedbackDataByUserIdAndPlaceId(userId, placeId) {
   })
   .then(response => {
     if (!response.ok) {
-      // Handle the case where the response status is not OK (e.g., 404)
       throw new Error('Network response was not ok');
     }
     return response.json();
   })
   .then(feedbackData => {
     if (!Array.isArray(feedbackData)) {
-      // Handle the case where feedbackData is not an array
       throw new Error('Feedback data is not an array');
     }
 
-    // Check if feedbackData contains an entry with the given placeId
     const matchingFeedback = feedbackData.find(feedback => feedback.place_id === placeId);
-    return !!matchingFeedback; // Returns true if feedback exists, false otherwise
+    return !!matchingFeedback; 
   })
   .catch(error => {
-    // Handle any errors that occur during the fetch or data processing
     console.error('Error fetching feedback data:', error);
-    return false; // Return false to indicate that feedback data is not found or an error occurred
+    return false; 
   });
 }
-
-
 });

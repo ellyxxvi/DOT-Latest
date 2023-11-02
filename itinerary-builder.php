@@ -4,7 +4,7 @@
 
 <head>
     <link rel="icon" type="image/png" href="images/logo_tab.png" sizes="64x64">
-    <title>Our Portfolio</title>
+    <title>Itinerary Builder</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,7 +23,7 @@
     <!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet"> -->
     <!-- <link href="https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome-font-awesome.min.css" rel="stylesheet"> -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/css/datepicker.css" rel="stylesheet">
-   
+
 </head>
 
 <body>
@@ -110,15 +110,19 @@
                         <h4>Add Event Detail</h4>
                         <div class="form-group">
                             <label>Place name</label>
-                            <input type="text" class="form-control" name="ename">
+                            <select class="form-control" name="place_name" id="place_name"></select>
                         </div>
                         <div class="form-group">
                             <label>Event Date</label>
-                            <input type='text' class="datetimepicker form-control" name="edate">
+                            <input type="text" class="datetimepicker form-control" name="event_date" id="event_date">
+                        </div>
+                        <div class="form-group">
+                            <label>Notes</label>
+                            <input type="text" class="form-control" name="notes" id="notes">
                         </div>
                         <div class="form-group">
                             <label>Event Color</label>
-                            <select class="form-control" name="ecolor">
+                            <select class="form-control" name="event_color" id="event_color">
                                 <option value="fc-bg-default">fc-bg-default</option>
                                 <option value="fc-bg-blue">fc-bg-blue</option>
                                 <option value="fc-bg-lightgreen">fc-bg-lightgreen</option>
@@ -128,7 +132,7 @@
                         </div>
                         <div class="form-group">
                             <label>Event Icon</label>
-                            <select class="form-control" name="eicon">
+                            <select class="form-control" name="event_icon" id="event_icon">
                                 <option value="circle">circle</option>
                                 <option value="cog">cog</option>
                                 <option value="group">group</option>
@@ -146,10 +150,63 @@
         </div>
     </div>
 
-    <div class="notes">
 
+
+    <h1>NOTES</h1>
+    <section id="notes-section" class="container">
+        <div class="row" id="notes-row">
+            <!-- Cards will be generated here -->
+        </div>
+    </section>
+
+    <!-- Edit Event Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="edit-event">
+                    <div class="modal-body">
+                        <h4>Edit Event Detail</h4>
+                        <div class="form-group">
+                            <label>Place name</label>
+                            <input type="text" class="form-control" name="place_name" id="place_name">
+                        </div>
+                        <div class="form-group">
+                            <label>Event Date</label>
+                            <input type='text' class="datetimepicker form-control" name="event_date" id="event_date">
+                        </div>
+                        <div class="form-group">
+                            <label>Notes</label>
+                            <input type="text" class="form-control" name="notes" id="notes">
+                        </div>
+                        <div class="form-group">
+                            <label>Event Color</label>
+                            <select class="form-control" name="event_color" id="event_color">
+                                <option value="fc-bg-default">fc-bg-default</option>
+                                <option value="fc-bg-blue">fc-bg-blue</option>
+                                <option value="fc-bg-lightgreen">fc-bg-lightgreen</option>
+                                <option value="fc-bg-pinkred">fc-bg-pinkred</option>
+                                <option value="fc-bg-deepskyblue">fc-bg-deepskyblue</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Event Icon</label>
+                            <select class="form-control" name="event_icon" id="event_icon">
+                                <option value="circle">circle</option>
+                                <option value="cog">cog</option>
+                                <option value="group">group</option>
+                                <option value="suitcase">suitcase</option>
+                                <option value="calendar">calendar</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
     <script src="js/itinerary-builder.js"></script>

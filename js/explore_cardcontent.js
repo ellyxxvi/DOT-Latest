@@ -1,52 +1,3 @@
-// //START OF IMAGE GALLERY
-// $(document).ready(function () {
-//     $(".gallery").magnificPopup({
-//         delegate: "a",
-//         type: "image",
-//         tLoading: "Loading image #%curr%...",
-//         mainClass: "mfp-img-mobile",
-//         gallery: {
-//             enabled: true,
-//             navigateByImgClick: true,
-//             preload: [0, 1]
-//         },
-//         image: {
-//             tError: '<a href="%url%">The image #%curr%</a> could not be loaded.'
-//         }
-//     });
-// });
-
-// // Define an array of image URLs
-// const imageUrls = [
-//     'https://picsum.photos/940/650?random=1',
-//     'https://picsum.photos/940/650?random=2',
-//     'https://picsum.photos/940/650?random=3',
-//     'https://picsum.photos/940/650?random=4'
-// ];
-
-// const galleryContainer = document.getElementById('dynamic-gallery');
-
-// imageUrls.forEach((imageUrl, index) => {
-//     const col = document.createElement('div');
-//     col.className = 'col-lg-3 col-md-4 col-xs-6 thumb';
-
-//     const link = document.createElement('a');
-//     link.href = imageUrl;
-
-//     const figure = document.createElement('figure');
-
-//     const image = document.createElement('img');
-//     image.className = 'img-fluid img-thumbnail';
-//     image.src = imageUrl;
-//     image.alt = 'Random Image';
-
-//     figure.appendChild(image);
-//     link.appendChild(figure);
-//     col.appendChild(link);
-
-//     galleryContainer.appendChild(col);
-// });
-// //END OF IMAGE GALLERY
 
 document.addEventListener("DOMContentLoaded", function () {
     const filterButtons = document.querySelectorAll(".filter-nav button");
@@ -234,141 +185,130 @@ document.addEventListener("DOMContentLoaded", function () {
 
         return stars.join("");
     }
-    
-    async function fetchImageUrls(desiredPlaceId) {
-        console.log('fetchImageUrls called'); // Log to check if this function is called
-        
-        const apiUrl = `${API_PROTOCOL}://${API_HOSTNAME}/public/images/${desiredPlaceId}`;
-        
-        try {
-            const response = await fetch(apiUrl);
-            console.log('API Response:', response); // Log the response to inspect it
-    
-            if (!response.ok) {
-                throw new Error(`Error fetching image URLs: ${response.status} ${response.statusText}`);
+
+
+    // Function to initialize the Magnific Popup gallery
+    function initializeImageGallery(imageUrls) {
+        console.log('initializeImageGallery called ' + JSON.stringify(imageUrls));
+        const galleryContainer = document.getElementById('dynamic-gallery');
+
+        imageUrls.slice(1, 5).forEach((imageUrl, index) => {
+            const col = document.createElement('div');
+            col.className = 'col-lg-3 col-md-4 col-xs-6 thumb';
+
+            const link = document.createElement('a');
+            link.href = imageUrl;
+
+            const figure = document.createElement('figure');
+
+            const image = document.createElement('img');
+            image.className = 'img-fluid img-thumbnail';
+            image.src = imageUrl;
+            image.alt = `Image ${index + 1}`;
+
+            // Set specific width and height for the images
+            image.style.width = '250px'; 
+            image.style.height = '200px'; 
+            image.style.objectFit = 'cover'; 
+
+            figure.appendChild(image);
+            link.appendChild(figure);
+            col.appendChild(link);
+
+            galleryContainer.appendChild(col);
+
+            console.log("test");
+        });
+
+        // Initialize Magnific Popup for the gallery container (if you're using a library)
+        $(".gallery").magnificPopup({
+            delegate: "a",
+            type: "image",
+            tLoading: "Loading image #%curr%...",
+            mainClass: "mfp-img-mobile",
+            gallery: {
+                enabled: true,
+                navigateByImgClick: true,
+                preload: [0, 1]
+            },
+            image: {
+                tError: '<a href="%url%">The image #%curr%</a> could not be loaded.'
             }
-    
-            const data = await response.json();
-            const imageUrl = data || [];
-            console.log('Fetched image URLs:', imageUrl); // Log the fetched image URLs
-            return imageUrl;
-        } catch (error) {
-            console.error('Error fetching image data:', error);
-            return [];
-        }
+        });
     }
+
+
+    async function processData() {
+        console.log('processData called');
+        try {
+            const queryParams = new URLSearchParams(window.location.search);
+            const desiredPlaceId = queryParams.get("id");
     
+            // Find the desired service using the ID
+            const desiredService = dynamicData.find((service) => service.id === desiredPlaceId);
     
-// Function to initialize the Magnific Popup gallery
-function initializeImageGallery(imageUrls) {
-    console.log('initializeImageGallery called');
-    const galleryContainer = document.getElementById('dynamic-gallery');
-
-    imageUrls.slice(1, 5).forEach((imageUrl, index) => {
-        const col = document.createElement('div');
-        col.className = 'col-lg-3 col-md-4 col-xs-6 thumb';
-
-        const link = document.createElement('a');
-        link.href = imageUrl;
-
-        const figure = document.createElement('figure');
-
-        const image = document.createElement('img');
-        image.className = 'img-fluid img-thumbnail';
-        image.src = imageUrl;
-        image.alt = `Image ${index + 1}`;
-
-        figure.appendChild(image);
-        link.appendChild(figure);
-        col.appendChild(link);
-
-        galleryContainer.appendChild(col);
-    });
-
-    // Initialize Magnific Popup for the gallery container (if you're using a library)
-    $(".gallery").magnificPopup({
-        delegate: "a",
-        type: "image",
-        tLoading: "Loading image #%curr%...",
-        mainClass: "mfp-img-mobile",
-        gallery: {
-            enabled: true,
-            navigateByImgClick: true,
-            preload: [0, 1]
-        },
-        image: {
-            tError: '<a href="%url%">The image #%curr%</a> could not be loaded.'
-        }
-    });
-}
-
-
-async function processData() {
-    console.log('processData called');
-    try {
-        const queryParams = new URLSearchParams(window.location.search);
-        const desiredPlaceId = queryParams.get("id");
-
-        // Find the desired service using the ID
-        const desiredService = dynamicData.find((service) => service.id === desiredPlaceId);
-
-        if (!desiredService) {
-            console.error("Service not found for ID:", desiredPlaceId);
-            return;
-        }
-
-        console.log('Desired Service:', desiredService);
-
-        // Fetch image URLs for the desired place
-        const imageUrls = await fetchImageUrls(desiredPlaceId);
-
-        // Select DOM elements
-        const backgroundElement = document.querySelector(".background-image");
-        const titleElement = document.querySelector("h3");
-        const paragraphElement = document.querySelector(".dynamic-paragraph");
-
-        let imageUrl = ""; // Default to an empty string
-
-        // Check if desiredService.photos is an array of arrays
-        if (Array.isArray(desiredService.photos) && desiredService.photos.length > 0) {
-            // Extract the first image URL from the first array
-            const firstImageArray = desiredService.photos[0];
-            if (Array.isArray(firstImageArray) && firstImageArray.length > 0) {
-                imageUrl = firstImageArray[0];
+            if (!desiredService) {
+                console.error("Service not found for ID:", desiredPlaceId);
+                return;
             }
-        }
-
-        // Set the background image to the first image in the photos array
-        backgroundElement.style.backgroundImage = `url("${imageUrl}")`;
-        titleElement.textContent = desiredService.title;
-        paragraphElement.textContent = desiredService.description;
-
-        // Initialize the image gallery with the retrieved image URLs
-        initializeImageGallery(imageUrls);
-
-        // Fetch comments for the desired service from the server
-        const commentsResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/feedbacks/place/${desiredPlaceId}`);
-        if (!commentsResponse.ok) {
-            throw Error(`Error fetching comments: ${commentsResponse.status} ${commentsResponse.statusText}`);
-        }
-        const commentsData = await commentsResponse.json();
-        const placeComments = commentsData.all;
-        calculateTotalRating(placeComments);
-
-        if (placeComments.length > 0) {
-            // Clear existing comment cards
-            commentCardsContainer.innerHTML = "";
-
-            // Create and append comment cards
-            placeComments.forEach((comment) => {
-                const commentCard = document.createElement("div");
-                commentCard.classList.add("comment-card");
-                commentCard.setAttribute("data-rating", comment.rating);
-                commentCard.classList.add(`rating-${comment.rating}`);
-
-                commentCard.innerHTML = `
+    
+            console.log('Desired Service:', desiredService);
+    
+            // Select DOM elements
+            const backgroundElement = document.querySelector(".background-image");
+            const titleElement = document.querySelector("h3");
+            const paragraphElement = document.querySelector(".dynamic-paragraph");
+    
+            let imageUrl = ""; // Default to an empty string
+    
+            // Check if desiredService.photos is an array of arrays
+            if (Array.isArray(desiredService.photos) && desiredService.photos.length > 0) {
+                // Extract the first image URL from the first array
+                const firstImageArray = desiredService.photos[0];
+                if (Array.isArray(firstImageArray) && firstImageArray.length > 0) {
+                    imageUrl = firstImageArray[0];
+                }
+            }
+    
+            // Set the background image to the first image in the photos array
+            backgroundElement.style.backgroundImage = `url("${imageUrl}")`;
+            titleElement.textContent = desiredService.title;
+            paragraphElement.textContent = desiredService.description;
+    
+            // Use FancyBox to open the background image in a lightbox
+            backgroundElement.addEventListener('click', () => {
+                $.fancybox.open({
+                    src: imageUrl,
+                    type: 'image',
+                });
+            });
+    
+            // Initialize the image gallery with the retrieved image URLs
+            initializeImageGallery(desiredService.photos[0]);
+    
+            // Fetch comments for the desired service from the server
+            const commentsResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/feedbacks/place/${desiredPlaceId}`);
+            if (!commentsResponse.ok) {
+                throw Error(`Error fetching comments: ${commentsResponse.status} ${commentsResponse.statusText}`);
+            }
+            const commentsData = await commentsResponse.json();
+            const placeComments = commentsData.all;
+            calculateTotalRating(placeComments);
+    
+            if (placeComments.length > 0) {
+                // Clear existing comment cards
+                commentCardsContainer.innerHTML = "";
+    
+                // Create and append comment cards
+                placeComments.forEach((comment) => {
+                    const commentCard = document.createElement("div");
+                    commentCard.classList.add("comment-card");
+                    commentCard.setAttribute("data-rating", comment.rating);
+                    commentCard.classList.add(`rating-${comment.rating}`);
+    
+                    commentCard.innerHTML = `
                     <div class="comment-content">
-                        <div class "rating">
+                        <div class="rating">
                             ${generateStars(comment.rating)}
                         </div>
                         <h3 class="comment-title">${desiredService.title}</h3>
@@ -376,18 +316,39 @@ async function processData() {
                         <p class="comment-date">${comment.created_at}</p>
                     </div>
                 `;
-                commentCardsContainer.appendChild(commentCard);
-            });
-        }
-
-        updateCommentCards();
-    } catch (error) {
-        console.error("Error in processData:", error);
-    }
-}
-
-
+                    commentCardsContainer.appendChild(commentCard);
+                });
+            }
     
+            updateCommentCards();
+        } catch (error) {
+            console.error("Error in processData:", error);
+        }
+    }
+    
+    
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // Function to filter comment cards based on selected rating
     filterButtons.forEach(button => {
         button.addEventListener("click", function () {

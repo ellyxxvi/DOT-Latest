@@ -239,7 +239,7 @@
                                     <div class="mb-3">
                                         <label for="eventImage" class="form-label">Event Image</label>
                                         <input type="file" class="form-control" id="images" name="images"
-                                            accept="images/*">
+                                            accept="images/*" multiple>
                                     </div>
                                     <div class="mb-3">
                                         <label for="eventTitle" class="form-label">Title</label>
@@ -287,10 +287,19 @@
                             <form id="edit-user-form" enctype="multipart/form-data">
                                 <input type="hidden" name="id" id="edit-id">
                                 <input type="hidden" name="existingImage" id="existingImage">
-                                <img id="edit-image-preview" src="" alt="Image Preview" class="img-thumbnail" width="100px">
+                                <img id="edit-image-preview-1" src="" alt="Image Preview" class="img-thumbnail"
+                                    width="100px">
+                                <img id="edit-image-preview-2" src="" alt="Image Preview" class="img-thumbnail"
+                                    width="100px">
+                                <img id="edit-image-preview-3" src="" alt="Image Preview" class="img-thumbnail"
+                                    width="100px">
+                                <img id="edit-image-preview-4" src="" alt="Image Preview" class="img-thumbnail"
+                                    width="100px">
+                                <img id="edit-image-preview-5" src="" alt="Image Preview" class="img-thumbnail"
+                                    width="100px">
                                 <div class="mb-3">
                                     <label for="eventImage" class="form-label">Event Image</label>
-                                    <input type="file" class="form-control" id="images" name="images" accept="images/*">
+                                    <input type="file" class="form-control" id="images" name="images" accept="images/*" multiple>
                                 </div>
                                 <div class="mb-3">
                                     <label for="eventTitle" class="form-label">Title</label>

@@ -38,7 +38,15 @@ async function fetchAndGenerateCards(url, isFestival = false, city) {
       if (card.city.toLowerCase() === city.toLowerCase()) {
         const cardElement = document.createElement('li');
         cardElement.className = 'card';
-        cardElement.style.backgroundImage = `url('${card.images || card.photos}')`;
+
+        // Extract the URL of the first image or photo
+        const imageUrl = Array.isArray(card.images) && card.images.length > 0
+          ? card.images[0]
+          : Array.isArray(card.photos) && card.photos.length > 0
+            ? card.photos[0]
+            : '';
+
+        cardElement.style.backgroundImage = `url('${imageUrl}')`;
         cardElement.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
 
         const words = card.description.split(' ');

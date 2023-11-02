@@ -138,12 +138,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const row = button.closest('tr');
     const userId = row.querySelector('td:first-child').textContent;
     const accessToken = getAccessTokenFromLocalStorage();
-
+  
+    // Check if the form and elements exist before accessing them
+    if (!editForm) {
+      console.error('editForm not found.');
+      return;
+    }
+  
     fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places/${userId}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
-      },
+      }
     })
       .then(response => {
         if (!response.ok) {
@@ -154,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function () {
           }
           throw new Error('Network response was not ok.');
         }
-
+  
         // Check the response content type
         const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
@@ -166,6 +172,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       })
       .then(user => {
+        // Check if the form and elements exist before accessing them
+        if (!editForm.elements) {
+          console.error('Form elements not found.');
+          return;
+        }
+  
+        // Update form elements with user data
         editForm.elements.id.value = user.id;
         editForm.elements.title.value = user.title;
         editForm.elements.description.value = user.description;
@@ -174,21 +187,31 @@ document.addEventListener('DOMContentLoaded', function () {
         editForm.elements.city.value = user.city;
         editForm.elements.barangay.value = user.barangay;
         editForm.elements.contact.value = user.contact;
-
+  
         // Adapt social_links to match your form structure
         editForm.elements.fb_link.value = user.social_links.fb;
         editForm.elements.website_link.value = user.social_links.website;
-
+  
         // Loop through user photos to update each image preview
-        for (let i = 0; i < user.photos.length; i++) {
-            const existingImageURL = user.photos[i];
-            const imagePreview = document.getElementById(`edit-image-preview-${i + 1}`);
+        const existingImages = user.photos;
+  
+        // Update image previews and store existing image URLs
+        for (let i = 0; i < existingImages.length; i++) {
+          const existingImageURL = existingImages[i];
+          const imagePreview = document.getElementById(`edit-image-preview-${i + 1}`);
+          if (imagePreview) {
             imagePreview.src = existingImageURL;
+          }
+  
+          // Store existing image URLs in hidden input fields
+          const existingImageInput = document.getElementById(`existing-image-${i + 1}`);
+          if (existingImageInput) {
+            existingImageInput.value = existingImageURL;
+          }
         }
-
+  
         editModal.show();
-    })
-
+      })
       .catch(error => console.error('Error fetching user data:', error));
   }
 
@@ -217,6 +240,10 @@ editForm.addEventListener('submit', async (event) => {
     }
   });
 
+  // Log the edited user data
+  console.log('Edited User Data:', updatedUser);
+
+  // Define accessToken - replace this with your actual access token retrieval logic
   const accessToken = getAccessTokenFromLocalStorage();
 
   const imageInput = editForm.querySelector('input[type="file"]');
@@ -246,13 +273,16 @@ editForm.addEventListener('submit', async (event) => {
       uploadedImageUrls.push(imageUploadData.http_img_url);
     }
 
-    updatedUser.photos = Array.isArray(updatedUser.photos)
-      ? updatedUser.photos.filter((photo) => typeof photo === 'string')
-      : [];
+    // Preserve existing image URLs in updatedUser.photos
+    const existingImages = formData.getAll('existingImage');
+    updatedUser.photos = existingImages;
 
     if (uploadedImageUrls.length > 0) {
       updatedUser.photos.push(...uploadedImageUrls);
     }
+
+    // Update the user ID
+    updatedUser.id = formData.get('id'); // Assuming you have an input field with name 'id'
 
     sendEditRequest(updatedUser, accessToken);
   } catch (error) {
@@ -260,15 +290,10 @@ editForm.addEventListener('submit', async (event) => {
   }
 });
 
-
 // Function to send the PUT request to update user data
 async function sendEditRequest(updatedUser, accessToken) {
   console.log('EDIT: ' + JSON.stringify(updatedUser));
   try {
-    if (!updatedUser.photos) {
-      updatedUser.photos = [editForm.elements.existingImage.value];
-    }
-
     if (!updatedUser.id) {
       console.error('Error updating item data: Invalid ID');
       return;
@@ -286,7 +311,7 @@ async function sendEditRequest(updatedUser, accessToken) {
     });
 
     if (!response.ok) {
-      throw new Error(`Error updating item data: ${response.status} - ${response.statusText}`);
+      // throw new Error(`Error updating item data: ${response.status} - ${response.statusText}`);
     }
 
     if (response.status === 201) {
@@ -302,8 +327,6 @@ async function sendEditRequest(updatedUser, accessToken) {
     console.log('User Inputs:', updatedUser);
   }
 }
-
-
 
 
   // Handle form submission and add new item
