@@ -1971,14 +1971,13 @@ h2 {
 
 .notes-card {
   background-color: #fff;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.409);
   border-radius: 10px;
   padding: 20px;
   transition: transform 0.2s;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  height: 100%; /* Ensure cards have equal height */
+  height: 100%; 
 }
 
 .notes-card:hover {
@@ -2036,5 +2035,42 @@ h1 {
   padding: 20px;
   text-align: center;
   font-size: 1.5em;
-  color: #333;
+  color: #293241;
+  font-weight: bold;
+  position: relative;  
 }
+
+h1::after {
+  content: ''; 
+  display: block;
+  width: 300px; 
+  height: 2px;
+  background-color: #293241; 
+  position: absolute;
+  bottom: 10px;  
+  left: 50%;
+  transform: translateX(-50%); 
+}
+
+.notes-card-expanded {
+  position: fixed;
+  top: 10%;
+  left: 25%;
+  width: 50%;
+  height: 50%;
+  z-index: 1000; 
+  background-color: white;
+  overflow: auto;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  border-radius: 8px;
+  overflow: auto;   /* Allows for scrolling if the text exceeds the size of the card */
+  word-wrap: break-word;
+}
+.notes-card-expanded .notes {
+  white-space: normal;   /* Allows the text to wrap to the next line */
+  overflow: visible;     /* Allows the text to overflow if it's longer than the container */
+  text-overflow: clip;   /* Stops text from being truncated */
+}
+

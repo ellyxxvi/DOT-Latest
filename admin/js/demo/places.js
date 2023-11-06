@@ -6,8 +6,11 @@ $(document).ready(function () {
   });
 });
 
-const API_PROTOCOL = 'https'
-const API_HOSTNAME = 'goexplorebatangas.com/api'
+// const API_PROTOCOL = 'https'
+// const API_HOSTNAME = 'goexplorebatangas.com/api'
+const API_PROTOCOL = 'http'
+const API_HOSTNAME = '13.212.85.80/api'
+
 
 document.addEventListener('DOMContentLoaded', function () {
   const tableBody = document.getElementById('tableBody');
@@ -341,11 +344,12 @@ addAccountButton.addEventListener('click', async () => {
   const images = imageInput.files; // Get an array of selected image files
   const accessToken = getAccessTokenFromLocalStorage();
 
-  if (images.length !== 5) { // Check for exactly 5 images
-    alert('Please select exactly 5 image files.');
-    console.error('Please select exactly 5 image files.');
+  if (images.length > 5) { // Check for 5 or fewer images
+    alert('Please select no more than 5 image files.');
+    console.error('Please select no more than 5 image files.');
     return;
   }
+  
 
   const uploadedImageUrls = [];
 

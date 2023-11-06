@@ -70,12 +70,15 @@ section {
   height: 100%;
   background-size: cover;
   filter: brightness(0.8);
-  z-index: -1;
+
   transition: filter 0.5s;
 }
+section > *:not(.background-image) {
+  position: relative;
+}
+
 .modal {
   display: none;
-  /* Add styles for the modal's position and appearance */
 }
 .iframe-container h3 {
   font-size: 80px;
@@ -110,7 +113,7 @@ figure:hover img {
 
 @media only screen and (max-width: 700px) {
   .iframe-container {
-    height: 60vh;
+    height: 180vh;
   }
 
   .iframe-container h3 {
@@ -155,30 +158,19 @@ figure:hover img {
 
 .add-to-favorites {
   background-color: #ff4d4d;
-  /* Red background color */
   color: white;
-  /* Text color */
   border: none;
-  /* No border */
   padding: 10px 20px;
-  /* Padding for the button */
   font-size: 16px;
-  /* Font size */
   border-radius: 5px;
-  /* Rounded corners */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  /* Shadow */
   cursor: pointer;
-  /* Cursor on hover */
   transition: background-color 0.3s, box-shadow 0.3s;
-  /* Smooth transitions */
 }
 
 .add-to-favorites:hover {
   background-color: #ff6666;
-  /* Darker red on hover */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  /* Increased shadow on hover */
 }
 
 .ratings {
@@ -189,7 +181,6 @@ figure:hover img {
 /* Styling for the stars or rating icons */
 .ratings .fas {
   color: #ffc107;
-  /* Yellow color for stars */
   font-size: 18px;
   margin: 0 2px;
 }

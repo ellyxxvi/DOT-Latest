@@ -55,10 +55,16 @@
                     </div>
                     <input type="text" placeholder="Email" name="email" id="emailInput" autocomplete="off" required>
                     <input type="password" placeholder="Password" name="password" id="passwordInput" autocomplete="off" required>
-                    <input type="text" placeholder="Country" name="from_country" id="from_country" autocomplete="off" required>
-                    <input type="text" placeholder="Province" name="current_province" id="current_province" autocomplete="off" required>
-                    <input type="text" placeholder="City" name="city" id="current_city" autocomplete="off" required>
-                    <input type="text" placeholder="Barangay" name="current_barangay" id="current_barangay" autocomplete="off" required>
+                    <select name="from_country" id="from_country" required>
+                        <option value="" disabled selected>Country</option>
+                    </select>
+                    <select name="current_province" id="current_province" required>
+                        <option value="" disabled selected>Province</option>
+                    </select>
+                    <select name="city" id="current_city" required>
+                        <option value="" disabled selected>City</option>
+                    </select>
+                    <!-- <input type="text" placeholder="Barangay" name="current_barangay" id="current_barangay" autocomplete="off" required> -->
                     <input type="button" id="registerButton" value="Register" data-toggle="modal" data-target="#preferenceModal">
                     <p id="warning" style="color: red; display: none;">Please fill in all required fields.</p>
                 </div>
@@ -162,6 +168,7 @@
 
 
     <?php include 'footer.php'; ?>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

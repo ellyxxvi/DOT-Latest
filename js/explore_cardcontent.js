@@ -192,12 +192,16 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log('initializeImageGallery called ' + JSON.stringify(imageUrls));
         const galleryContainer = document.getElementById('dynamic-gallery');
 
+        // Make sure the gallery container is clear before adding new images
+        galleryContainer.innerHTML = '';
+
         imageUrls.slice(1, 5).forEach((imageUrl, index) => {
             const col = document.createElement('div');
             col.className = 'col-lg-3 col-md-4 col-xs-6 thumb';
 
             const link = document.createElement('a');
             link.href = imageUrl;
+            link.classList.add('image-popup');
 
             const figure = document.createElement('figure');
 
@@ -207,9 +211,9 @@ document.addEventListener("DOMContentLoaded", function () {
             image.alt = `Image ${index + 1}`;
 
             // Set specific width and height for the images
-            image.style.width = '250px'; 
-            image.style.height = '200px'; 
-            image.style.objectFit = 'cover'; 
+            image.style.width = '250px';
+            image.style.height = '200px';
+            image.style.objectFit = 'cover';
 
             figure.appendChild(image);
             link.appendChild(figure);
@@ -236,6 +240,27 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+    // // Open the background image in a Magnific Popup
+    // function openBackgroundImage(imageUrl) {
+    //     console.log('Attempting to open background image:', imageUrl);
+    //     if (imageUrl) {
+    //         $.magnificPopup.open({
+    //             items: {
+    //                 src: imageUrl
+    //             },
+    //             type: 'image',
+    //             gallery: {
+    //                 enabled: false // not a gallery, just a single image
+    //             },
+    //             mainClass: 'mfp-img-mobile',
+    //             image: {
+    //                 tError: '<a href="%url%">The image could not be loaded.</a>'
+    //             }
+    //         });
+    //     } else {
+    //         console.error('Background image URL is empty.');
+    //     }
+    // }
 
 
     async function processData() {
@@ -243,49 +268,72 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
             const queryParams = new URLSearchParams(window.location.search);
             const desiredPlaceId = queryParams.get("id");
-    
+
             // Find the desired service using the ID
             const desiredService = dynamicData.find((service) => service.id === desiredPlaceId);
-    
+
             if (!desiredService) {
                 console.error("Service not found for ID:", desiredPlaceId);
                 return;
             }
-    
+
             console.log('Desired Service:', desiredService);
-    
+
             // Select DOM elements
             const backgroundElement = document.querySelector(".background-image");
             const titleElement = document.querySelector("h3");
             const paragraphElement = document.querySelector(".dynamic-paragraph");
-    
+
             let imageUrl = ""; // Default to an empty string
-    
-            // Check if desiredService.photos is an array of arrays
+
             if (Array.isArray(desiredService.photos) && desiredService.photos.length > 0) {
-                // Extract the first image URL from the first array
                 const firstImageArray = desiredService.photos[0];
                 if (Array.isArray(firstImageArray) && firstImageArray.length > 0) {
                     imageUrl = firstImageArray[0];
                 }
             }
-    
-            // Set the background image to the first image in the photos array
+
             backgroundElement.style.backgroundImage = `url("${imageUrl}")`;
             titleElement.textContent = desiredService.title;
             paragraphElement.textContent = desiredService.description;
-    
-            // Use FancyBox to open the background image in a lightbox
-            backgroundElement.addEventListener('click', () => {
-                $.fancybox.open({
-                    src: imageUrl,
-                    type: 'image',
-                });
+
+            // Debugging: ensure this element exists and is the correct one
+            console.log('Background element:', backgroundElement);
+
+
+            console.log('Adding click listener to background element with URL:', imageUrl);
+            backgroundElement.style.cursor = 'pointer'; // To visually indicate that the element is clickable
+            backgroundElement.addEventListener('click', (event) => {
+                event.preventDefault(); // To prevent any default action
+                console.log('Background element clicked, attempting to open image.');
+                openBackgroundImage(imageUrl);
             });
-    
-            // Initialize the image gallery with the retrieved image URLs
+            // Function to open the background image in a Magnific Popup
+            function openBackgroundImage(imageUrl) {
+                console.log('Attempting to open background image:', imageUrl);
+                if (imageUrl) {
+                    $.magnificPopup.open({
+                        items: {
+                            src: imageUrl
+                        },
+                        type: 'image',
+                        gallery: {
+                            enabled: false // not a gallery, just a single image
+                        },
+                        mainClass: 'mfp-img-mobile',
+                        image: {
+                            tError: '<a href="%url%">The image could not be loaded.</a>'
+                        }
+                    });
+                } else {
+                    console.error('Background image URL is empty.');
+                }
+            }
+
+
+            // Initialize the image galery with the retrieved image URLs
             initializeImageGallery(desiredService.photos[0]);
-    
+
             // Fetch comments for the desired service from the server
             const commentsResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/feedbacks/place/${desiredPlaceId}`);
             if (!commentsResponse.ok) {
@@ -294,18 +342,18 @@ document.addEventListener("DOMContentLoaded", function () {
             const commentsData = await commentsResponse.json();
             const placeComments = commentsData.all;
             calculateTotalRating(placeComments);
-    
+
             if (placeComments.length > 0) {
                 // Clear existing comment cards
                 commentCardsContainer.innerHTML = "";
-    
+
                 // Create and append comment cards
                 placeComments.forEach((comment) => {
                     const commentCard = document.createElement("div");
                     commentCard.classList.add("comment-card");
                     commentCard.setAttribute("data-rating", comment.rating);
                     commentCard.classList.add(`rating-${comment.rating}`);
-    
+
                     commentCard.innerHTML = `
                     <div class="comment-content">
                         <div class="rating">
@@ -319,16 +367,16 @@ document.addEventListener("DOMContentLoaded", function () {
                     commentCardsContainer.appendChild(commentCard);
                 });
             }
-    
+
             updateCommentCards();
         } catch (error) {
             console.error("Error in processData:", error);
         }
     }
-    
-    
-    
-    
+
+
+
+
 
 
 

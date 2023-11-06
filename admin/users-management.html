@@ -208,7 +208,7 @@
                                             <th>Country</th>
                                             <th>Province</th>
                                             <th>City</th>
-                                            <th>Barangay</th>
+                                            <!-- <th>Barangay</th> -->
                                             <th>Date Created</th>
                                             <th>Updated Date</th>
                                             <th>Actions</th>
@@ -269,25 +269,32 @@
                                             placeholder="Enter password">
                                     </div>
                                     <div class="form-group">
-                                        <label for="country">Country</label>
-                                        <input type="text" class="form-control" name="from_country" id="from_country"
-                                            placeholder="Enter country">
+                                        <label for="from_country">Country</label>
+                                        <select class="form-control" name="from_country" id="from_country" required>
+                                            <option value="" disabled selected>Select country</option>
+                                            <!-- Add options here -->
+                                        </select>
                                     </div>
                                     <div class="form-group">
-                                        <label for="province">Province</label>
-                                        <input type="text" class="form-control" name="current_province"
-                                            id="current_province" placeholder="Enter province">
+                                        <label for="current_province">Province</label>
+                                        <select class="form-control" name="current_province" id="current_province" required>
+                                            <option value="" disabled selected>Select province</option>
+                                            <!-- Add options here -->
+                                        </select>
                                     </div>
                                     <div class="form-group">
-                                        <label for="city">City</label>
-                                        <input type="text" class="form-control" name="current_city" id="current_city"
-                                            placeholder="Enter city">
+                                        <label for="current_city">City</label>
+                                        <select class="form-control" name="current_city" id="current_city" required>
+                                            <option value="" disabled selected>Select city</option>
+                                            <!-- Add options here -->
+                                        </select>
                                     </div>
-                                    <div class="form-group">
+                                    
+                                    <!-- <div class="form-group">
                                         <label for="barangay">Barangay</label>
                                         <input type="text" class="form-control" name="current_barangay"
                                             id="current_barangay" placeholder="Enter barangay">
-                                    </div>
+                                    </div> -->
 
                                 </form>
                             </div>
@@ -342,23 +349,29 @@
                                     <input type="password" class="form-control" id="password" name="password">
                                 </div> -->
                                 <div class="mb-3">
-                                    <label for="edit-from-county" class="form-label">Country</label>
-                                    <input type="text" class="form-control" id="from_country" name="from_country">
+                                    <label for="from_country" class="form-label">Country</label>
+                                    <select class="form-control" id="edit_from_country" name="from_country" required>
+                                        <option value="" disabled selected>Select country</option>
+                                    </select>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="edit-current-province" class="form-label">Province</label>
-                                    <input type="text" class="form-control" id="current_province"
-                                        name="current_province">
+                                    <label for="current_province" class="form-label">Province</label>
+                                    <select class="form-control" id="edit_current_province" name="current_province" required>
+                                        <option value="" disabled selected>Select province</option>
+                                    </select>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="edit-current-city" class="form-label">City</label>
-                                    <input type="text" class="form-control" id="current_city" name="current_city">
+                                    <label for="current_city" class="form-label">City</label>
+                                    <select class="form-control" id="edit_current_city" name="current_city" required>
+                                        <option value="" disabled selected>Select city</option>
+                                    </select>
                                 </div>
-                                <div class="mb-3">
+                                
+                                <!-- <div class="mb-3">
                                     <label for="edit-current-barangay" class="form-label">Barangay</label>
                                     <input type="text" class="form-control" id="current_barangay"
                                         name="current_barangay">
-                                </div>
+                                </div> -->
                                 <input type="hidden" name="created_at">
                                 <input type="hidden" name="updated_at">
                                 <button type="submit" class="btn btn-primary">Save Changes</button>

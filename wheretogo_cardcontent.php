@@ -15,8 +15,11 @@
   <link rel="stylesheet" href="css/wheretogo_cardcontent.css" />
   <script src="https://kit.fontawesome.com/e173e574d6.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
+</head>
 
-  <link rel="icon" href="image/LOGO (2).png" type="image/png">
+<link rel="icon" href="image/LOGO (2).png" type="image/png">
 </head>
 
 <body>
@@ -42,4 +45,5 @@
   <script src="js/wheretogo_cardcontent.js"></script>
 </body>
 <?php include 'footer.php'; ?>
+
 </html>

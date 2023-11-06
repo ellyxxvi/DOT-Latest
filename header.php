@@ -1,7 +1,7 @@
-
 <!DOCTYPE html>
 
 <html>
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -43,10 +43,12 @@
             </div>
 
             <script>
+                // const API_PROTOCOL = 'https'
+                // const API_HOSTNAME = 'goexplorebatangas.com/api'
                 const API_PROTOCOL = 'http'
-                const API_HOSTNAME = '13.212.85.80'
-// Function to check if the user is authenticated
-function checkAuthentication() {
+                const API_HOSTNAME = '13.212.85.80/api'
+                // Function to check if the user is authenticated
+                function checkAuthentication() {
                     var isAuthenticated = localStorage.getItem("access_token");
 
                     if (isAuthenticated != null) {

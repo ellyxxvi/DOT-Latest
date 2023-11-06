@@ -31,8 +31,6 @@
             <img id="modalImage" class="modal-content">
         </div>
         <h3></h3>
-        </div>
-        </div>
         <div class="ratings" id="total-rating">
             <i class="fas fa-star"></i>
             <i class="fas fa-star"></i>
@@ -128,4 +126,5 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.5/popper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
 </body>
+
 </html>

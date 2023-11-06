@@ -1,5 +1,8 @@
-const API_PROTOCOL = 'https';
-const API_HOSTNAME = 'goexplorebatangas.com/api';
+// const API_PROTOCOL = 'https';
+// const API_HOSTNAME = 'goexplorebatangas.com/api';
+const API_PROTOCOL = 'http'
+const API_HOSTNAME = '13.212.85.80/api'
+
 
 // USER STATISTICS
 document.addEventListener('DOMContentLoaded', async function () {

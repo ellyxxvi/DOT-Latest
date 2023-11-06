@@ -124,10 +124,6 @@
                             <label>Event Color</label>
                             <select class="form-control" name="event_color" id="event_color">
                                 <option value="fc-bg-default">fc-bg-default</option>
-                                <option value="fc-bg-blue">fc-bg-blue</option>
-                                <option value="fc-bg-lightgreen">fc-bg-lightgreen</option>
-                                <option value="fc-bg-pinkred">fc-bg-pinkred</option>
-                                <option value="fc-bg-deepskyblue">fc-bg-deepskyblue</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -168,29 +164,25 @@
                         <h4>Edit Event Detail</h4>
                         <div class="form-group">
                             <label>Place name</label>
-                            <input type="text" class="form-control" name="place_name" id="place_name">
+                            <select class="form-control" name="place_name" id="edit_place_name"></select>
                         </div>
                         <div class="form-group">
                             <label>Event Date</label>
-                            <input type='text' class="datetimepicker form-control" name="event_date" id="event_date">
+                            <input type='text' class="datetimepicker form-control" name="event_date" id="edit_event_date">
                         </div>
                         <div class="form-group">
                             <label>Notes</label>
-                            <input type="text" class="form-control" name="notes" id="notes">
+                            <input type="text" class="form-control" name="notes" id="edit_notes">
                         </div>
                         <div class="form-group">
                             <label>Event Color</label>
-                            <select class="form-control" name="event_color" id="event_color">
+                            <select class="form-control" name="event_color" id="edit_event_color">
                                 <option value="fc-bg-default">fc-bg-default</option>
-                                <option value="fc-bg-blue">fc-bg-blue</option>
-                                <option value="fc-bg-lightgreen">fc-bg-lightgreen</option>
-                                <option value="fc-bg-pinkred">fc-bg-pinkred</option>
-                                <option value="fc-bg-deepskyblue">fc-bg-deepskyblue</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label>Event Icon</label>
-                            <select class="form-control" name="event_icon" id="event_icon">
+                            <select class="form-control" name="event_icon" id="edit_event_icon">
                                 <option value="circle">circle</option>
                                 <option value="cog">cog</option>
                                 <option value="group">group</option>
@@ -200,7 +192,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="submit" class="btn btn-primary" id="edit_button">Save</button>
                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </form>

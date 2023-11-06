@@ -61,10 +61,10 @@
                 </button>
             </li>
             <li class="nav-item">
-            <button class="nav-link btn btn-link animate" id="builderButton">
-              <i class="fas fa-calendar"></i> Itinerary Builder
-            </button>
-          </li>
+                <button class="nav-link btn btn-link animate" id="builderButton">
+                    <i class="fas fa-calendar"></i> Itinerary Builder
+                </button>
+            </li>
             <li class="nav-item">
                 <button class="nav-link btn btn-link animate" id="accountButton">
                     <i class="fas fa-cog"></i> Account
@@ -119,7 +119,7 @@
                     <div class="profile-head with-border-bottom">
                         <h5 class="nameHolder"></h5>
                         <h6>User</h6>
-                        
+
                     </div>
                 </div>
                 <div class="col-md-2">
@@ -186,22 +186,31 @@
                             <label for="edit-password" class="form-label">Password</label>
                             <input type="password" class="form-control" id="password" name="password">
                         </div> -->
-                        <div class="mb-3">
-                            <label for="edit-from-county" class="form-label">Country</label>
-                            <input type="text" class="form-control" id="from_country" name="from_country">
+                        <div class="form-group">
+                            <label for="from_country">Country</label>
+                            <select class="form-control" name="from_country" id="from_country" required>
+                                <option value="" disabled selected>Select country</option>
+                                <!-- Add options here -->
+                            </select>
                         </div>
-                        <div class="mb-3">
-                            <label for="edit-current-province" class="form-label">Province</label>
-                            <input type="text" class="form-control" id="current_province" name="current_province">
+                        <div class="form-group">
+                            <label for="current_province">Province</label>
+                            <select class="form-control" name="current_province" id="current_province" required>
+                                <option value="" disabled selected>Select province</option>
+                                <!-- Add options here -->
+                            </select>
                         </div>
-                        <div class="mb-3">
-                            <label for="edit-current-city" class="form-label">City</label>
-                            <input type="text" class="form-control" id="current_city" name="current_city">
+                        <div class="form-group">
+                            <label for="current_city">City</label>
+                            <select class="form-control" name="current_city" id="current_city" required>
+                                <option value="" disabled selected>Select city</option>
+                                <!-- Add options here -->
+                            </select>
                         </div>
-                        <div class="mb-3">
+                        <!-- <div class="mb-3">
                             <label for="edit-current-barangay" class="form-label">Barangay</label>
                             <input type="text" class="form-control" id="current_barangay" name="current_barangay">
-                        </div>
+                        </div> -->
                         <input type="hidden" name="created_at">
                         <input type="hidden" name="updated_at">
                         <button type="submit" class="btn btn-primary" id="updateProfileButton">Save Changes</button>

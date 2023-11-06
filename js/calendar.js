@@ -39,20 +39,23 @@ $(document).ready(function () {
                 return response.json();
             })
             .then(responseData => {
+                // Assuming item.date is in a format that can be understood by Date.parse(), like "YYYY-MM-DD"
+                responseData.sort((a, b) => new Date(a.date) - new Date(b.date));
+    
                 data = responseData;
-
+    
                 const galleryItems = data.slice(startIndex, startIndex + itemsPerPage);
-
+    
                 galleryItems.forEach(item => {
                     // Format the date using formatDateToMonthAndDay function
                     const formattedDate = formatDateToMonthAndDay(item.date);
-
+    
                     // Build and append gallery item HTML
                     const itemHtml = `
                         <a href="festival_content.php?item_id=${item.id}" class="gallery-item-link" data-item-id="${item.id}">
                             <div class="gallery-item">
                                 <div class="image-wrapper">
-                                    <img src="${item.images[0]}" alt="Image ${item.id}"> <!-- Display the first image URL -->
+                                    <img src="${item.images[0]}" alt="Image ${item.id}">
                                 </div>
                                 <div class="item-overlay">
                                     <div class="calendar-icon">
@@ -67,15 +70,18 @@ $(document).ready(function () {
                     `;
                     galleryContainer.append(itemHtml);
                 });
-
+    
                 startIndex += itemsPerPage;
-
+    
                 if (startIndex >= data.length) {
                     loadMoreButton.hide();
                 } else {
                     loadMoreButton.show();
                 }
-
+    
+                // Make sure galleryItemLinks is a fresh collection of links
+                galleryItemLinks = document.querySelectorAll('.gallery-item-link');
+    
                 galleryItemLinks.forEach(link => {
                     $(link).on('click', function (event) {
                         handleGalleryItemClick(event, parseInt($(this).data('item-id')));
@@ -84,6 +90,7 @@ $(document).ready(function () {
             })
             .catch(error => console.error('Error fetching data:', error));
     }
+    
 
     // Function to format a date to "Month Day" format
     function formatDateToMonthAndDay(dateString) {
@@ -127,7 +134,7 @@ $(document).ready(function () {
                     <a href="festival_content.php?item_id=${item.id}" class="gallery-item-link" data-item-id="${item.id}">
                         <div class "gallery-item">
                             <div class="image-wrapper">
-                                <img src="${item.images[0]}" alt="Image ${item.id}"> <!-- Display the first image URL -->
+                                <img src="${item.images[0]}" alt="Image ${item.id}"> 
                             </div>
                             <div class="item-overlay">
                                 <div class="calendar-icon">
