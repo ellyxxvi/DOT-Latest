@@ -9,7 +9,7 @@ $(document).ready(function () {
 // const API_PROTOCOL = 'https'
 // const API_HOSTNAME = 'goexplorebatangas.com/api'
 const API_PROTOCOL = 'http'
-const API_HOSTNAME = '13.212.85.80/api'
+const API_HOSTNAME = '13.229.101.17/api'
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function populateTable(searchKeyword = '') {
     const searchUrl = `${API_PROTOCOL}://${API_HOSTNAME}/places`;
-  
+
     fetch(searchUrl)
       .then((response) => {
         if (!response.ok) {
@@ -58,12 +58,12 @@ document.addEventListener('DOMContentLoaded', function () {
             contact.toLowerCase().includes(lowerKeyword)
           );
         });
-  
+
         // Sort data by 'created_at' in descending order
         filteredData.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-  
+
         tableBody.innerHTML = '';
-  
+
         if (filteredData.length === 0) {
           const noResultsRow = document.createElement('tr');
           noResultsRow.innerHTML = `
@@ -72,11 +72,15 @@ document.addEventListener('DOMContentLoaded', function () {
           tableBody.appendChild(noResultsRow);
         } else {
           // Populate the table with sorted search results
-          filteredData.forEach((user) => {
+          filteredData.forEach((user, index) => {
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${user.id}</td>
-                <td><img src="${user.photos[0]}" alt="" class="img-thumbnail" width="100px"></td>
+                <td>
+                  <button class="img-button btn-primary btn-sm" data-index="${index}" data-toggle="modal" data-target="#imageModal" data-image-src="${user.photos && user.photos.length > 0 ? user.photos.join(',') : ''}">
+                  <i class="fa fa-image"></i>
+                  </button>
+                </td>
                 <td>${user.title}</td>
                 <td>${user.description}</td>
                 <td>${user.category}</td>
@@ -86,12 +90,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 <td>${user.contact}</td>
                 <td>
                   <ul>
-                    <li>Facebook: <a href="${user.social_links ? user.social_links.fb : ''}" target="_blank">${
-              user.social_links ? user.social_links.fb : ''
-            }</a></li>
-                    <li>Website: <a href="${user.social_links ? user.social_links.website : ''}" target="_blank">${
-              user.social_links ? user.social_links.website : ''
-            }</a></li>
+                    <li>Facebook: <a href="${user.social_links ? user.social_links.fb : ''}" target="_blank">${user.social_links ? user.social_links.fb : ''
+              }</a></li>
+                    <li>Website: <a href="${user.social_links ? user.social_links.website : ''}" target="_blank">${user.social_links ? user.social_links.website : ''
+              }</a></li>
                   </ul>
                 </td>
                 <td>${user.created_at}</td>
@@ -108,20 +110,58 @@ document.addEventListener('DOMContentLoaded', function () {
             tableBody.appendChild(row);
           });
         }
-  
+
         const deleteButtons = document.querySelectorAll('.delete-button');
         deleteButtons.forEach((button) => {
           button.addEventListener('click', deleteRow);
         });
-  
+
         const editButtons = document.querySelectorAll('.edit-button');
         editButtons.forEach((button) => {
           button.addEventListener('click', editRow);
         });
+        // After rows are added to the table, find all img-buttons and add event listeners
+        const imgButtons = document.querySelectorAll(".img-button");
+        imgButtons.forEach(button => {
+          button.addEventListener("click", function () {
+            const index = this.getAttribute("data-index"); // Retrieve index from data attribute
+            const userData = filteredData[index]; // Access the user data using the index
+            console.log('Data for clicked row:', userData);
+
+            const imageSrcArray = userData.photos || []; // Directly use userData.images array
+            const imageGallery = document.getElementById("imageGallery");
+
+            // Clear previous images
+            imageGallery.innerHTML = '';
+
+            // Check if there are images and create an img element for each one
+            if (imageSrcArray.length > 0) {
+              imageSrcArray.forEach(imageSrc => {
+                const imgElement = document.createElement('img');
+                imgElement.src = imageSrc;
+
+                // Set a fixed size for the image
+                imgElement.style.width = "120px";
+                imgElement.style.height = "120px";
+                imgElement.style.objectFit = "cover";
+                imgElement.style.margin = "10px";
+                imageGallery.style.justifyContent = 'center';
+                imageGallery.style.alignItems = 'center';
+
+                imgElement.alt = "Festival Image";
+                imgElement.classList.add("img-fluid");
+                imageGallery.appendChild(imgElement);
+              });
+            } else {
+              // If no images, display a placeholder or message
+              imageGallery.innerHTML = `<p>No images available.</p>`;
+            }
+          });
+        });
       })
       .catch((error) => console.error('Error fetching data:', error));
   }
-  
+
 
 
 
@@ -141,13 +181,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const row = button.closest('tr');
     const userId = row.querySelector('td:first-child').textContent;
     const accessToken = getAccessTokenFromLocalStorage();
-  
+
     // Check if the form and elements exist before accessing them
     if (!editForm) {
       console.error('editForm not found.');
       return;
     }
-  
+
     fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places/${userId}`, {
       method: 'GET',
       headers: {
@@ -163,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function () {
           }
           throw new Error('Network response was not ok.');
         }
-  
+
         // Check the response content type
         const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
@@ -180,7 +220,7 @@ document.addEventListener('DOMContentLoaded', function () {
           console.error('Form elements not found.');
           return;
         }
-  
+
         // Update form elements with user data
         editForm.elements.id.value = user.id;
         editForm.elements.title.value = user.title;
@@ -190,14 +230,14 @@ document.addEventListener('DOMContentLoaded', function () {
         editForm.elements.city.value = user.city;
         editForm.elements.barangay.value = user.barangay;
         editForm.elements.contact.value = user.contact;
-  
+
         // Adapt social_links to match your form structure
         editForm.elements.fb_link.value = user.social_links.fb;
         editForm.elements.website_link.value = user.social_links.website;
-  
+
         // Loop through user photos to update each image preview
         const existingImages = user.photos;
-  
+
         // Update image previews and store existing image URLs
         for (let i = 0; i < existingImages.length; i++) {
           const existingImageURL = existingImages[i];
@@ -205,131 +245,131 @@ document.addEventListener('DOMContentLoaded', function () {
           if (imagePreview) {
             imagePreview.src = existingImageURL;
           }
-  
+
           // Store existing image URLs in hidden input fields
           const existingImageInput = document.getElementById(`existing-image-${i + 1}`);
           if (existingImageInput) {
             existingImageInput.value = existingImageURL;
           }
         }
-  
+
         editModal.show();
       })
       .catch(error => console.error('Error fetching user data:', error));
   }
 
-// Handle edit form submission
-editForm.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  const formData = new FormData(editForm);
-  const updatedUser = {};
-  formData.delete('created_at');
-  formData.delete('existingImage');
+  // Handle edit form submission
+  editForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const formData = new FormData(editForm);
+    const updatedUser = {};
+    formData.delete('created_at');
+    formData.delete('existingImage');
 
-  updatedUser.contact = formData.get('contact').split(',').map((contact) => contact.trim());
+    updatedUser.contact = formData.get('contact').split(',').map((contact) => contact.trim());
 
-  updatedUser.social_links = {
-    fb: formData.get('fb_link').trim(),
-    website: formData.get('website_link').trim(),
-  };
+    updatedUser.social_links = {
+      fb: formData.get('fb_link').trim(),
+      website: formData.get('website_link').trim(),
+    };
 
-  formData.delete('contact');
-  formData.delete('fb_link');
-  formData.delete('website_link');
+    formData.delete('contact');
+    formData.delete('fb_link');
+    formData.delete('website_link');
 
-  formData.forEach((value, key) => {
-    if (value !== '[object Object]') {
-      updatedUser[key] = value;
+    formData.forEach((value, key) => {
+      if (value !== '[object Object]') {
+        updatedUser[key] = value;
+      }
+    });
+
+    // Log the edited user data
+    console.log('Edited User Data:', updatedUser);
+
+    // Define accessToken - replace this with your actual access token retrieval logic
+    const accessToken = getAccessTokenFromLocalStorage();
+
+    const imageInput = editForm.querySelector('input[type="file"]');
+    const imageFiles = imageInput.files;
+
+    try {
+      const uploadedImageUrls = [];
+
+      for (const imageFile of imageFiles) {
+        const formDataForImage = new FormData();
+        formDataForImage.append('photo', imageFile);
+
+        const imageUploadResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/images`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: formDataForImage,
+        });
+
+        if (!imageUploadResponse.ok) {
+          throw new Error('Image upload failed.');
+        }
+
+        const imageUploadData = await imageUploadResponse.json();
+        console.log('Uploaded image URL:', imageUploadData.http_img_url);
+        uploadedImageUrls.push(imageUploadData.http_img_url);
+      }
+
+      // Preserve existing image URLs in updatedUser.photos
+      const existingImages = formData.getAll('existingImage');
+      updatedUser.photos = existingImages;
+
+      if (uploadedImageUrls.length > 0) {
+        updatedUser.photos.push(...uploadedImageUrls);
+      }
+
+      // Update the user ID
+      updatedUser.id = formData.get('id'); // Assuming you have an input field with name 'id'
+
+      sendEditRequest(updatedUser, accessToken);
+    } catch (error) {
+      console.error('There was a problem with image uploads:', error);
     }
   });
 
-  // Log the edited user data
-  console.log('Edited User Data:', updatedUser);
-
-  // Define accessToken - replace this with your actual access token retrieval logic
-  const accessToken = getAccessTokenFromLocalStorage();
-
-  const imageInput = editForm.querySelector('input[type="file"]');
-  const imageFiles = imageInput.files;
-
-  try {
-    const uploadedImageUrls = [];
-
-    for (const imageFile of imageFiles) {
-      const formDataForImage = new FormData();
-      formDataForImage.append('photo', imageFile);
-
-      const imageUploadResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/images`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: formDataForImage,
-      });
-
-      if (!imageUploadResponse.ok) {
-        throw new Error('Image upload failed.');
+  // Function to send the PUT request to update user data
+  async function sendEditRequest(updatedUser, accessToken) {
+    console.log('EDIT: ' + JSON.stringify(updatedUser));
+    try {
+      if (!updatedUser.id) {
+        console.error('Error updating item data: Invalid ID');
+        return;
       }
 
-      const imageUploadData = await imageUploadResponse.json();
-      console.log('Uploaded image URL:', imageUploadData.http_img_url);
-      uploadedImageUrls.push(imageUploadData.http_img_url);
+      console.log('Sending PUT request with updatedUser:', updatedUser);
+
+      const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places/${updatedUser.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(updatedUser),
+      });
+
+      if (!response.ok) {
+        // throw new Error(`Error updating item data: ${response.status} - ${response.statusText}`);
+      }
+
+      if (response.status === 201) {
+        // Success: handle the update
+        editForm.reset();
+        editModal.hide();
+        populateTable();
+      } else {
+        console.error('Error updating item data:', response.status);
+      }
+    } catch (error) {
+      console.error('Error updating item data:', error);
+      console.log('User Inputs:', updatedUser);
     }
-
-    // Preserve existing image URLs in updatedUser.photos
-    const existingImages = formData.getAll('existingImage');
-    updatedUser.photos = existingImages;
-
-    if (uploadedImageUrls.length > 0) {
-      updatedUser.photos.push(...uploadedImageUrls);
-    }
-
-    // Update the user ID
-    updatedUser.id = formData.get('id'); // Assuming you have an input field with name 'id'
-
-    sendEditRequest(updatedUser, accessToken);
-  } catch (error) {
-    console.error('There was a problem with image uploads:', error);
   }
-});
-
-// Function to send the PUT request to update user data
-async function sendEditRequest(updatedUser, accessToken) {
-  console.log('EDIT: ' + JSON.stringify(updatedUser));
-  try {
-    if (!updatedUser.id) {
-      console.error('Error updating item data: Invalid ID');
-      return;
-    }
-
-    console.log('Sending PUT request with updatedUser:', updatedUser);
-
-    const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places/${updatedUser.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify(updatedUser),
-    });
-
-    if (!response.ok) {
-      // throw new Error(`Error updating item data: ${response.status} - ${response.statusText}`);
-    }
-
-    if (response.status === 201) {
-      // Success: handle the update
-      editForm.reset();
-      editModal.hide();
-      populateTable();
-    } else {
-      console.error('Error updating item data:', response.status);
-    }
-  } catch (error) {
-    console.error('Error updating item data:', error);
-    console.log('User Inputs:', updatedUser);
-  }
-}
 
 
   // Handle form submission and add new item
@@ -340,20 +380,20 @@ async function sendEditRequest(updatedUser, accessToken) {
 addAccountButton.addEventListener('click', async () => {
   const form = document.getElementById('add-user-form');
   const formData = new FormData(form);
-  const imageInput = document.querySelector('#photos');
-  const images = imageInput.files; // Get an array of selected image files
   const accessToken = getAccessTokenFromLocalStorage();
 
-  if (images.length > 5) { // Check for 5 or fewer images
-    alert('Please select no more than 5 image files.');
-    console.error('Please select no more than 5 image files.');
-    return;
-  }
-  
-
-  const uploadedImageUrls = [];
-
   try {
+    const imageInput = document.querySelector('#photos');
+    const images = imageInput.files; // Get an array of selected image files
+
+    if (images.length > 5) { // Check for 5 or fewer images
+      alert('Please select no more than 5 image files.');
+      console.error('Please select no more than 5 image files.');
+      return;
+    }
+
+    const uploadedImageUrls = [];
+
     for (const imageFile of images) {
       const formDataForImage = new FormData();
       formDataForImage.append('photo', imageFile);
@@ -373,6 +413,31 @@ addAccountButton.addEventListener('click', async () => {
       const imageUploadData = await imageUploadResponse.json();
       console.log('Uploaded image URL:', imageUploadData.http_img_url);
       uploadedImageUrls.push(imageUploadData.http_img_url);
+    }
+
+    // Display image previews
+    const imagePreviewContainer = document.getElementById('image-preview-container');
+    imagePreviewContainer.innerHTML = ''; // Clear existing previews
+
+    for (const imageFile of images) {
+      const imagePreviewDiv = document.createElement('div');
+      imagePreviewDiv.classList.add('image-preview');
+
+      const imagePreview = document.createElement('img');
+      imagePreview.src = URL.createObjectURL(imageFile);
+
+      const removeIcon = document.createElement('i');
+      removeIcon.classList.add('fas', 'fa-times', 'remove-image');
+      removeIcon.addEventListener('click', () => {
+        // Remove the image file from the input
+        imageInput.value = '';
+        // Remove the preview
+        imagePreviewContainer.removeChild(imagePreviewDiv);
+      });
+
+      imagePreviewDiv.appendChild(imagePreview);
+      imagePreviewDiv.appendChild(removeIcon);
+      imagePreviewContainer.appendChild(imagePreviewDiv);
     }
 
     // Convert the contacts field to an array

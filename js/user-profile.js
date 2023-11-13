@@ -4,8 +4,8 @@ var config = {
 };
 
 var countrySelect = document.getElementById('from_country'),
-    stateSelect = document.getElementById('current_province'),
-    citySelect = document.getElementById('current_city');
+    stateSelect = document.getElementById('current_province')
+    // citySelect = document.getElementById('current_city');
 
 function loadCountries() {
 
@@ -26,16 +26,16 @@ function loadCountries() {
     .catch(error => console.error('Error loading countries:', error))
 
     stateSelect.disabled = false
-    citySelect.disabled = false
+    // citySelect.disabled = false
     stateSelect.style.pointerEvents = 'none'
-    citySelect.style.pointerEvents = 'none'
+    // citySelect.style.pointerEvents = 'none'
 }
 
 function loadStates(selectedCountryCode1 = null, current_province = null, current_city = null) {
     stateSelect.disabled = false
-    citySelect.disabled = false
+    // citySelect.disabled = false
     stateSelect.style.pointerEvents = 'auto'
-    citySelect.style.pointerEvents = 'none'
+    // citySelect.style.pointerEvents = 'none'
 
     var selectedCountryCode = selectedCountryCode1;
     if(selectedCountryCode1 != null) {
@@ -43,7 +43,7 @@ function loadStates(selectedCountryCode1 = null, current_province = null, curren
     }
     console.log(selectedCountryCode);
     stateSelect.innerHTML = '<option value="">Select State</option>' // for clearing the existing states
-    citySelect.innerHTML = '<option value="">Select City</option>' // Clear existing city options
+    // citySelect.innerHTML = '<option value="">Select City</option>' // Clear existing city options
     console.log("Test: " + `${config.cUrl}/${selectedCountryCode}/states`, {headers: {"X-CSCAPI-KEY": config.ckey}});
     fetch(`${config.cUrl}/${selectedCountryCode}/states`, {headers: {"X-CSCAPI-KEY": config.ckey}})
     .then(response => response.json())
@@ -62,43 +62,43 @@ function loadStates(selectedCountryCode1 = null, current_province = null, curren
         if(current_province != null) {
             selectOptionByText(stateSelect, current_province);
         }
-        if(current_city != null) {
-            loadCities(current_city);
-        }
+        // if(current_city != null) {
+        //     loadCities(current_city);
+        // }
         
     })
     .catch(error => console.error('Error loading countries:', error))
 }
 
-function loadCities(current_city = null) {
-    citySelect.disabled = false
-    citySelect.style.pointerEvents = 'auto'
+// function loadCities(current_city = null) {
+//     citySelect.disabled = false
+//     citySelect.style.pointerEvents = 'auto'
 
-    const selectedCountryCode = countrySelect.value
-    const selectedStateCode = stateSelect.value
-    console.log("loadCities: " +selectedCountryCode, selectedStateCode);
+//     const selectedCountryCode = countrySelect.value
+//     const selectedStateCode = stateSelect.value
+//     console.log("loadCities: " +selectedCountryCode, selectedStateCode);
 
-    citySelect.innerHTML = '<option value="">Select City</option>' // Clear existing city options
+//     citySelect.innerHTML = '<option value="">Select City</option>' // Clear existing city options
 
-    fetch(`${config.cUrl}/${selectedCountryCode}/states/${selectedStateCode}/cities`, {headers: {"X-CSCAPI-KEY": config.ckey}})
-    .then(response => response.json())
-    .then(data => {
-        // console.log(data);
+//     fetch(`${config.cUrl}/${selectedCountryCode}/states/${selectedStateCode}/cities`, {headers: {"X-CSCAPI-KEY": config.ckey}})
+//     .then(response => response.json())
+//     .then(data => {
+//         // console.log(data);
 
-        data.forEach(city => {
-            const option = document.createElement('option')
-            option.value = city.iso2
-            option.textContent = city.name 
-            citySelect.appendChild(option)
-        })
-    })
-    .then(data => {
-        if(current_city != null) {
-            selectOptionByText(citySelect, current_city);
-        }
-    })
+//         data.forEach(city => {
+//             const option = document.createElement('option')
+//             option.value = city.iso2
+//             option.textContent = city.name 
+//             citySelect.appendChild(option)
+//         })
+//     })
+//     .then(data => {
+//         if(current_city != null) {
+//             selectOptionByText(citySelect, current_city);
+//         }
+//     })
 
-}
+// }
 
     function selectOptionByText(selectElement, text) {
         for (const option of selectElement.options) {
@@ -120,10 +120,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const editModal = new bootstrap.Modal(document.getElementById('editModal'));
     loadCountries(); 
     loadStates();
-    loadCities();
+    // loadCities();
     countrySelect.addEventListener('change', loadStates);
 
-    stateSelect.addEventListener('change', loadCities);
+    // stateSelect.addEventListener('change', loadCities);
 
     builderButton.addEventListener("click", function () {
         window.location.href = "itinerary-builder.php";
@@ -169,12 +169,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById('existingImage').value = data.profile_photo;
                 document.getElementById('first_name').value = data.first_name;
                 document.getElementById('last_name').value = data.last_name;
+                document.getElementById('current_city').value = data.current_city;
                 
                 // Set the country selection
                 const countrySelect = document.getElementById('from_country');
                 selectOptionByText(countrySelect, data.from_country);
-                console.log("editProfileButton: " + data.from_country + " || " + data.current_province + " || " + data.current_city);
-                loadStates(data.from_country, data.current_province, data.current_city);
+                console.log("editProfileButton: " + data.from_country + " || " + data.current_province);
+                loadStates(data.from_country, data.current_province);
                 
                 // Set the province selection
                 // const stateSelect = document.getElementById('current_province');
@@ -212,10 +213,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const userId = document.getElementById('edit-id').value;
         const countrySelect = document.getElementById('from_country');
         const stateSelect = document.getElementById('current_province');
-        const citySelect = document.getElementById('current_city');
+        // const citySelect = document.getElementById('current_city');
         const from_country = countrySelect.options[countrySelect.selectedIndex].text;
         const current_province = stateSelect.options[stateSelect.selectedIndex].text;
-        const current_city = citySelect.options[citySelect.selectedIndex].text;
+        // const current_city = citySelect.options[citySelect.selectedIndex].text;
 
         
         const updatedUserData = {
@@ -283,7 +284,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Add these lines before the fetch call
         updatedUser.from_country = document.getElementById('from_country').options[document.getElementById('from_country').selectedIndex].text;
         updatedUser.current_province = document.getElementById('current_province').options[document.getElementById('current_province').selectedIndex].text;
-        updatedUser.current_city = document.getElementById('current_city').options[document.getElementById('current_city').selectedIndex].text;
+        // updatedUser.current_city = document.getElementById('current_city').options[document.getElementById('current_city').selectedIndex].text;
 
         fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users/${userId}`, {
             method: 'PUT',

@@ -7,7 +7,7 @@ $(document).ready(function () {
 // const API_PROTOCOL = 'https'
 // const API_HOSTNAME = 'goexplorebatangas.com/api'
 const API_PROTOCOL = 'http'
-const API_HOSTNAME = '13.212.85.80/api'
+const API_HOSTNAME = '13.229.101.17/api'
 
 document.addEventListener('DOMContentLoaded', function () {
   const tableBody = document.getElementById('tableBody');
@@ -85,10 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Initial population of the table with all data
   populateTable();
 
-  searchButton.addEventListener('click', () => {
-    const searchKeyword = searchInput.value.trim();
-    populateTable(searchKeyword);
-  });
+
 
   function getAccessTokenFromLocalStorage() {
     const accessToken = localStorage.getItem('access_token');
@@ -134,7 +131,6 @@ document.addEventListener('DOMContentLoaded', function () {
           from_country: user.from_country || 'TEST',
           current_province: user.current_province || 'TEST',
           current_city: user.current_city || 'TEST',
-          current_barangay: user.current_barangay || 'TEST'
         };
 
         editModal.show();
@@ -155,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Remove unrecognized keys from the user object
-    const { id, created_at, updated_at, ...validData } = updatedUser;
+    const { id, created_at, updated_at, email, ...validData } = updatedUser;
 
     try {
       const accessToken = getAccessTokenFromLocalStorage();
@@ -227,7 +223,6 @@ document.addEventListener('DOMContentLoaded', function () {
     user['from_country'] = "test";
     user['current_province'] = "test";
     user['current_city'] = "test";
-    user['current_barangay'] = "test";
     
 
     const password = user['password'];

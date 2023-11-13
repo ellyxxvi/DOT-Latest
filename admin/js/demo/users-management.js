@@ -7,7 +7,7 @@ $(document).ready(function () {
 // const API_PROTOCOL = 'https'
 // const API_HOSTNAME = 'goexplorebatangas.com/api'
 const API_PROTOCOL = 'http'
-const API_HOSTNAME = '13.212.85.80/api'
+const API_HOSTNAME = '13.229.101.17/api'
 
 var config = {
   cUrl: 'https://api.countrystatecity.in/v1/countries',
@@ -15,12 +15,12 @@ var config = {
 };
 
 var countrySelect = document.getElementById('from_country'),
-  stateSelect = document.getElementById('current_province'),
-  citySelect = document.getElementById('current_city');
+  stateSelect = document.getElementById('current_province');
+  // citySelect = document.getElementById('current_city');
 
   var editcountrySelect = document.getElementById('edit_from_country'),
-  editstateSelect = document.getElementById('edit_current_province'),
-  editcitySelect = document.getElementById('edit_current_city');
+  editstateSelect = document.getElementById('edit_current_province');
+  // editcitySelect = document.getElementById('edit_current_city');
 
 function loadCountries() {
 
@@ -41,21 +41,21 @@ function loadCountries() {
   .catch(error => console.error('Error loading countries:', error))
 
   stateSelect.disabled = true
-  citySelect.disabled = true
+  // citySelect.disabled = true
   stateSelect.style.pointerEvents = 'none'
-  citySelect.style.pointerEvents = 'none'
+  // citySelect.style.pointerEvents = 'none'
 }
 
 function loadStates() {
   stateSelect.disabled = false
-  citySelect.disabled = true
+  // citySelect.disabled = true
   stateSelect.style.pointerEvents = 'auto'
-  citySelect.style.pointerEvents = 'none'
+  // citySelect.style.pointerEvents = 'none'
 
   const selectedCountryCode = countrySelect.value
   // console.log(selectedCountryCode);
   stateSelect.innerHTML = '<option value="">Select State</option>' // for clearing the existing states
-  citySelect.innerHTML = '<option value="">Select City</option>' // Clear existing city options
+  // citySelect.innerHTML = '<option value="">Select City</option>' // Clear existing city options
 
   fetch(`${config.cUrl}/${selectedCountryCode}/states`, {headers: {"X-CSCAPI-KEY": config.ckey}})
   .then(response => response.json())
@@ -72,29 +72,29 @@ function loadStates() {
   .catch(error => console.error('Error loading countries:', error))
 }
 
-function loadCities() {
-  citySelect.disabled = false
-  citySelect.style.pointerEvents = 'auto'
+// function loadCities() {
+//   citySelect.disabled = false
+//   citySelect.style.pointerEvents = 'auto'
 
-  const selectedCountryCode = countrySelect.value
-  const selectedStateCode = stateSelect.value
-  // console.log(selectedCountryCode, selectedStateCode);
+//   const selectedCountryCode = countrySelect.value
+//   const selectedStateCode = stateSelect.value
+//   // console.log(selectedCountryCode, selectedStateCode);
 
-  citySelect.innerHTML = '<option value="">Select City</option>' // Clear existing city options
+//   citySelect.innerHTML = '<option value="">Select City</option>' // Clear existing city options
 
-  fetch(`${config.cUrl}/${selectedCountryCode}/states/${selectedStateCode}/cities`, {headers: {"X-CSCAPI-KEY": config.ckey}})
-  .then(response => response.json())
-  .then(data => {
-      // console.log(data);
+//   fetch(`${config.cUrl}/${selectedCountryCode}/states/${selectedStateCode}/cities`, {headers: {"X-CSCAPI-KEY": config.ckey}})
+//   .then(response => response.json())
+//   .then(data => {
+//       // console.log(data);
 
-      data.forEach(city => {
-          const option = document.createElement('option')
-          option.value = city.iso2
-          option.textContent = city.name 
-          citySelect.appendChild(option)
-      })
-  })
-}
+//       data.forEach(city => {
+//           const option = document.createElement('option')
+//           option.value = city.iso2
+//           option.textContent = city.name 
+//           citySelect.appendChild(option)
+//       })
+//   })
+// }
 
 
 function loadCountriesEdit() {
@@ -116,16 +116,16 @@ function loadCountriesEdit() {
   .catch(error => console.error('Error loading countries:', error))
 
   editstateSelect.disabled = true
-  editcitySelect.disabled = true
+  // editcitySelect.disabled = true
   editstateSelect.style.pointerEvents = 'none'
-  editcitySelect.style.pointerEvents = 'none'
+  // editcitySelect.style.pointerEvents = 'none'
 }
 
-function loadStatesEdit(selectedCountryCode1 = null, current_province = null, current_city = null) {
+function loadStatesEdit(selectedCountryCode1 = null, current_province = null) {
   editstateSelect.disabled = false
-  editcitySelect.disabled = true
+  // editcitySelect.disabled = true
   editstateSelect.style.pointerEvents = 'auto'
-  editcitySelect.style.pointerEvents = 'none'
+  // editcitySelect.style.pointerEvents = 'none'
 
   var selectedCountryCode = selectedCountryCode1;
   if(selectedCountryCode1 != null) {
@@ -133,7 +133,7 @@ function loadStatesEdit(selectedCountryCode1 = null, current_province = null, cu
   }
   console.log("Country: " + selectedCountryCode + " " + current_province);
   editstateSelect.innerHTML = '<option value="">Select State</option>' // for clearing the existing states
-  editcitySelect.innerHTML = '<option value="">Select City</option>' // Clear existing city options
+  // editcitySelect.innerHTML = '<option value="">Select City</option>' // Clear existing city options
 
   fetch(`${config.cUrl}/${selectedCountryCode}/states`, {headers: {"X-CSCAPI-KEY": config.ckey}})
   .then(response => response.json())
@@ -151,42 +151,42 @@ function loadStatesEdit(selectedCountryCode1 = null, current_province = null, cu
     if(current_province != null) {
         selectOptionByText(editstateSelect, current_province);
     }
-    if(current_city != null) {
-      loadCitiesEdit(current_city);
-    }
+    // if(current_city != null) {
+    //   loadCitiesEdit(current_city);
+    // }
     
 })
   .catch(error => console.error('Error loading countries:', error))
 }
 
-function loadCitiesEdit(current_city = null) {
-  editcitySelect.disabled = false
-  editcitySelect.style.pointerEvents = 'auto'
+// function loadCitiesEdit(current_city = null) {
+//   editcitySelect.disabled = false
+//   editcitySelect.style.pointerEvents = 'auto'
 
-  var selectedCountryCode = editcountrySelect.value
-  var selectedStateCode = editstateSelect.value
-  console.log("loadCitiesEdit " + selectedCountryCode, selectedStateCode);
+//   var selectedCountryCode = editcountrySelect.value
+//   var selectedStateCode = editstateSelect.value
+//   console.log("loadCitiesEdit " + selectedCountryCode, selectedStateCode);
 
-  editcitySelect.innerHTML = '<option value="">Select City</option>' // Clear existing city options
+//   editcitySelect.innerHTML = '<option value="">Select City</option>' // Clear existing city options
 
-  fetch(`${config.cUrl}/${selectedCountryCode}/states/${selectedStateCode}/cities`, {headers: {"X-CSCAPI-KEY": config.ckey}})
-  .then(response => response.json())
-  .then(data => {
-      // console.log(data);
+//   fetch(`${config.cUrl}/${selectedCountryCode}/states/${selectedStateCode}/cities`, {headers: {"X-CSCAPI-KEY": config.ckey}})
+//   .then(response => response.json())
+//   .then(data => {
+//       // console.log(data);
 
-      data.forEach(city => {
-          const option = document.createElement('option')
-          option.value = city.iso2
-          option.textContent = city.name 
-          editcitySelect.appendChild(option)
-      })
-  })
-  .then(data => {
-    if(current_city != null) {
-        selectOptionByText(editcitySelect, current_city);
-    }
-})
-}
+//       data.forEach(city => {
+//           const option = document.createElement('option')
+//           option.value = city.iso2
+//           option.textContent = city.name 
+//           editcitySelect.appendChild(option)
+//       })
+//   })
+//   .then(data => {
+//     if(current_city != null) {
+//         selectOptionByText(editcitySelect, current_city);
+//     }
+// })
+// }
 
   // Helper function to select an option by text
   function selectOptionByText(selectElement, text) {
@@ -214,17 +214,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
   loadCountries(); 
   loadStates();
-  loadCities();
+  // loadCities();
   loadCountriesEdit(); 
   loadStatesEdit();
-  loadCitiesEdit();
+  // loadCitiesEdit();
   countrySelect.addEventListener('change', loadStates);
 
-  stateSelect.addEventListener('change', loadCities);
+  // stateSelect.addEventListener('change', loadCities);
 
   editcountrySelect.addEventListener('change', loadStatesEdit);
 
-  editstateSelect.addEventListener('change', loadCitiesEdit);
+  // editstateSelect.addEventListener('change', loadCitiesEdit);
 
   // Function to handle errors
   async function handleErrors(response) {
@@ -352,8 +352,9 @@ document.addEventListener('DOMContentLoaded', function () {
       // Set the country selection
       var editcountrySelect = document.getElementById('edit_from_country');
       selectOptionByText(editcountrySelect, user.from_country);
-      console.log("Edit Row: " + user.from_country + " || " + user.current_province + " || " + user.current_city);
-      loadStatesEdit(user.from_country, user.current_province, user.current_city);
+      console.log("Edit Row: " + user.from_country + " || " + user.current_province);
+      loadStatesEdit(user.from_country, user.current_province);
+      editForm.elements.current_city.value = user.current_city;
       // selectOptionByText(document.getElementById('edit_from_country'), user.from_country);
       // selectOptionByText(document.getElementById('edit_current_province'), user.current_province);
       // selectOptionByText(document.getElementById('edit_current_city'), user.current_city);
@@ -382,7 +383,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Include the selected text for country, province, and city
     updatedUser.from_country = document.getElementById('edit_from_country').selectedOptions[0].text;
     updatedUser.current_province = document.getElementById('edit_current_province').selectedOptions[0].text;
-    updatedUser.current_city = document.getElementById('edit_current_city').selectedOptions[0].text;
+    // updatedUser.current_city = document.getElementById('edit_current_city').selectedOptions[0].text;
   
     // Handle image file
     const imageInput = editForm.querySelector('#profile_photo');
@@ -472,10 +473,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const formData = new FormData(form);
     const countrySelect = document.getElementById('from_country');
     const stateSelect = document.getElementById('current_province');
-    const citySelect = document.getElementById('current_city');
+    // const citySelect = document.getElementById('current_city');
     const from_country = countrySelect.options[countrySelect.selectedIndex].text;
     const current_province = stateSelect.options[stateSelect.selectedIndex].text;
-    const current_city = citySelect.options[citySelect.selectedIndex].text;
+    // const current_city = citySelect.options[citySelect.selectedIndex].text;
     const imageInput = form.querySelector("#profile_photo");
     const imageFile = imageInput.files[0];
     const accessToken = getAccessTokenFromLocalStorage();
@@ -509,7 +510,6 @@ document.addEventListener('DOMContentLoaded', function () {
           profile_photo: imageDataUrl,
           from_country,
           current_province,
-          current_city,
           role: "REGULAR"
         };
 

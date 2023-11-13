@@ -25,7 +25,7 @@
 
 <body>
     <section class="iframe-container">
-        <div class="background-image"></div>
+        <div class="background-image" style="background-position: center;"></div>
         <div id="imageModal" class="modal">
             <span class="close" onclick="closeImageModal()">&times;</span>
             <img id="modalImage" class="modal-content">
@@ -63,7 +63,7 @@
 
 
 
-    <section class="image-gallery">
+    <section class="image-gallery" style="height: 350px; background-repeat: no-repeat; background-size: cover; background-image: url('image/places-bg.jpg'); background-position: center;">
         <div class="container">
             <div class="row gallery" id="dynamic-gallery">
                 <!-- Images will be generated here -->

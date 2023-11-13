@@ -136,8 +136,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const slideLink = document.createElement('a');
         slideLink.href = item.link;
-        slideLink.classList.add('facebook-button');
-        slideLink.innerText = 'Share';
+        // slideLink.classList.add('facebook-button');
+        // slideLink.innerText = 'Share';
 
         slideDetails.appendChild(slideTitle);
         slideDetails.appendChild(slideDescription);
@@ -203,8 +203,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const slideLink = document.createElement('a');
         slideLink.href = item.link;
-        slideLink.classList.add('facebook-button');
-        slideLink.innerText = 'Share';
+        // slideLink.classList.add('facebook-button');
+        // slideLink.innerText = 'Share';
 
         slideDetails.appendChild(slideTitle);
         slideDetails.appendChild(slideDescription);
@@ -272,8 +272,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const slideLink = document.createElement('a');
         slideLink.href = item.link;
-        slideLink.classList.add('facebook-button');
-        slideLink.innerText = 'Share';
+        // slideLink.classList.add('facebook-button');
+        // slideLink.innerText = 'Share';
 
         slideDetails.appendChild(slideTitle);
         slideDetails.appendChild(slideDescription);

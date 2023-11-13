@@ -200,12 +200,9 @@
                                 <!-- Add options here -->
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="current_city">City</label>
-                            <select class="form-control" name="current_city" id="current_city" required>
-                                <option value="" disabled selected>Select city</option>
-                                <!-- Add options here -->
-                            </select>
+                        <div class="mb-3">
+                            <label for="edit-current-city" class="form-label">City</label>
+                            <input type="text" class="form-control" id="current_city" name="current_city">
                         </div>
                         <!-- <div class="mb-3">
                             <label for="edit-current-barangay" class="form-label">Barangay</label>

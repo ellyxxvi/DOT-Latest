@@ -8,7 +8,7 @@ $(document).ready(function () {
 // const API_PROTOCOL = 'https'
 // const API_HOSTNAME = 'goexplorebatangas.com/api'
 const API_PROTOCOL = 'http'
-const API_HOSTNAME = '13.212.85.80/api'
+const API_HOSTNAME = '13.229.101.17/api'
 
 document.addEventListener('DOMContentLoaded', function () {
   const tableBody = document.getElementById('tableBody');
@@ -71,18 +71,22 @@ document.addEventListener('DOMContentLoaded', function () {
           tableBody.appendChild(noResultsRow);
         } else {
           // Populate the table with sorted search results
-          filteredData.forEach(user => {
+          filteredData.forEach((user, index) => { // Note the use of index here
             const row = document.createElement('tr');
             row.innerHTML = `
               <td>${user.id}</td>
-              <td><img src="${user.images && user.images[0] ? user.images[0] : ''}" alt="" class="img-thumbnail" width="100px"></td>
+              <td>
+                  <button class="img-button btn-primary btn-sm" data-index="${index}" data-toggle="modal" data-target="#imageModal" data-image-src="${user.images && user.images.length > 0 ? user.images.join(',') : ''}">
+                  <i class="fa fa-image"></i>
+                  </button>
+              </td>
               <td>${user.title}</td>
               <td>${user.description}</td>
               <td>${formatDateToMonthAndDay(user.date)}</td>
               <td>${user.province}</td>
               <td>${user.city}</td>
-              <td>${user.created_at}</td>
-              <td>${user.updated_at}</td>
+              <td>${formatDateToMonthAndDay(user.created_at)}</td>
+              <td>${formatDateToMonthAndDay(user.updated_at)}</td>
               <!-- ... Other cells ... -->
               <td>
                   <button class="btn btn-primary btn-sm edit-button" data-user-id="${user.id}">
@@ -95,28 +99,59 @@ document.addEventListener('DOMContentLoaded', function () {
             `;
             tableBody.appendChild(row);
           });
+          const deleteButtons = document.querySelectorAll('.delete-button');
+          deleteButtons.forEach(button => {
+            button.addEventListener('click', deleteRow);
+          });
+  
+          const editButtons = document.querySelectorAll('.edit-button');
+          editButtons.forEach(button => {
+            button.addEventListener('click', editRow);
+          });
+          // After rows are added to the table, find all img-buttons and add event listeners
+          const imgButtons = document.querySelectorAll(".img-button");
+          imgButtons.forEach(button => {
+            button.addEventListener("click", function () {
+              const index = this.getAttribute("data-index"); // Retrieve index from data attribute
+              const userData = filteredData[index]; // Access the user data using the index
+              console.log('Data for clicked row:', userData);
+
+              const imageSrcArray = userData.images || []; // Directly use userData.images array
+              const imageGallery = document.getElementById("imageGallery");
+
+              // Clear previous images
+              imageGallery.innerHTML = '';
+
+              // Check if there are images and create an img element for each one
+              if (imageSrcArray.length > 0) {
+                imageSrcArray.forEach(imageSrc => {
+                  const imgElement = document.createElement('img');
+                  imgElement.src = imageSrc;
+
+                  // Set a fixed size for the image
+                  imgElement.style.width = "120px"; 
+                  imgElement.style.height = "120px"; 
+                  imgElement.style.objectFit = "cover"; 
+                  imgElement.style.margin = "10px"; 
+                  imageGallery.style.justifyContent = 'center'; 
+                  imageGallery.style.alignItems = 'center'; 
+
+                  imgElement.alt = "Festival Image";
+                  imgElement.classList.add("img-fluid");
+                  imageGallery.appendChild(imgElement);
+                });
+              } else {
+                // If no images, display a placeholder or message
+                imageGallery.innerHTML = `<p>No images available.</p>`;
+              }
+            });
+          });
         }
-        const deleteButtons = document.querySelectorAll('.delete-button');
-        deleteButtons.forEach(button => {
-          button.addEventListener('click', deleteRow);
-        });
-
-        const editButtons = document.querySelectorAll('.edit-button');
-        editButtons.forEach(button => {
-          button.addEventListener('click', editRow);
-        });
-
       })
       .catch(error => {
-        if (error instanceof SyntaxError) {
-          console.error('Response is not valid JSON. It might be an HTML error page.');
-        } else {
-          console.error('Error fetching data:', error);
-        }
-        // Handle the error gracefully, e.g., display an error message on your webpage.
+        console.error('Error fetching data:', error);
       });
   }
-
 
   populateTable();
 
@@ -129,7 +164,8 @@ document.addEventListener('DOMContentLoaded', function () {
   // handles image uploads
   const addForm = document.getElementById('add-user-form');
 
-function editRow(event) {
+
+  function editRow(event) {
     const button = event.target;
     const row = button.closest('tr');
     const id = row.querySelector('td:first-child').textContent;
@@ -206,7 +242,7 @@ function editRow(event) {
       .catch(error => {
         console.error('Error fetching event data:', error);
       });
-}
+  }
 
 
   // Function to check if a date string is a valid ISO date
@@ -214,98 +250,98 @@ function editRow(event) {
     return dateString && !isNaN(Date.parse(dateString));
   }
 
-// Handle edit form submission
-editForm.addEventListener('submit', event => {
-  event.preventDefault();
-  const formData = new FormData(editForm);
-  const updatedEvent = {};
+  // Handle edit form submission
+  editForm.addEventListener('submit', event => {
+    event.preventDefault();
+    const formData = new FormData(editForm);
+    const updatedEvent = {};
 
-  // Remove unnecessary form fields
-  formData.delete('created_at');
-  formData.delete('existingImage');
-  formData.append("barangay", "Unknown Barangay");
-  formData.delete('updated_at');
+    // Remove unnecessary form fields
+    formData.delete('created_at');
+    formData.delete('existingImage');
+    formData.append("barangay", "Unknown Barangay");
+    formData.delete('updated_at');
 
-  // Retrieve the accessToken from local storage
-  const accessToken = getAccessTokenFromLocalStorage();
+    // Retrieve the accessToken from local storage
+    const accessToken = getAccessTokenFromLocalStorage();
 
-  // Handle multiple image files
-  const imageInputs = editForm.querySelectorAll('input[type="file"]');
-  const imageFiles = [];
-  const promises = [];
+    // Handle multiple image files
+    const imageInputs = editForm.querySelectorAll('input[type="file"]');
+    const imageFiles = [];
+    const promises = [];
 
-  // Collect all selected image files and their upload promises
-  imageInputs.forEach(input => {
-    const files = Array.from(input.files);
-    files.forEach(file => {
-      var formData2 = new FormData();
-      formData2.append('photo', file);
+    // Collect all selected image files and their upload promises
+    imageInputs.forEach(input => {
+      const files = Array.from(input.files);
+      files.forEach(file => {
+        var formData2 = new FormData();
+        formData2.append('photo', file);
 
-      const uploadPromise = fetch(`${API_PROTOCOL}://${API_HOSTNAME}/images`, {
-        method: 'POST',
-        body: formData2,
-        headers: {
-          'Authorization': `Bearer ${accessToken}`, // Use the retrieved accessToken
-        },
-      })
-        .then(response => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            throw new Error('Image upload failed');
-          }
-        });
+        const uploadPromise = fetch(`${API_PROTOCOL}://${API_HOSTNAME}/images`, {
+          method: 'POST',
+          body: formData2,
+          headers: {
+            'Authorization': `Bearer ${accessToken}`, // Use the retrieved accessToken
+          },
+        })
+          .then(response => {
+            if (response.ok) {
+              return response.json();
+            } else {
+              throw new Error('Image upload failed');
+            }
+          });
 
-      promises.push(uploadPromise);
-      imageFiles.push(uploadPromise);
+        promises.push(uploadPromise);
+        imageFiles.push(uploadPromise);
+      });
     });
+
+    // Once all image uploads are complete, continue with the edit request
+    Promise.all(promises)
+      .then(imageDataArray => {
+        updatedEvent.images = imageDataArray.map(data => data.http_img_url);
+
+        // Assign the ID from the form to the updatedEvent object
+        updatedEvent.id = editForm.elements.id.value;
+
+        // Perform the edit request
+        sendEditRequest(updatedEvent, accessToken);
+      })
+      .catch(error => {
+        console.error('There was a problem with image uploads:', error);
+      });
   });
 
-  // Once all image uploads are complete, continue with the edit request
-  Promise.all(promises)
-    .then(imageDataArray => {
-      updatedEvent.images = imageDataArray.map(data => data.http_img_url);
+  // Function to send the PUT request to update event data
+  function sendEditRequest(updatedEvent, accessToken) {
+    const eventId = updatedEvent.id;
+    delete updatedEvent.id;
 
-      // Assign the ID from the form to the updatedEvent object
-      updatedEvent.id = editForm.elements.id.value;
-
-      // Perform the edit request
-      sendEditRequest(updatedEvent, accessToken);
+    fetch(`${API_PROTOCOL}://${API_HOSTNAME}/events/${eventId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`, // Use the retrieved accessToken
+      },
+      body: JSON.stringify(updatedEvent),
     })
-    .catch(error => {
-      console.error('There was a problem with image uploads:', error);
-    });
-});
-
-// Function to send the PUT request to update event data
-function sendEditRequest(updatedEvent, accessToken) {
-  const eventId = updatedEvent.id;
-  delete updatedEvent.id;
-
-  fetch(`${API_PROTOCOL}://${API_HOSTNAME}/events/${eventId}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`, // Use the retrieved accessToken
-    },
-    body: JSON.stringify(updatedEvent),
-  })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        throw new Error('Update request failed');
-      }
-    })
-    .then(data => {
-      editForm.reset();
-      editModal.hide();
-      populateTable();
-    })
-    .catch(error => {
-      console.error('Error updating event data:', error);
-    });
-}
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Update request failed');
+        }
+      })
+      .then(data => {
+        editForm.reset();
+        editModal.hide();
+        populateTable();
+      })
+      .catch(error => {
+        console.error('Error updating event data:', error);
+      });
+  }
 
 
   // Handle form submission and add new item

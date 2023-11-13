@@ -132,7 +132,7 @@ $(document).ready(function () {
                 const formattedDate = formatDateToMonthAndDay(item.date); // Format the date here
                 const itemHtml = `
                     <a href="festival_content.php?item_id=${item.id}" class="gallery-item-link" data-item-id="${item.id}">
-                        <div class "gallery-item">
+                        <div class="gallery-item">
                             <div class="image-wrapper">
                                 <img src="${item.images[0]}" alt="Image ${item.id}"> 
                             </div>

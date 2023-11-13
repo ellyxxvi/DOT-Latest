@@ -36,8 +36,8 @@ var config = {
 };
 
 var countrySelect = document.getElementById('from_country'),
-    stateSelect = document.getElementById('current_province'),
-    citySelect = document.getElementById('current_city');
+    stateSelect = document.getElementById('current_province')
+    // citySelect = document.getElementById('current_city');
 
 function loadCountries() {
 
@@ -58,21 +58,21 @@ function loadCountries() {
     .catch(error => console.error('Error loading countries:', error))
 
     stateSelect.disabled = true
-    citySelect.disabled = true
+    // citySelect.disabled = true
     stateSelect.style.pointerEvents = 'none'
-    citySelect.style.pointerEvents = 'none'
+    // citySelect.style.pointerEvents = 'none'
 }
 
 function loadStates() {
     stateSelect.disabled = false
-    citySelect.disabled = true
+    // citySelect.disabled = true
     stateSelect.style.pointerEvents = 'auto'
-    citySelect.style.pointerEvents = 'none'
+    // citySelect.style.pointerEvents = 'none'
 
     const selectedCountryCode = countrySelect.value
     // console.log(selectedCountryCode);
     stateSelect.innerHTML = '<option value="">Select State</option>' // for clearing the existing states
-    citySelect.innerHTML = '<option value="">Select City</option>' // Clear existing city options
+    // citySelect.innerHTML = '<option value="">Select City</option>' // Clear existing city options
 
     fetch(`${config.cUrl}/${selectedCountryCode}/states`, {headers: {"X-CSCAPI-KEY": config.ckey}})
     .then(response => response.json())
@@ -89,29 +89,29 @@ function loadStates() {
     .catch(error => console.error('Error loading countries:', error))
 }
 
-function loadCities() {
-    citySelect.disabled = false
-    citySelect.style.pointerEvents = 'auto'
+// function loadCities() {
+//     citySelect.disabled = false
+//     citySelect.style.pointerEvents = 'auto'
 
-    const selectedCountryCode = countrySelect.value
-    const selectedStateCode = stateSelect.value
-    // console.log(selectedCountryCode, selectedStateCode);
+//     const selectedCountryCode = countrySelect.value
+//     const selectedStateCode = stateSelect.value
+//     // console.log(selectedCountryCode, selectedStateCode);
 
-    citySelect.innerHTML = '<option value="">Select City</option>' // Clear existing city options
+//     citySelect.innerHTML = '<option value="">Select City</option>' // Clear existing city options
 
-    fetch(`${config.cUrl}/${selectedCountryCode}/states/${selectedStateCode}/cities`, {headers: {"X-CSCAPI-KEY": config.ckey}})
-    .then(response => response.json())
-    .then(data => {
-        // console.log(data);
+//     fetch(`${config.cUrl}/${selectedCountryCode}/states/${selectedStateCode}/cities`, {headers: {"X-CSCAPI-KEY": config.ckey}})
+//     .then(response => response.json())
+//     .then(data => {
+//         // console.log(data);
 
-        data.forEach(city => {
-            const option = document.createElement('option')
-            option.value = city.iso2
-            option.textContent = city.name 
-            citySelect.appendChild(option)
-        })
-    })
-}
+//         data.forEach(city => {
+//             const option = document.createElement('option')
+//             option.value = city.iso2
+//             option.textContent = city.name 
+//             citySelect.appendChild(option)
+//         })
+//     })
+// }
 
 // Wait for the DOM to load
 document.addEventListener('DOMContentLoaded', () => {
@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     countrySelect.addEventListener('change', loadStates);
 
-    stateSelect.addEventListener('change', loadCities);
+    // stateSelect.addEventListener('change');
 
     // Preference button functionality
     const preferenceButtons = document.querySelectorAll(".preference-button");
@@ -160,7 +160,7 @@ function collectUserData() {
     const password = document.getElementById('passwordInput').value;
     const from_country = countrySelect.options[countrySelect.selectedIndex].text;
     const current_province = stateSelect.options[stateSelect.selectedIndex].text;
-    const current_city = citySelect.options[citySelect.selectedIndex].text;    
+    const current_city = document.getElementById('current_city').value;    
     // const current_barangay = document.getElementById('current_barangay').value;
 
     // Create an object with the user registration data
