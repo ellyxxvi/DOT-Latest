@@ -111,9 +111,50 @@ figure:hover img {
   filter: grayscale(0);
 } */
 
+.image-gallery {
+  height: 400px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url('../image/places-bg.jpg');
+  background-position: center;
+}
+#dynamic-gallery {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+#dynamic-gallery .col-lg-3,
+#dynamic-gallery .col-md-4,
+#dynamic-gallery .col-xs-6,
+#dynamic-gallery .thumb {
+    margin: 0 auto; 
+    display: flex;
+    justify-content: center;
+}
+@media screen and (max-width: 768px) {
+  .image-gallery{
+    height: 1034px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: url('../image/festival-bg.png');
+    background-position: center;
+  }
+}
+
+@media screen and (max-width: 315px) {
+  .image-gallery{
+    height: 1034px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: url('../image/festival-bg.png');
+    background-position: center;
+  }
+}
+
+
 @media only screen and (max-width: 700px) {
   .iframe-container {
-    height: 180vh;
+    height: 68vh;
   }
 
   .iframe-container h3 {

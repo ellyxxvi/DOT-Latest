@@ -343,114 +343,133 @@ document.addEventListener('DOMContentLoaded', function () {
       });
   }
 
+  const imageInput = document.getElementById('images');
+
+  // Image preview functionality
+  imageInput.addEventListener('change', function(event) {
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+    imagePreviewContainer.innerHTML = ''; // Clear existing previews
+
+    const files = event.target.files;
+    for (const file of files) {
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(file);
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.objectFit = 'cover';
+      img.style.marginRight = '10px';
+      img.onload = function() {
+        URL.revokeObjectURL(img.src);
+      };
+
+      imagePreviewContainer.appendChild(img);
+    }
+  });
 
   // Handle form submission and add new item
   addButton.addEventListener('click', () => {
     addEventModal.show();
   });
 
-  // Handle form submission and add new item
-  addAccountButton.addEventListener('click', () => {
-    const form = document.getElementById('add-user-form');
-    const formData = new FormData(form);
-    const imageInput = form.querySelector('#images');
-    const images = imageInput.files;
+addAccountButton.addEventListener('click', () => {
+        const form = document.getElementById('add-user-form');
+        const formData = new FormData(form);
+        const imageInput = form.querySelector('#images');
+        const images = imageInput.files;
 
-    // Obtain the access token (replace with your actual method)
-    const accessToken = getAccessTokenFromLocalStorage();
+        // Obtain the access token
+        const accessToken = getAccessTokenFromLocalStorage();
 
-    if (!accessToken) {
-      console.error('Access token not found.');
-      return;
-    }
+        if (!accessToken) {
+            console.error('Access token not found.');
+            return;
+        }
 
-    if (images.length === 0) {
-      console.error('Please select at least one image.');
-      return;
-    }
+        if (images.length === 0) {
+            console.error('Please select at least one image.');
+            return;
+        }
 
-    if (images.length > 5) {
-      console.error('You can upload a maximum of 5 images.');
-      return;
-    }
+        if (images.length > 5) {
+            console.error('You can upload a maximum of 5 images.');
+            return;
+        }
 
-    const imageUploadPromises = Array.from(images).map((imageFile) => {
-      const imageFormData = new FormData();
-      imageFormData.append('photo', imageFile);
+        const imageUploadPromises = Array.from(images).map(imageFile => {
+            const imageFormData = new FormData();
+            imageFormData.append('photo', imageFile);
 
-      return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/images`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-        },
-        body: imageFormData,
-      })
-        .then(response => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            console.error('Image upload failed. Status:', response.status);
-            return response.text().then(text => {
-              console.error('Image upload error response:', text);
-              throw new Error('Image upload failed.');
+            return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/images`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+                body: imageFormData,
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    console.error('Image upload failed. Status:', response.status);
+                    return response.text().then(text => {
+                        console.error('Image upload error response:', text);
+                        throw new Error('Image upload failed.');
+                    });
+                }
+            })
+            .then(imageData => {
+                console.log('Uploaded image URL:', imageData.http_img_url);
+                return imageData.http_img_url;
             });
-          }
+        });
+
+        Promise.all(imageUploadPromises)
+        .then(imageUrls => {
+            const inputDate = new Date(formData.get('date'));
+            const isoDateString = inputDate.toISOString();
+
+            const barangay = 'Unknown Barangay'; // Placeholder value
+
+            const user = {
+                title: formData.get('title'),
+                description: formData.get('description'),
+                date: isoDateString,
+                province: formData.get('province'),
+                city: formData.get('city'),
+                images: imageUrls,
+                barangay: barangay,
+            };
+
+            return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/events`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify(user),
+            });
         })
-        .then(imageData => {
-          console.log('Uploaded image URL:', imageData.http_img_url);
-          return imageData.http_img_url;
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                console.error('User data could not be added. Status:', response.status);
+                return response.text().then(text => {
+                    console.error('User data error response:', text);
+                    throw new Error('User data could not be added.');
+                });
+            }
+        })
+        .then(userData => {
+            console.log('User response:', userData);
+            form.reset();
+            window.location.reload();
+            populateTable();
+        })
+        .catch(error => {
+            console.error('Error adding user data:', error);
         });
     });
-
-    Promise.all(imageUploadPromises)
-      .then(imageUrls => {
-        // Convert the input date to ISO string
-        const inputDate = new Date(formData.get('date'));
-        const isoDateString = inputDate.toISOString();
-
-        // Provide a value for "barangay"
-        const barangay = 'Unknown Barangay';
-
-        const user = {
-          title: formData.get('title'),
-          description: formData.get('description'),
-          date: isoDateString,
-          province: formData.get('province'),
-          city: formData.get('city'),
-          images: imageUrls,
-          barangay: barangay,
-        };
-
-        return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/events`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify(user),
-        });
-      })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          console.error('User data could not be added. Status:', response.status);
-          return response.text().then(text => {
-            console.error('User data error response:', text);
-            throw new Error('User data could not be added.');
-          });
-        }
-      })
-      .then(userData => {
-        console.log('User response:', userData);
-        form.reset();
-        this.location.reload();
-        populateTable();
-      })
-      .catch(error => {
-        console.error('Error adding user data:', error);
-      });
-  });
 
 
 

@@ -371,29 +371,52 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+  const imageInput = document.getElementById('photos');
+
+  // Image preview functionality
+  imageInput.addEventListener('change', function(event) {
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+    imagePreviewContainer.innerHTML = ''; // Clear existing previews
+
+    const files = event.target.files;
+    for (const file of files) {
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(file);
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.objectFit = 'cover';
+      img.style.marginRight = '10px';
+      img.onload = function() {
+        URL.revokeObjectURL(img.src);
+      };
+
+      imagePreviewContainer.appendChild(img);
+    }
+  });
 
   // Handle form submission and add new item
   addButton.addEventListener('click', () => {
     addEventModal.show();
   });
 // Handle form submission and add new item
+// Handle form submission and add new item
 addAccountButton.addEventListener('click', async () => {
   const form = document.getElementById('add-user-form');
   const formData = new FormData(form);
+  const imageInput = document.querySelector('#photos');
+  const images = imageInput.files; // Get an array of selected image files
   const accessToken = getAccessTokenFromLocalStorage();
 
+  if (images.length > 5) { // Check for 5 or fewer images
+    alert('Please select no more than 5 image files.');
+    console.error('Please select no more than 5 image files.');
+    return;
+  }
+  
+
+  const uploadedImageUrls = [];
+
   try {
-    const imageInput = document.querySelector('#photos');
-    const images = imageInput.files; // Get an array of selected image files
-
-    if (images.length > 5) { // Check for 5 or fewer images
-      alert('Please select no more than 5 image files.');
-      console.error('Please select no more than 5 image files.');
-      return;
-    }
-
-    const uploadedImageUrls = [];
-
     for (const imageFile of images) {
       const formDataForImage = new FormData();
       formDataForImage.append('photo', imageFile);
@@ -413,31 +436,6 @@ addAccountButton.addEventListener('click', async () => {
       const imageUploadData = await imageUploadResponse.json();
       console.log('Uploaded image URL:', imageUploadData.http_img_url);
       uploadedImageUrls.push(imageUploadData.http_img_url);
-    }
-
-    // Display image previews
-    const imagePreviewContainer = document.getElementById('image-preview-container');
-    imagePreviewContainer.innerHTML = ''; // Clear existing previews
-
-    for (const imageFile of images) {
-      const imagePreviewDiv = document.createElement('div');
-      imagePreviewDiv.classList.add('image-preview');
-
-      const imagePreview = document.createElement('img');
-      imagePreview.src = URL.createObjectURL(imageFile);
-
-      const removeIcon = document.createElement('i');
-      removeIcon.classList.add('fas', 'fa-times', 'remove-image');
-      removeIcon.addEventListener('click', () => {
-        // Remove the image file from the input
-        imageInput.value = '';
-        // Remove the preview
-        imagePreviewContainer.removeChild(imagePreviewDiv);
-      });
-
-      imagePreviewDiv.appendChild(imagePreview);
-      imagePreviewDiv.appendChild(removeIcon);
-      imagePreviewContainer.appendChild(imagePreviewDiv);
     }
 
     // Convert the contacts field to an array

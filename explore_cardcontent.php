@@ -63,7 +63,7 @@
 
 
 
-    <section class="image-gallery" style="height: 350px; background-repeat: no-repeat; background-size: cover; background-image: url('image/places-bg.jpg'); background-position: center;">
+    <section class="image-gallery">
         <div class="container">
             <div class="row gallery" id="dynamic-gallery">
                 <!-- Images will be generated here -->

@@ -24,6 +24,16 @@
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
     <link rel="icon" href="image/LOGO (2).png" type="image/png">
 
+    <style>
+        #imagePreviewContainer {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            /* Spacing between images */
+            /* Add more styles as needed */
+        }
+    </style>
+
 </head>
 
 <body id="page-top">
@@ -37,7 +47,8 @@
             <!-- Sidebar - Brand -->
             <div class="nav-logo d-flex align-items-center justify-content-center">
                 <a href="index.html">
-                    <img src="image/LOGO (5).png" alt="Go Explore Logo" class="logo-image mx-3 d-none d-md-block" style="width: 150px; height: auto; object-fit: cover; justify-content: center; align-items: center;">
+                    <img src="image/LOGO (5).png" alt="Go Explore Logo" class="logo-image mx-3 d-none d-md-block"
+                        style="width: 150px; height: auto; object-fit: cover; justify-content: center; align-items: center;">
                 </a>
             </div>
 
@@ -240,6 +251,7 @@
                                         <label for="eventImage" class="form-label">Event Image</label>
                                         <input type="file" class="form-control" id="images" name="images"
                                             accept="images/*" multiple>
+                                        <div id="imagePreviewContainer"></div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="eventTitle" class="form-label">Title</label>
@@ -299,7 +311,8 @@
                                     width="100px">
                                 <div class="mb-3">
                                     <label for="eventImage" class="form-label">Event Image</label>
-                                    <input type="file" class="form-control" id="images" name="images" accept="images/*" multiple>
+                                    <input type="file" class="form-control" id="images" name="images" accept="images/*"
+                                        multiple>
                                 </div>
                                 <div class="mb-3">
                                     <label for="eventTitle" class="form-label">Title</label>
@@ -340,23 +353,24 @@
         </div>
     </div>
 
-<!-- Modal HTML -->
-<div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="imageModalLabel">Image Gallery</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+    <!-- Modal HTML -->
+    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Image Gallery</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="imageGallery"></div>
+                </div>
+            </div>
         </div>
-        <div class="modal-body">
-          <div id="imageGallery"></div>
-        </div>
-      </div>
     </div>
-  </div>
-    
+
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>

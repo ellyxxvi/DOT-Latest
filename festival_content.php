@@ -16,7 +16,7 @@
 </head>
 
 <body>
-    <div class="bg-image" style="height: 450px; background-repeat: no-repeat; background-size: cover; background-position: center;">
+    <div class="bg-image">
         <div class="overlay">
             <h1 class="overlay-title"></h1>
         </div>
@@ -24,7 +24,7 @@
 
     
 
-    <section class="image-gallery" style="height: 400px; background-repeat: no-repeat; background-size: cover; background-image: url('image/festival-bg.png'); background-position: center;">
+    <section class="image-gallery">
     <div class="festival-title"></div>
     <div class="container">
         <div class="row gallery" id="dynamic-gallery">

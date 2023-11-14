@@ -29,12 +29,14 @@ body {
     font-family: 'Poppins';
     background-color: rgb(255, 255, 255);
 }
-.container{
+
+.container {
     display: flex;
     justify-content: center;
     align-items: center;
     column-gap: 50px;
 }
+
 .overlay {
     width: 100%;
     height: 100%;
@@ -51,18 +53,18 @@ body {
 
 .overlay-text {
     padding: 100px;
-    color: transparent; 
+    color: transparent;
     font-size: 70px;
     text-align: center;
     font-family: 'Batangas';
-    opacity: 0; 
+    opacity: 0;
     transform: translateY(20px);
     transition: opacity 0.8s ease, transform 0.8s ease, color 0.8s ease;
 }
 
 .bg-image-wrapper:hover .overlay-text {
-    color: white; 
-    opacity: 1; 
+    color: white;
+    opacity: 1;
     transform: translateY(0);
 }
 
@@ -120,16 +122,18 @@ h2 {
 
 
 /* things to bring */
-#thing-to-bring{
+#thing-to-bring {
     padding: 70px;
     background-image: url('../image/mountain.png');
 }
-.section-title h1{
+
+.section-title h1 {
     font-size: 60px;
     color: #ffffff;
     text-align: center;
     font-family: 'Batangas';
 }
+
 .slider-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -170,6 +174,7 @@ h3 {
     color: #ffffff;
 }
 
+
 .facebook-button {
     display: inline-block;
     padding: 10px 15px;
@@ -193,54 +198,199 @@ h3 {
     background-image: url('../image/train.png');
 }
 
+/* .hotline-list {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+  }
+  .hotline {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+  }
+  .hotline-logo {
+    max-width: 50px;
+    max-height: 50px;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  .hotline-title {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0;
+    font-size: 1.2em;
+    color: #fff;
+  }
+  .hotline-number {
+    display: block;
+    font-size: 1.1em;
+    color: #ffffff;
+    margin-top: 5px;
+  } */
+/* Styles for the section */
+
+#emergency-hotline {
+    height: 500px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: url('../image/emergency-bg.jpg');
+    background-position: center;
+}
+
+h4 {
+    text-align: center;
+    font-size: 50px;
+    color: #fff;
+    padding: 30px;
+    font-family: 'Batangas';
+}
+
+.hotlines-container {
+    padding: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#hotlines-contents {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.column {
+    width: 100%;
+}
+
+.hotline-item {
+    margin-bottom: 10px;
+}
+
+.hotline-item img {
+    width: 30px;
+    height: 30px;
+    vertical-align: middle;
+}
+
+.hotline-item strong {
+    margin-left: 10px;
+    vertical-align: middle;
+    color: #fff;
+}
+
+.hotline-item span {
+    display: block;
+    margin-left: 40px;
+    color: #fff;
+    text-decoration: underline;
+}
+
+
+
 @media screen and (max-width: 768px) {
-   
-    .overlay-text{
+
+    .overlay-text {
         font-size: 50px;
     }
-    .section-title h1{
+
+    .section-title h1 {
         font-size: 20px;
     }
+
     .slick-initialized .slick-slide {
         display: block;
     }
+
     .slider-container {
         padding: 5px;
     }
+
     .slider-container slide-image {
         padding: 100px;
         justify-content: center;
         align-content: center;
     }
-    .slide-details h3{
+
+    .slide-details h3 {
         font-size: 20px;
     }
-    .container{
+
+    .container {
         display: flow-root;
     }
-  }
-  @media screen and (max-width: 315px) {
-    .overlay-text{
+
+    #hotlines-contents {
+        width: 100%;
+        display: block;
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .hotlines-container {
+        align-items: center;
+    }
+    #emergency-hotline {
+        height: 1165px !important;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-image: url('../image/emergency-bg.jpg');
+        background-position: center;
+    }
+
+}
+
+@media screen and (max-width: 315px) {
+    .overlay-text {
         font-size: 20px;
     }
-    .section-title h1{
+
+    .section-title h1 {
         font-size: 20px;
     }
+
     .slick-initialized .slick-slide {
         display: block;
     }
+
     .slider-container {
         padding: 25px;
     }
+
     .slide-image {
         width: 250px;
         height: 250px;
     }
-    .slide-details h3{
+
+    .slide-details h3 {
         font-size: 20px;
     }
-    .container{
+
+    .container {
         display: flow-root;
     }
-    
-  }
+
+    #hotlines-contents {
+        width: 100%;
+        display: block;
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .hotlines-container {
+        align-items: center;
+    }
+    #emergency-hotline {
+        height: 1165px !important;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-image: url('../image/emergency-bg.jpg');
+        background-position: center;
+    }
+}
