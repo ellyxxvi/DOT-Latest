@@ -124,6 +124,9 @@
                             <label>Event Color</label>
                             <select class="form-control" name="event_color" id="event_color">
                                 <option value="fc-bg-default">fc-bg-default</option>
+                                <option value="fc-bg-green">fc-bg-green</option>
+                                <option value="fc-bg-yellow">fc-bg-yellow</option>
+                                <option value="fc-bg-purple">fc-bg-purple</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -178,6 +181,9 @@
                             <label>Event Color</label>
                             <select class="form-control" name="event_color" id="edit_event_color">
                                 <option value="fc-bg-default">fc-bg-default</option>
+                                <option value="fc-bg-green">fc-bg-green</option>
+                                <option value="fc-bg-yellow">fc-bg-yellow</option>
+                                <option value="fc-bg-purple">fc-bg-purple</option>
                             </select>
                         </div>
                         <div class="form-group">

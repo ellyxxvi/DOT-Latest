@@ -253,70 +253,83 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // FOR NOTES 
-    async function fetchNotesFromServer() {
-      const notesApiUrl = `${API_PROTOCOL}://${API_HOSTNAME}/itinerary-builder`;
+    // Fetching notes from the server
+async function fetchNotesFromServer() {
+  const notesApiUrl = `${API_PROTOCOL}://${API_HOSTNAME}/itinerary-builder`;
 
-      try {
-        const response = await fetch(notesApiUrl, {
+  try {
+      const response = await fetch(notesApiUrl, {
           method: 'GET',
           headers: {
-            'Authorization': 'Bearer ' + accessToken,
+              'Authorization': 'Bearer ' + accessToken,
           },
-        });
-
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-
-        const data = await response.json();
-        console.log('API Response for fetching notes:', data);
-        generateCards(data);
-      } catch (error) {
-        console.error('Error fetching notes:', error);
-      }
-    }
-
-    function generateCards(notesData) {
-      const notesRow = document.getElementById('notes-row');
-      notesRow.innerHTML = '';
-
-      notesData.forEach(data => {
-        const colDiv = document.createElement('div');
-        colDiv.className = 'col-12 col-sm-3 col-md-3';
-        colDiv.innerHTML = `
-                <div class="notes-card">
-                    <div class="place">Where: ${data.place_name}</div>
-                    <div class="date">When: ${data.event_date}</div>
-                    <div class="notes">Notes: ${data.notes}</div>
-                    <div class="button-container">
-                        <button class="edit-button" data-note-id="${data.id}" data-bs-toggle="modal" data-bs-target="#editModal"><i class="fas fa-edit"></i></button>
-                        <button class="delete-button" data-note-id="${data.id}"><i class="fas fa-trash-alt"></i></button>
-                    </div>
-                </div>
-            `;
-
-        notesRow.appendChild(colDiv);
-
-        // Add event listener for expanding the card on click
-        const noteCard = colDiv.querySelector(".notes-card");
-        noteCard.addEventListener('click', () => {
-          if (noteCard.classList.contains('notes-card-expanded')) {
-            noteCard.classList.remove('notes-card-expanded');
-          } else {
-            noteCard.classList.add('notes-card-expanded');
-          }
-        });
-
-        colDiv.querySelector(".edit-button").addEventListener('click', (e) => {
-          e.stopPropagation(); // Prevent the card from expanding when the edit button is clicked
-          handleEditNote(data);
-        });
-        colDiv.querySelector(".delete-button").addEventListener('click', (e) => {
-          e.stopPropagation(); // Prevent the card from expanding when the delete button is clicked
-          handleDeleteNote(data.id);
-        });
       });
-    }
+
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      console.log('API Response for fetching notes:', data);
+      generateCards(data);
+  } catch (error) {
+      console.error('Error fetching notes:', error);
+  }
+}
+
+function generateCards(notesData) {
+  const notesRow = document.getElementById('notes-row');
+  notesRow.innerHTML = '';
+
+  notesData.forEach(data => {
+    const colDiv = document.createElement('div');
+    colDiv.className = 'col-12 col-sm-3 col-md-3';
+    const colorClass = data.event_color; // Corrected to use event_color from the data
+    colDiv.innerHTML = `
+        <div class="notes-card ${colorClass}">
+            <div class="place">Where: ${data.place_name}</div>
+            <div class="date">When: ${data.event_date}</div>
+            <div class="notes">Notes: ${data.notes}</div>
+            <div class="button-container">
+                <button class="edit-button" data-note-id="${data.id}" data-bs-toggle="modal" data-bs-target="#editModal">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="delete-button" data-note-id="${data.id}">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        </div>
+    `;
+
+    notesRow.appendChild(colDiv);
+
+    // Add event listeners
+    const noteCard = colDiv.querySelector(".notes-card");
+    noteCard.addEventListener('click', () => {
+        noteCard.classList.toggle('notes-card-expanded');
+    });
+
+    colDiv.querySelector(".edit-button").addEventListener('click', (e) => {
+        e.stopPropagation(); 
+        handleEditNote(data);
+    });
+    colDiv.querySelector(".delete-button").addEventListener('click', (e) => {
+        e.stopPropagation();
+        handleDeleteNote(data.id);
+    });
+  });
+}
+
+
+// Color change event listener
+jQuery(document).ready(function () {
+  jQuery('#event_color').change(function () {
+      var selectedColor = jQuery(this).val();
+      jQuery('#notes').removeClass('fc-bg-default fc-bg-darkpink fc-bg-darkorange fc-bg-purple')
+                       .addClass(selectedColor);
+  });
+});
+
 
 
     async function handleEditNote(noteData) {

@@ -2073,4 +2073,17 @@ h1::after {
   overflow: visible;     /* Allows the text to overflow if it's longer than the container */
   text-overflow: clip;   /* Stops text from being truncated */
 }
+.fc-bg-purple {
+  background-color: #f8edff; 
+}
+.fc-bg-yellow {
+  background-color: rgb(248, 255, 213) 
+}
+.fc-bg-green {
+  background-color: rgb(230, 255, 230)
+}
+.fc-bg-default {
+  background-color: #e9ebff; 
+}
+
 

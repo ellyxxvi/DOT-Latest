@@ -80,7 +80,7 @@
                     <div class="hotline-item">
                         <img src="image/LOGO/BFP Batangas City.png" alt="BFP Batangas City Logo">
                         <strong>BFP Batangas City</strong>
-                        <span>425-1763/301-7996, 09156201984</span>
+                        <span>425-7163/301-7996, 09156021984</span>
                     </div>
 
                     <div class="hotline-item">

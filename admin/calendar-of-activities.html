@@ -32,6 +32,14 @@
             /* Spacing between images */
             /* Add more styles as needed */
         }
+
+        .existing-image-preview {
+            max-width: 30%;
+            height: auto;
+            margin: 10px 0;
+            margin-right: 10px;
+            gap: 10px;
+        }
     </style>
 
 </head>
@@ -298,59 +306,52 @@
                         <div class="modal-body">
                             <form id="edit-user-form" enctype="multipart/form-data">
                                 <input type="hidden" name="id" id="edit-id">
-                                <input type="hidden" name="existingImage" id="existingImage">
-                                <img id="edit-image-preview-1" src="" alt="Image Preview" class="img-thumbnail"
-                                    width="100px">
-                                <img id="edit-image-preview-2" src="" alt="Image Preview" class="img-thumbnail"
-                                    width="100px">
-                                <img id="edit-image-preview-3" src="" alt="Image Preview" class="img-thumbnail"
-                                    width="100px">
-                                <img id="edit-image-preview-4" src="" alt="Image Preview" class="img-thumbnail"
-                                    width="100px">
-                                <img id="edit-image-preview-5" src="" alt="Image Preview" class="img-thumbnail"
-                                    width="100px">
                                 <div class="mb-3">
-                                    <label for="eventImage" class="form-label">Event Image</label>
-                                    <input type="file" class="form-control" id="images" name="images" accept="images/*"
+                                    <label for="images" class="form-label">Upload Event Images</label>
+                                    <input type="file" class="form-control" id="images" name="images" accept="image/*"
                                         multiple>
                                 </div>
+                                <div id="image-previews">
+                                    <!-- Image previews will be generated dynamically here -->
+                                </div>
                                 <div class="mb-3">
-                                    <label for="eventTitle" class="form-label">Title</label>
+                                    <label for="title" class="form-label">Title</label>
                                     <input type="text" class="form-control" id="title" name="title" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="eventDescription" class="form-label">Description</label>
+                                    <label for="description" class="form-label">Description</label>
                                     <textarea class="form-control" id="description" name="description" rows="3"
                                         required></textarea>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="eventDate" class="form-label">Date (Month Day)</label>
+                                <!-- <div class="mb-3">
+                                    <label for="date" class="form-label">Date (Month Day)</label>
                                     <input type="text" class="form-control" id="date" name="date" required
                                         placeholder="Month Day"
                                         pattern="^(January|February|March|April|May|June|July|August|September|October|November|December) (0?[1-9]|[12][0-9]|3[01])$">
-                                    <div class="mb-3">
-                                        <label for="eventProvince" class="form-label">Province</label>
-                                        <input type="text" class="form-control" id="province" name="province" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="eventCity" class="form-label">City</label>
-                                        <input type="text" class="form-control" id="city" name="city" required>
-                                    </div>
-                                    <input type="hidden" name="created_at">
-                                    <input type="hidden" name="updated_at">
-                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </div> -->
+                                <div class="mb-3">
+                                    <label for="province" class="form-label">Province</label>
+                                    <input type="text" class="form-control" id="province" name="province" required>
                                 </div>
+                                <div class="mb-3">
+                                    <label for="city" class="form-label">City</label>
+                                    <input type="text" class="form-control" id="city" name="city" required>
+                                </div>
+                                <input type="hidden" name="created_at">
+                                <input type="hidden" name="updated_at">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
                             </form>
                         </div>
-                        <!-- End of Main Content -->
-
                     </div>
-                    <!-- End of Content Wrapper -->
-
                 </div>
-                <!-- End of Page Wrapper -->
             </div>
+
+            <!-- End of Content Wrapper -->
+
         </div>
+        <!-- End of Page Wrapper -->
+    </div>
+    </div>
     </div>
 
     <!-- Modal HTML -->

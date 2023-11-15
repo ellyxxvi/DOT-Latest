@@ -24,6 +24,15 @@
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
     <link rel="icon" href="image/LOGO (2).png" type="image/png">
 
+    <style>
+        .existing-image-preview {
+            max-width: 30%;
+            height: auto;
+            margin: 10px 0;
+            margin-right: 10px;
+            gap: 10px;
+        }
+    </style>
 </head>
 
 <body id="page-top">
@@ -316,26 +325,15 @@
                         <div class="modal-body">
                             <form id="edit-user-form" enctype="multipart/form-data">
                                 <input type="hidden" name="id" id="edit-id">
-                                <!-- Display up to 5 image previews -->
-                                <img id="edit-image-preview-1" src="" alt="Image Preview" class="img-thumbnail"
-                                    width="100px">
-                                <img id="edit-image-preview-2" src="" alt="Image Preview" class="img-thumbnail"
-                                    width="100px">
-                                <img id="edit-image-preview-3" src="" alt="Image Preview" class="img-thumbnail"
-                                    width="100px">
-                                <img id="edit-image-preview-4" src="" alt="Image Preview" class="img-thumbnail"
-                                    width="100px">
-                                <img id="edit-image-preview-5" src="" alt="Image Preview" class="img-thumbnail"
-                                    width="100px">
-
                                 <div class="mb-3">
                                     <label class="form-label">Image</label>
                                     <div class="input-group">
                                         <input type="file" class="form-control" id="photos" name="photos"
                                             accept="photos/*" multiple>
-                                        <input type="text" class="form-control" id="PlacesExistingImage"
-                                            name="existingImage" placeholder="Existing Image URL">
                                     </div>
+                                </div>
+                                <div id="image-previews">
+                                    <!-- Image previews will be generated dynamically here -->
                                 </div>
 
                                 <div class="mb-3">
@@ -400,21 +398,22 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="imageModalLabel">Image Gallery</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Image Gallery</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="imageGallery"></div>
+                </div>
             </div>
-            <div class="modal-body">
-              <div id="imageGallery"></div>
-            </div>
-          </div>
         </div>
-      </div>
+    </div>
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>

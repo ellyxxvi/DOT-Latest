@@ -181,13 +181,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const row = button.closest('tr');
     const userId = row.querySelector('td:first-child').textContent;
     const accessToken = getAccessTokenFromLocalStorage();
-
+  
     // Check if the form and elements exist before accessing them
     if (!editForm) {
       console.error('editForm not found.');
       return;
     }
-
+  
     fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places/${userId}`, {
       method: 'GET',
       headers: {
@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function () {
           }
           throw new Error('Network response was not ok.');
         }
-
+  
         // Check the response content type
         const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
@@ -220,7 +220,7 @@ document.addEventListener('DOMContentLoaded', function () {
           console.error('Form elements not found.');
           return;
         }
-
+  
         // Update form elements with user data
         editForm.elements.id.value = user.id;
         editForm.elements.title.value = user.title;
@@ -230,34 +230,32 @@ document.addEventListener('DOMContentLoaded', function () {
         editForm.elements.city.value = user.city;
         editForm.elements.barangay.value = user.barangay;
         editForm.elements.contact.value = user.contact;
-
+  
         // Adapt social_links to match your form structure
         editForm.elements.fb_link.value = user.social_links.fb;
         editForm.elements.website_link.value = user.social_links.website;
-
-        // Loop through user photos to update each image preview
-        const existingImages = user.photos;
-
-        // Update image previews and store existing image URLs
+  
+        // Display existing images
+        const existingImages = user.photos; // Replace with the correct property name for existing images
+        const imagePreviewsContainer = document.getElementById('image-previews');
+        
+        imagePreviewsContainer.innerHTML = '';
+    
         for (let i = 0; i < existingImages.length; i++) {
           const existingImageURL = existingImages[i];
-          const imagePreview = document.getElementById(`edit-image-preview-${i + 1}`);
-          if (imagePreview) {
-            imagePreview.src = existingImageURL;
-          }
-
-          // Store existing image URLs in hidden input fields
-          const existingImageInput = document.getElementById(`existing-image-${i + 1}`);
-          if (existingImageInput) {
-            existingImageInput.value = existingImageURL;
-          }
+    
+          const imagePreview = document.createElement('img');
+          imagePreview.src = existingImageURL;
+          imagePreview.classList.add('existing-image-preview');
+    
+          imagePreviewsContainer.appendChild(imagePreview);
         }
-
+  
         editModal.show();
       })
       .catch(error => console.error('Error fetching user data:', error));
   }
-
+  
   // Handle edit form submission
   editForm.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -325,7 +323,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       // Update the user ID
-      updatedUser.id = formData.get('id'); // Assuming you have an input field with name 'id'
+      updatedUser.id = formData.get('id'); 
 
       sendEditRequest(updatedUser, accessToken);
     } catch (error) {
@@ -333,50 +331,88 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // Function to send the PUT request to update user data
-  async function sendEditRequest(updatedUser, accessToken) {
-    console.log('EDIT: ' + JSON.stringify(updatedUser));
-    try {
-      if (!updatedUser.id) {
-        console.error('Error updating item data: Invalid ID');
-        return;
-      }
-
-      console.log('Sending PUT request with updatedUser:', updatedUser);
-
-      const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places/${updatedUser.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(updatedUser),
-      });
-
-      if (!response.ok) {
-        // throw new Error(`Error updating item data: ${response.status} - ${response.statusText}`);
-      }
-
-      if (response.status === 201) {
-        // Success: handle the update
-        editForm.reset();
-        editModal.hide();
-        populateTable();
-      } else {
-        console.error('Error updating item data:', response.status);
-      }
-    } catch (error) {
-      console.error('Error updating item data:', error);
-      console.log('User Inputs:', updatedUser);
+async function sendEditRequest(updatedUser, accessToken) {
+  console.log('EDIT: ' + JSON.stringify(updatedUser));
+  try {
+    if (!updatedUser.id) {
+      console.error('Error updating item data: Invalid ID');
+      return;
     }
+
+    console.log('Sending PUT request with updatedUser:', updatedUser);
+
+    const existingUserData = await fetchExistingUserData(updatedUser.id, accessToken);
+
+    if (existingUserData) {
+      if (existingUserData.photos && existingUserData.photos.length > 0) {
+        updatedUser.photos = [
+          ...existingUserData.photos,
+          ...updatedUser.photos,
+        ];
+      }
+    } else {
+      console.error('Error fetching existing user data.');
+      return;
+    }
+
+    const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places/${updatedUser.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(updatedUser),
+    });
+
+    if (!response.ok) {
+      console.error('Error updating item data:', response.status);
+      return;
+    }
+
+    if (response.status === 201) {
+      editForm.reset();
+      editModal.hide();
+      populateTable();
+    } else {
+      console.error('Error updating item data:', response.status);
+    }
+  } catch (error) {
+    console.error('Error updating item data:', error);
+    console.log('User Inputs:', updatedUser);
   }
+}
+
+async function fetchExistingUserData(userId, accessToken) {
+  try {
+    const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places/${userId}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (response.status === 401) {
+      console.error('Unauthorized: You may need to refresh the access token.');
+      return null;
+    } else if (!response.ok) {
+      console.error('Error fetching user data:', response.status, response.statusText);
+      return null;
+    }
+
+    const existingUserData = await response.json();
+    return existingUserData;
+  } catch (error) {
+    console.error('Error fetching existing user data:', error);
+    return null;
+  }
+}
+
 
   const imageInput = document.getElementById('photos');
 
-  // Image preview functionality
   imageInput.addEventListener('change', function(event) {
     const imagePreviewContainer = document.getElementById('imagePreviewContainer');
-    imagePreviewContainer.innerHTML = ''; // Clear existing previews
+    imagePreviewContainer.innerHTML = ''; 
 
     const files = event.target.files;
     for (const file of files) {
@@ -394,20 +430,19 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // Handle form submission and add new item
+
   addButton.addEventListener('click', () => {
     addEventModal.show();
   });
-// Handle form submission and add new item
-// Handle form submission and add new item
+
 addAccountButton.addEventListener('click', async () => {
   const form = document.getElementById('add-user-form');
   const formData = new FormData(form);
   const imageInput = document.querySelector('#photos');
-  const images = imageInput.files; // Get an array of selected image files
+  const images = imageInput.files; 
   const accessToken = getAccessTokenFromLocalStorage();
 
-  if (images.length > 5) { // Check for 5 or fewer images
+  if (images.length > 5) { 
     alert('Please select no more than 5 image files.');
     console.error('Please select no more than 5 image files.');
     return;
@@ -438,10 +473,10 @@ addAccountButton.addEventListener('click', async () => {
       uploadedImageUrls.push(imageUploadData.http_img_url);
     }
 
-    // Convert the contacts field to an array
+
     const contact = formData.get('contact').split(',').map(contact => contact.trim());
 
-    // Create an object for social_links
+
     const socialLinks = {
       fb: formData.get('fb_link').trim(),
       website: formData.get('website_link').trim()
@@ -449,12 +484,11 @@ addAccountButton.addEventListener('click', async () => {
 
     const user = {
       ...Object.fromEntries(formData.entries()),
-      photos: uploadedImageUrls, // Use the array of image URLs
+      photos: uploadedImageUrls, 
       contact: contact,
       social_links: socialLinks,
     };
 
-    // Remove the "fb_link" and "website_link" properties from the user object
     delete user.fb_link;
     delete user.website_link;
 
@@ -470,10 +504,9 @@ addAccountButton.addEventListener('click', async () => {
       body: JSON.stringify(user),
     });
 
-    // Log the data sent to the server
     console.log('Data Sent to Server:', JSON.stringify(user));
 
-    // Log the response from the server
+
     console.log('Response from server:', addUserResponse.status, addUserResponse.statusText);
     const responseBody = await addUserResponse.text();
     console.log('Response body:', responseBody);

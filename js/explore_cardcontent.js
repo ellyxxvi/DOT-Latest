@@ -524,37 +524,86 @@ document.addEventListener("DOMContentLoaded", function () {
         navigator.clipboard.writeText(textToCopy)
             .then(() => {
                 copyAddressButton.innerHTML = '<i class="fas fa-check"></i> Copied!';
-                copyAddressButton.disabled = true;  // Disable the button after copying
+                copyAddressButton.disabled = true; 
             })
             .catch(err => {
                 console.error("Copy failed:", err);
             });
     });
+
     const facebookButton = document.getElementById("facebookIcon");
-    facebookButton.addEventListener("click", async function () {
-        const desiredPlaceId = queryParams.get("id");
-        const fetchedPlaceData = await fetchPlaceData(desiredPlaceId);
-        if (fetchedPlaceData && fetchedPlaceData.social_links && fetchedPlaceData.social_links.fb) {
-            window.open(fetchedPlaceData.social_links.fb, "_blank");
-        } else {
-            console.log("Facebook link not available.");
-            // Handle the case when the Facebook link is not available.
-        }
-    });
 
-    // Website button
-    const websiteButton = document.getElementById("websiteIcon");
+    if (!facebookButton) {
+        console.error("Facebook button not found on the page.");
+    } else {
+        facebookButton.addEventListener("click", async function () {
+            console.log("Facebook button clicked.");
+            try {
+                const desiredPlaceId = queryParams.get("id");
+                console.log(`Fetching data for place ID: ${desiredPlaceId}`);
+                const fetchedPlaceData = await fetchPlaceData(desiredPlaceId);
+        
+                console.log(`Fetched data:`, fetchedPlaceData); // To check what data is returned
+        
+                // Check if the Facebook link is not 'undefined', 'none', null, or an empty string
+                if (fetchedPlaceData?.social_links?.fb && 
+                    fetchedPlaceData.social_links.fb !== 'undefined' && 
+                    fetchedPlaceData.social_links.fb !== 'none' &&
+                    fetchedPlaceData.social_links.fb !== '' &&
+                    fetchedPlaceData.social_links.fb !== null) {
+                    console.log(`Opening Facebook link: ${fetchedPlaceData.social_links.fb}`);
+                    window.open(fetchedPlaceData.social_links.fb, "_blank");
+                } else {
+                    console.warn("Facebook link not available, is 'undefined', 'none', or is a falsy value.");
+                    window.alert("Facebook link not available."); // Use the standard alert function
+                }
+            } catch (error) {
+                console.error("Error occurred during fetching place data:", error);
+                window.alert("Error fetching Facebook link."); // Use the standard alert function
+            }
+        });
+    }
+    
+    
+// Website button
+const websiteButton = document.getElementById("websiteIcon");
+
+if (!websiteButton) {
+    console.error("Website button not found on the page.");
+} else {
     websiteButton.addEventListener("click", async function () {
-        const desiredPlaceId = queryParams.get("id");
-        const fetchedPlaceData = await fetchPlaceData(desiredPlaceId);
-        if (fetchedPlaceData && fetchedPlaceData.social_links && fetchedPlaceData.social_links.website) {
-            window.open(fetchedPlaceData.social_links.website, "_blank");
-        } else {
-            console.log("Website link not available.");
-            // Handle the case when the website link is not available.
+        console.log("Website button clicked.");
+        try {
+            const desiredPlaceId = queryParams.get("id");
+            console.log(`Fetching data for place ID: ${desiredPlaceId}`);
+            const fetchedPlaceData = await fetchPlaceData(desiredPlaceId);
+
+            console.log(`Fetched data:`, fetchedPlaceData); // To check what data is returned
+
+            // Check if the website property is not 'undefined' (as a string) or 'none'
+            if (fetchedPlaceData?.social_links?.website &&
+                fetchedPlaceData.social_links.website !== 'undefined' &&
+                fetchedPlaceData.social_links.website !== 'none') {
+                let websiteUrl = fetchedPlaceData.social_links.website;
+                // Prepend 'https://' if the URL does not include it
+                if (!websiteUrl.startsWith('http://') && !websiteUrl.startsWith('https://')) {
+                    websiteUrl = `https://${websiteUrl}`;
+                }
+                console.log(`Opening website link: ${websiteUrl}`);
+                window.open(websiteUrl, "_blank");
+            } else {
+                console.warn("Website link not available, or it is 'undefined' or 'none'.");
+                alert("Website link not available.");
+            }
+        } catch (error) {
+            console.error("Error occurred during fetching website data:", error);
+            alert("Error fetching website link.");
         }
     });
+}
 
+    
+    
 
 
     const dynamicData = [];
