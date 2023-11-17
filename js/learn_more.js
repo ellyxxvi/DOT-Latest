@@ -39,7 +39,6 @@ fetch(`${API_PROTOCOL}://${API_HOSTNAME}/learn-more`)
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-    // Check the content type of the response
     const contentType = response.headers.get('content-type');
     if (!contentType || !contentType.includes('application/json')) {
       throw new Error('Response is not in JSON format.');
@@ -53,5 +52,4 @@ fetch(`${API_PROTOCOL}://${API_HOSTNAME}/learn-more`)
   })
   .catch(error => {
     console.error('Error fetching or processing data:', error.message);
-    // Handle the error gracefully, e.g., by displaying an error message to the user
   });

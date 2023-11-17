@@ -32,13 +32,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         })
         .catch(error => {
-            // Handle errors here
             console.error("Error fetching favorites: " + error);
-            // Handle the error appropriately
         });
 
     const isServiceFavorited = false;
-    // Call someFunction somewhere in your code
 
     let commentCards = document.querySelectorAll(".comment-card");
 
@@ -46,10 +43,8 @@ document.addEventListener("DOMContentLoaded", function () {
         commentCards = document.querySelectorAll(".comment-card");
     }
 
-    // Check if the user is logged in
     const isLoggedIn = localStorage.getItem('access_token') !== null;
 
-    // Check if the user is logged in and set the button accordingly
     if (isLoggedIn) {
         addToFavoritesBtn.style.visibility = "visible";
     } else {
@@ -75,9 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const user_id = parseJwt(accessToken);
         if (addToFavoritesBtn.classList.contains("added")) {
             addToFavoritesBtn.innerHTML = '<i class="fas fa-check"></i> Added to Favorites';
-            // localStorage.setItem("favoriteService_" + desiredServiceId, "true");
 
-            // Increment the counter for the next added item
             addItemCounter++;
 
             const favoriteData = {
@@ -152,20 +145,15 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        // Sum up all the ratings
         const totalRating = placeComments.reduce((acc, comment) => acc + parseFloat(comment.rating), 0);
 
-        // Calculate the average rating
         const averageRating = totalRating / placeComments.length;
 
-        // Round to one decimal place
         const roundedAverage = Math.round(averageRating * 10) / 10;
 
-        // Update the DOM to display the average rating
         const starsHTML = generateStars(roundedAverage);
         document.getElementById("total-rating").innerHTML = starsHTML;
 
-        // Update the DOM to display the number of visits
         document.getElementById("number-of-visits").textContent = `${placeComments.length} visits`;
     }
 
@@ -187,12 +175,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    // Function to initialize the Magnific Popup gallery
     function initializeImageGallery(imageUrls) {
         console.log('initializeImageGallery called ' + JSON.stringify(imageUrls));
         const galleryContainer = document.getElementById('dynamic-gallery');
 
-        // Make sure the gallery container is clear before adding new images
         galleryContainer.innerHTML = '';
 
         imageUrls.slice(1, 5).forEach((imageUrl, index) => {
@@ -210,7 +196,6 @@ document.addEventListener("DOMContentLoaded", function () {
             image.src = imageUrl;
             image.alt = `Image ${index + 1}`;
 
-            // Set specific width and height for the images
             image.style.width = '250px';
             image.style.height = '200px';
             image.style.objectFit = 'cover';
@@ -224,7 +209,6 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log("test");
         });
 
-        // Initialize Magnific Popup for the gallery container (if you're using a library)
         $(".gallery").magnificPopup({
             delegate: "a",
             type: "image",
@@ -240,28 +224,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
-    // // Open the background image in a Magnific Popup
-    // function openBackgroundImage(imageUrl) {
-    //     console.log('Attempting to open background image:', imageUrl);
-    //     if (imageUrl) {
-    //         $.magnificPopup.open({
-    //             items: {
-    //                 src: imageUrl
-    //             },
-    //             type: 'image',
-    //             gallery: {
-    //                 enabled: false // not a gallery, just a single image
-    //             },
-    //             mainClass: 'mfp-img-mobile',
-    //             image: {
-    //                 tError: '<a href="%url%">The image could not be loaded.</a>'
-    //             }
-    //         });
-    //     } else {
-    //         console.error('Background image URL is empty.');
-    //     }
-    // }
-
 
     async function processData() {
         console.log('processData called');
@@ -269,7 +231,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const queryParams = new URLSearchParams(window.location.search);
             const desiredPlaceId = queryParams.get("id");
 
-            // Find the desired service using the ID
             const desiredService = dynamicData.find((service) => service.id === desiredPlaceId);
 
             if (!desiredService) {
@@ -279,12 +240,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
             console.log('Desired Service:', desiredService);
 
-            // Select DOM elements
             const backgroundElement = document.querySelector(".background-image");
             const titleElement = document.querySelector("h3");
             const paragraphElement = document.querySelector(".dynamic-paragraph");
 
-            let imageUrl = ""; // Default to an empty string
+            let imageUrl = ""; 
 
             if (Array.isArray(desiredService.photos) && desiredService.photos.length > 0) {
                 const firstImageArray = desiredService.photos[0];
@@ -297,18 +257,17 @@ document.addEventListener("DOMContentLoaded", function () {
             titleElement.textContent = desiredService.title;
             paragraphElement.textContent = desiredService.description;
 
-            // Debugging: ensure this element exists and is the correct one
             console.log('Background element:', backgroundElement);
 
 
             console.log('Adding click listener to background element with URL:', imageUrl);
-            backgroundElement.style.cursor = 'pointer'; // To visually indicate that the element is clickable
+            backgroundElement.style.cursor = 'pointer'; 
             backgroundElement.addEventListener('click', (event) => {
-                event.preventDefault(); // To prevent any default action
+                event.preventDefault(); 
                 console.log('Background element clicked, attempting to open image.');
                 openBackgroundImage(imageUrl);
             });
-            // Function to open the background image in a Magnific Popup
+
             function openBackgroundImage(imageUrl) {
                 console.log('Attempting to open background image:', imageUrl);
                 if (imageUrl) {
@@ -318,7 +277,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         },
                         type: 'image',
                         gallery: {
-                            enabled: false // not a gallery, just a single image
+                            enabled: false 
                         },
                         mainClass: 'mfp-img-mobile',
                         image: {
@@ -331,10 +290,8 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
 
-            // Initialize the image galery with the retrieved image URLs
             initializeImageGallery(desiredService.photos[0]);
 
-            // Fetch comments for the desired service from the server
             const commentsResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/feedbacks/place/${desiredPlaceId}`);
             if (!commentsResponse.ok) {
                 throw Error(`Error fetching comments: ${commentsResponse.status} ${commentsResponse.statusText}`);
@@ -344,10 +301,9 @@ document.addEventListener("DOMContentLoaded", function () {
             calculateTotalRating(placeComments);
 
             if (placeComments.length > 0) {
-                // Clear existing comment cards
+
                 commentCardsContainer.innerHTML = "";
 
-                // Create and append comment cards
                 placeComments.forEach((comment) => {
                     const commentCard = document.createElement("div");
                     commentCard.classList.add("comment-card");
@@ -375,41 +331,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // Function to filter comment cards based on selected rating
     filterButtons.forEach(button => {
         button.addEventListener("click", function () {
-            // Toggle active class on clicked button
             filterButtons.forEach(btn => btn.classList.remove("active"));
             button.classList.add("active");
 
             const selectedRating = button.getAttribute("data-rating");
 
-            // Query the DOM here to get the most up-to-date comment cards
             const currentCommentCards = document.querySelectorAll(".comment-card");
 
-            // Filter comment cards based on selected rating
             currentCommentCards.forEach(card => {
                 const cardRating = card.getAttribute("data-rating");
 
@@ -426,7 +356,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     //data buttons
     const contactButton = document.getElementById("contact-icon");
-    // const contactModal = document.getElementById("contactModal");
     const closeModal = document.querySelector(".close-modal");
     const copyButton = document.getElementById("copyButton");
     const contactInfo = document.getElementById("contactInfo");
@@ -495,11 +424,6 @@ document.addEventListener("DOMContentLoaded", function () {
         contactModal.style.display = "none";
     });
 
-    // // Function to close the modal links
-    // closeModal1.addEventListener("click", function () {
-    //     linksModal.style.display = "none";
-    // });
-
     // Function to close the modal address
     closeModal2.addEventListener("click", function () {
         addressModal.style.display = "none";
@@ -511,7 +435,7 @@ document.addEventListener("DOMContentLoaded", function () {
         navigator.clipboard.writeText(textToCopy)
             .then(() => {
                 copyContactButton.innerHTML = '<i class="fas fa-check"></i> Copied!';
-                copyContactButton.disabled = true;  // Disable the button after copying
+                copyContactButton.disabled = true;  
             })
             .catch(err => {
                 console.error("Copy failed:", err);
@@ -543,9 +467,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.log(`Fetching data for place ID: ${desiredPlaceId}`);
                 const fetchedPlaceData = await fetchPlaceData(desiredPlaceId);
         
-                console.log(`Fetched data:`, fetchedPlaceData); // To check what data is returned
-        
-                // Check if the Facebook link is not 'undefined', 'none', null, or an empty string
+                console.log(`Fetched data:`, fetchedPlaceData); 
+
                 if (fetchedPlaceData?.social_links?.fb && 
                     fetchedPlaceData.social_links.fb !== 'undefined' && 
                     fetchedPlaceData.social_links.fb !== 'none' &&
@@ -555,11 +478,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     window.open(fetchedPlaceData.social_links.fb, "_blank");
                 } else {
                     console.warn("Facebook link not available, is 'undefined', 'none', or is a falsy value.");
-                    window.alert("Facebook link not available."); // Use the standard alert function
+                    window.alert("Facebook link not available."); 
                 }
             } catch (error) {
                 console.error("Error occurred during fetching place data:", error);
-                window.alert("Error fetching Facebook link."); // Use the standard alert function
+                window.alert("Error fetching Facebook link."); 
             }
         });
     }
@@ -578,14 +501,12 @@ if (!websiteButton) {
             console.log(`Fetching data for place ID: ${desiredPlaceId}`);
             const fetchedPlaceData = await fetchPlaceData(desiredPlaceId);
 
-            console.log(`Fetched data:`, fetchedPlaceData); // To check what data is returned
+            console.log(`Fetched data:`, fetchedPlaceData); 
 
-            // Check if the website property is not 'undefined' (as a string) or 'none'
             if (fetchedPlaceData?.social_links?.website &&
                 fetchedPlaceData.social_links.website !== 'undefined' &&
                 fetchedPlaceData.social_links.website !== 'none') {
                 let websiteUrl = fetchedPlaceData.social_links.website;
-                // Prepend 'https://' if the URL does not include it
                 if (!websiteUrl.startsWith('http://') && !websiteUrl.startsWith('https://')) {
                     websiteUrl = `https://${websiteUrl}`;
                 }
@@ -609,10 +530,9 @@ if (!websiteButton) {
     const dynamicData = [];
 
     function fetchServicesData() {
-        const accessToken = getAccessTokenFromLocalStorage(); // Get the access token from your localStorage or wherever you store it
+        const accessToken = getAccessTokenFromLocalStorage(); 
 
         const url = `${API_PROTOCOL}://${API_HOSTNAME}/places`;
-        // Fetch data using the extracted placeId
         fetch(url, {
             method: 'GET',
             headers: {
@@ -637,7 +557,6 @@ if (!websiteButton) {
                     };
                 });
 
-                // Log the 'photos' property of each item in the 'mappedData' array
                 mappedData.forEach(item => {
 
                 });
@@ -688,8 +607,7 @@ if (!websiteButton) {
                 return copy;
             })
             .catch(error => {
-                // alert('Error adding to favorites: ' + error);
-                throw error; // Rethrow the error to be handled later if needed
+                throw error; 
             });
     }
 

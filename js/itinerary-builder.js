@@ -48,14 +48,13 @@ document.addEventListener("DOMContentLoaded", function () {
     jQuery('#calendar').fullCalendar('renderEvent', eventData);
   }
 
-  // Check if the user is logged in
   const isLoggedIn = localStorage.getItem('access_token') !== null;
   const placeNameDropdown = document.getElementById("place_name");
   const editplaceNameDropdown = document.getElementById("edit_place_name");
   if (isLoggedIn) {
     const accessToken = localStorage.getItem('access_token');
     const userId = parseJwt(accessToken);
-    // fetching place name from favorites
+
     function fetchFavoritePlaces() {
       const favoritesApiUrl = `${API_PROTOCOL}://${API_HOSTNAME}/itineraries/items/`;
     
@@ -74,7 +73,6 @@ document.addEventListener("DOMContentLoaded", function () {
         .then((data) => {
           console.log('API Response for fetchFavoritePlaces:', data);
     
-          // Check if the dropdown element exists and is correctly referenced
           if (placeNameDropdown) {
             placeNameDropdown.innerHTML = '';
     
@@ -83,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
               option.value = place.id;
               option.textContent = place.title;
               placeNameDropdown.appendChild(option);
-              // Assuming editplaceNameDropdown is another dropdown, you might want to add options there as well
+
               const editOption = document.createElement('option');
               editOption.value = place.id;
               editOption.textContent = place.title;
@@ -101,7 +99,6 @@ document.addEventListener("DOMContentLoaded", function () {
     jQuery(document).ready(function () {
       console.log('Document is ready.');
 
-      // Initialize the datetimepicker
       jQuery('.datetimepicker').datepicker({
         language: 'en',
         timepicker: true,
@@ -111,7 +108,6 @@ document.addEventListener("DOMContentLoaded", function () {
       });
       console.log('Datepicker initialized.');
 
-      // Initialize the calendar
       const calendar = jQuery('#calendar').fullCalendar({
         themeSystem: 'bootstrap4',
         businessHours: false,
@@ -139,12 +135,9 @@ document.addEventListener("DOMContentLoaded", function () {
         },
     });
     
-    // Listen for changes in the select element
     jQuery('#edit_event_color').change(function () {
-        // Get the selected option value
         var selectedColor = jQuery(this).val();
     
-        // Update the background color of the event element
         jQuery('.fc-bg-pinkred').css('background', selectedColor);
     });
     
@@ -226,7 +219,6 @@ document.addEventListener("DOMContentLoaded", function () {
           success: function (data) {
             console.log('API Response for adding event:', data);
 
-            // Add the event to the calendar
             addEventToCalendar({
               title: formData.place_name,
               description: formData.notes,
@@ -235,7 +227,6 @@ document.addEventListener("DOMContentLoaded", function () {
               icon: formData.event_icon,
             });
 
-            // After adding the event, fetch the updated events from the server
             window.location.reload();
 
             jQuery('#modal-view-event-add').modal('hide');
@@ -253,7 +244,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // FOR NOTES 
-    // Fetching notes from the server
 async function fetchNotesFromServer() {
   const notesApiUrl = `${API_PROTOCOL}://${API_HOSTNAME}/itinerary-builder`;
 
@@ -284,7 +274,7 @@ function generateCards(notesData) {
   notesData.forEach(data => {
     const colDiv = document.createElement('div');
     colDiv.className = 'col-12 col-sm-3 col-md-3';
-    const colorClass = data.event_color; // Corrected to use event_color from the data
+    const colorClass = data.event_color; 
     colDiv.innerHTML = `
         <div class="notes-card ${colorClass}">
             <div class="place">Where: ${data.place_name}</div>
@@ -303,7 +293,6 @@ function generateCards(notesData) {
 
     notesRow.appendChild(colDiv);
 
-    // Add event listeners
     const noteCard = colDiv.querySelector(".notes-card");
     noteCard.addEventListener('click', () => {
         noteCard.classList.toggle('notes-card-expanded');
@@ -321,7 +310,6 @@ function generateCards(notesData) {
 }
 
 
-// Color change event listener
 jQuery(document).ready(function () {
   jQuery('#event_color').change(function () {
       var selectedColor = jQuery(this).val();
@@ -339,10 +327,6 @@ jQuery(document).ready(function () {
       const eventColorSelect = document.getElementById('edit_event_color');
       const eventIconSelect = document.getElementById('edit_event_icon');
     
-      // Fetch favorite places and populate the dropdown
-      // await fetchFavoritePlaces();
-    
-      // Set the date in ISO format for consistency
       eventDateInput.value = new Date(noteData.event_date).toISOString().split('T')[0];
     
       // Update other form fields with noteData
@@ -385,8 +369,7 @@ jQuery(document).ready(function () {
           },
           success: function (data) {
             console.log('Note edited:', data);
-            fetchNotesFromServer(); // Optionally refresh the notes displayed
-            // Optionally close the modal if one is used
+            fetchNotesFromServer(); 
             $('#editModal').modal('hide');
           },
           error: function (jqXHR, textStatus, errorThrown) {

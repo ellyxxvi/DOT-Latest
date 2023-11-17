@@ -187,13 +187,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 // const citySelect = document.getElementById('current_city');
                 // selectOptionByText(citySelect, data.current_city);
     
-                // Display the existing image URL
                 const existingImageURL = data.profile_photo;
                 const imagePreview = document.getElementById('edit-image-preview');
                 imagePreview.src = existingImageURL;
     
-                // Store the existing image URL in a hidden input field
-                const editForm = document.getElementById('edit-form'); // Ensure you have the correct ID for your form
+                const editForm = document.getElementById('edit-form'); 
                 editForm.elements['existingImage'].value = existingImageURL;
     
                 editModal.show();
@@ -213,22 +211,17 @@ document.addEventListener("DOMContentLoaded", function () {
         const userId = document.getElementById('edit-id').value;
         const countrySelect = document.getElementById('from_country');
         const stateSelect = document.getElementById('current_province');
-        // const citySelect = document.getElementById('current_city');
         const from_country = countrySelect.options[countrySelect.selectedIndex].text;
         const current_province = stateSelect.options[stateSelect.selectedIndex].text;
-        // const current_city = citySelect.options[citySelect.selectedIndex].text;
 
         
         const updatedUserData = {
             first_name: document.getElementById('first_name').value,
             last_name: document.getElementById('last_name').value,
-            //gender: document.getElementById('gender').value,
             email: document.getElementById('email').value,
-            //password: document.getElementById('password').value,
             from_country: from_country, 
             current_province: current_province, 
             current_city: current_city,
-            // current_barangay: document.getElementById('current_barangay').value,
             role : "REGULAR"
 
         };
@@ -271,7 +264,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.error('There was a problem with the fetch operation:', error);
             });
         } else {
-            // No new image selected, preserve the existing image URL
             updatedUser.profile_photo = document.getElementById('existingImage').value;
             sendEditRequest(updatedUser);
         }
@@ -280,11 +272,9 @@ document.addEventListener("DOMContentLoaded", function () {
     function sendEditRequest(updatedUser) {
         const accessToken = localStorage.getItem('access_token');
         const userId = updatedUser.id;
-        delete updatedUser.id; // Remove the id property from updatedUser
-        // Add these lines before the fetch call
+        delete updatedUser.id; 
         updatedUser.from_country = document.getElementById('from_country').options[document.getElementById('from_country').selectedIndex].text;
         updatedUser.current_province = document.getElementById('current_province').options[document.getElementById('current_province').selectedIndex].text;
-        // updatedUser.current_city = document.getElementById('current_city').options[document.getElementById('current_city').selectedIndex].text;
 
         fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users/${userId}`, {
             method: 'PUT',
@@ -297,7 +287,6 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => {
                 if (response.ok) {
                     alert('Profile updated successfully');
-                    // localStorage.setItem('user_data', JSON.stringify(updatedUser));
                     window.location.reload(); 
                     editModal.hide();
                 } else {
@@ -355,7 +344,6 @@ function fetchUserData() {
         if (!response.ok) {
             throw new Error(`Error fetching user data: ${response.status}`);
         }
-        //console.log("Fetch user: " + response.json() );
         return response.json();
     })
     .then((data) => {
@@ -391,7 +379,7 @@ function fetchPreferenceData() {
     })
     .catch((preferenceError) => {
         console.error('Error fetching preference data:', preferenceError);
-        return []; // Return an empty array in case of an error
+        return []; 
     });
 }
 
@@ -405,7 +393,6 @@ function updateProfile() {
         console.error('User is not logged in.');
         return;
     }
-    // console.log("TEST ACCESS : " + accessToken);
     const decoded = parseJwt(accessToken);
 
     var userId = decoded.id;
@@ -427,7 +414,6 @@ function updateProfile() {
             fetchPreferenceData()
                 .then(preferenceData => {
                     if (Array.isArray(preferenceData)) {
-                        // Check if preferenceData is an array before using find
                         const userPreferences = preferenceData.find(preference => preference.user_id === user.id);
 
                         if (userPreferences && userPreferences.preferenced_categories && userPreferences.preferenced_categories.length > 0) {
@@ -473,7 +459,6 @@ function populateUserData(user, preferenced_categories) {
     } else {
         console.error("nameHolder element not found.");
     }
-    // console.log("User: " + JSON.stringify(user));
     const profileImg = document.querySelector(".profile-img img");
     if (profileImg) {
         profileImg.src = user.profile_photo;

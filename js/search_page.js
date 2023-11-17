@@ -2,7 +2,7 @@ $(document).ready(function () {
     const itemsPerPage = 6;
     let startIndex = 0;
     let placeData;
-    const maxRecentSearches = 5; // Maximum number of recent searches to display
+    const maxRecentSearches = 5; 
     const recentSearchesKey = 'recentSearches';
 
     const galleryContainer = $('.image-gallery');
@@ -27,7 +27,6 @@ $(document).ready(function () {
         }
     }
 
-    // Function to populate the template with dynamic content
     function populateElements(data) {
         // Implement this function if needed
     }
@@ -47,13 +46,11 @@ $(document).ready(function () {
         console.log("Item: "+ JSON.stringify(itemsToLoad));
         itemsToLoad.forEach(item => {
             console.log("Item2: "+ JSON.stringify(item));
-            // Check if required properties exist before using them
-            const imageSrc = item.photos ? item.photos[0] : ''; // Assuming photos is an array
+            const imageSrc = item.photos ? item.photos[0] : ''; 
             const title = item.title || '';
             const placeTitle = item.placeTitle || '';
             const city = item.city || '';
 
-            // Build and append gallery item HTML for places
             const itemHtml = `
                 <a href="explore_cardcontent.php?id=${item.id}" class="gallery-item-link" data-item-id="${item.id}">
                     <div class="gallery-item">
@@ -83,10 +80,6 @@ $(document).ready(function () {
     }
 }
 
-    
-    
-
-    // Function to save a recent search query to local storage
     function saveRecentSearch(query) {
         const recentSearches = getRecentSearches();
         if (recentSearches.includes(query)) {
@@ -99,13 +92,11 @@ $(document).ready(function () {
         localStorage.setItem(recentSearchesKey, JSON.stringify(recentSearches));
     }
 
-    // Function to retrieve recent search queries from local storage
     function getRecentSearches() {
         const storedSearches = localStorage.getItem(recentSearchesKey);
         return storedSearches ? JSON.parse(storedSearches) : [];
     }
 
-    // Function to display recent searches in the dropdown
     function displayRecentSearches() {
         const recentSearches = getRecentSearches();
         recentSearchesDropdown.empty();
@@ -128,31 +119,26 @@ $(document).ready(function () {
 
     displayRecentSearches();
 
-    // Search input click event
     searchInput.click(function () {
         displayRecentSearches(); 
     });
 
-    // Search button click event
     searchButton.click(function () {
         const searchValue = searchInput.val().toLowerCase();
 
         if (searchValue.trim() !== '') {
             saveRecentSearch(searchValue);
 
-            // Fetch places based on the searchValue
             fetchPlacesBySearchValue(searchValue);
         }
     });
 
-    // Load more button click event
+
     loadMoreButton.click(function () {
         loadGalleryItems(placeData);
     });
 
-    // Function to fetch places based on searchValue
     function fetchPlacesBySearchValue(searchValue) {
-        // Replace 'YOUR_API_URL' with the actual API endpoint for searching places based on the searchValue
         fetch(`${API_PROTOCOL}://${API_HOSTNAME}/search/place?q=${searchValue}`)
             .then(response => response.json())
             .then(responseData => {

@@ -161,9 +161,7 @@ function collectUserData() {
     const from_country = countrySelect.options[countrySelect.selectedIndex].text;
     const current_province = stateSelect.options[stateSelect.selectedIndex].text;
     const current_city = document.getElementById('current_city').value;    
-    // const current_barangay = document.getElementById('current_barangay').value;
 
-    // Create an object with the user registration data
     const user = {
         first_name,
         last_name,
@@ -182,7 +180,6 @@ function collectUserData() {
 
 function registerUser(user) {
     const apiUrl = `${API_PROTOCOL}://${API_HOSTNAME}/users`;
-    // Log the data being sent to the server
     console.log('Sending user data to server:', user);
     console.log(from_country, current_province, current_city);
 
@@ -199,16 +196,13 @@ function registerUser(user) {
             // Parse the response as JSON to access the error details
             return response.json().then(responseData => {
                 console.error(`Error creating user: ${response.status} ${response.statusText}`);
-                
-                // Log the ZodValidationError details if present
+
                 if (responseData.name === 'ZodValidationError') {
                     console.error('Validation error details:', responseData.details);
                 }
-                
-                // Inform the user of a failed registration attempt
+
                 alert('User registration failed. Please check your input data.');
-                
-                // Reject the promise to handle the error in the catch block
+
                 return Promise.reject(responseData);
             });
         }

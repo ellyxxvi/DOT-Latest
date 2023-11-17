@@ -1,4 +1,4 @@
-// const cityOptions = document.querySelectorAll('.city-option'); // Define cityOptions here
+
 
 function fetchServicesData() {
   return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/where-to-go`)
@@ -10,11 +10,10 @@ function fetchServicesData() {
     })
     .catch(function (error) {
       console.error('Error fetching data:', error);
-      return []; // Return an empty array in case of an error
+      return []; 
     });
 }
 
-// Function to generate the service card HTML
 function generateServiceCard(service) {
   return `
     <div class="column">
@@ -40,7 +39,6 @@ function generateServiceCards() {
       servicesContainer.innerHTML += serviceCardHtml;
     }
 
-    // Add event listeners to each service card to save the clicked title
     const serviceCards = document.querySelectorAll('.card h3');
     serviceCards.forEach(card => {
       card.addEventListener('click', function() {

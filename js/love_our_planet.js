@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
   fetch(`${API_PROTOCOL}://${API_HOSTNAME}/things-to-bring`)
     .then(response => response.json())
     .then(data => {
-      const slider = document.getElementById('slider'); // Assuming you have an element with id 'slider'
+      const slider = document.getElementById('slider'); 
 
       data.forEach(item => {
         const slide = document.createElement('div');
@@ -136,8 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const slideLink = document.createElement('a');
         slideLink.href = item.link;
-        // slideLink.classList.add('facebook-button');
-        // slideLink.innerText = 'Share';
+
 
         slideDetails.appendChild(slideTitle);
         slideDetails.appendChild(slideDescription);
@@ -149,7 +148,6 @@ document.addEventListener('DOMContentLoaded', function () {
         slider.appendChild(slide);
       });
 
-      // Initialize Slick slider for the "Things to Bring" section
       $('#slider').slick({
         dots: true,
         arrows: false,
@@ -173,13 +171,13 @@ document.addEventListener('DOMContentLoaded', function () {
 const avoidSectionTitle = document.getElementById('avoid-section-title');
 const avoidSlider = document.getElementById('avoid-slider');
 
-avoidSectionTitle.innerText = 'WHAT TO AVOID'; // Set the section title
+avoidSectionTitle.innerText = 'WHAT TO AVOID'; 
 
 document.addEventListener('DOMContentLoaded', function () {
   fetch(`${API_PROTOCOL}://${API_HOSTNAME}/things-to-avoid`)
     .then(response => response.json())
     .then(data => {
-      const slider = document.getElementById('avoid-slider'); // Assuming you have an element with id 'avoid-slider'
+      const slider = document.getElementById('avoid-slider'); 
 
       data.forEach(item => {
         const slide = document.createElement('div');
@@ -203,8 +201,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const slideLink = document.createElement('a');
         slideLink.href = item.link;
-        // slideLink.classList.add('facebook-button');
-        // slideLink.innerText = 'Share';
+
 
         slideDetails.appendChild(slideTitle);
         slideDetails.appendChild(slideDescription);
@@ -216,7 +213,6 @@ document.addEventListener('DOMContentLoaded', function () {
         slider.appendChild(slide);
       });
 
-      // Initialize Slick slider for the "What to Avoid" section
       $('#avoid-slider').slick({
         dots: true,
         arrows: false,
@@ -241,15 +237,14 @@ const dynamicRememberSlides = [];
 const rememberSectionTitle = document.getElementById('remember-section-title');
 const rememberSlider = document.getElementById('remember-slider');
 
-rememberSectionTitle.innerText = 'STUFF TO REMEMBER'; // Set the section title
+rememberSectionTitle.innerText = 'STUFF TO REMEMBER'; 
 
 document.addEventListener('DOMContentLoaded', function () {
   fetch(`${API_PROTOCOL}://${API_HOSTNAME}/things-to-remember`)
     .then(response => response.json())
     .then(data => {
-      dynamicRememberSlides.push(...data); // Add fetched data to the array
+      dynamicRememberSlides.push(...data);
 
-      // Loop through the array and create slides
       dynamicRememberSlides.forEach(item => {
         const slide = document.createElement('div');
         slide.classList.add('slide');
@@ -272,8 +267,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const slideLink = document.createElement('a');
         slideLink.href = item.link;
-        // slideLink.classList.add('facebook-button');
-        // slideLink.innerText = 'Share';
+
 
         slideDetails.appendChild(slideTitle);
         slideDetails.appendChild(slideDescription);
@@ -285,7 +279,6 @@ document.addEventListener('DOMContentLoaded', function () {
         rememberSlider.appendChild(slide);
       });
 
-      // Initialize Slick slider for the "What to Avoid" section
       $('#remember-slider').slick({
         dots: true,
         arrows: false,

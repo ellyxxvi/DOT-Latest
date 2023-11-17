@@ -99,7 +99,6 @@
                 </div>
                 <!-- Column 2 -->
                 <div class="column">
-                    <!-- Hotlines for column 2 -->
 
                     <div class="hotline-item">
                         <img src="image/LOGO/St. Patrick Hospital & Medical Center.jpg" alt="St. Patrick's Hospital & Medical Center Logo">

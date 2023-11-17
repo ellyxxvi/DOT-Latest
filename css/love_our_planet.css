@@ -228,11 +228,10 @@ h3 {
     font-size: 1.1em;
     color: #ffffff;
     margin-top: 5px;
-  } */
 /* Styles for the section */
 
 #emergency-hotline {
-    height: 500px;
+    height: 550px;
     background-repeat: no-repeat;
     background-size: cover;
     background-image: url('../image/emergency-bg.jpg');

@@ -27,7 +27,6 @@ const footerSections = [
     }
 ];
 
-// Function to generate dynamic content for the footer
 function generateFooterContent() {
     const footerContentContainer = document.getElementById("footer-content");
 
@@ -73,16 +72,13 @@ function generateFooterContent() {
     });
 }
 
-// Function to update the "About" content
 function updateFooterAboutContent(description) {
     const aboutElement = document.getElementById('description');
     aboutElement.textContent = description;
 
-    // Update the about value in the footerSections array
     footerSections[0].description = description;
 }
 
-// Fetch the JSON data from your server
 fetch(`${API_PROTOCOL}://${API_HOSTNAME}/footer`)
   .then(response => response.json())
   .then(data => {
@@ -93,5 +89,4 @@ fetch(`${API_PROTOCOL}://${API_HOSTNAME}/footer`)
     console.error('Error fetching data:', error);
   });
 
-// Call the function to generate the dynamic content for the footer
 generateFooterContent();

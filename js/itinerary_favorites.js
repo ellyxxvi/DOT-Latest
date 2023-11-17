@@ -30,7 +30,6 @@ document.addEventListener("DOMContentLoaded", function () {
     'image/places/churches.png',
     'image/places/hotels.png',
     'image/places/naturetrip.png',
-    // Add more image URLs as needed
   ];
 
   const carouselInner = document.querySelector('.carousel-inner');
@@ -48,7 +47,6 @@ document.addEventListener("DOMContentLoaded", function () {
     carouselInner.appendChild(carouselItem);
   });
 
-  // Check if the user is logged in
   const isLoggedIn = localStorage.getItem('access_token') !== null;
 
   if (isLoggedIn) {
@@ -66,33 +64,29 @@ document.addEventListener("DOMContentLoaded", function () {
     selectedUserId = parseJwt(access_token);
     
     if (selectedUserId !== null) {
-      // Fetch favorites data for the logged-in user
       fetch(`${API_PROTOCOL}://${API_HOSTNAME}/itineraries/items/` , {
         method: 'GET',
         headers: {
-            'Authorization': `Bearer ${access_token}` // Use the correct variable name
+            'Authorization': `Bearer ${access_token}` 
         }
        })
         .then(response => response.json())
         .then(data => {
-          const placesData = data; // No need to push items into a new array
+          const placesData = data; 
 
           if (Array.isArray(placesData)) {
             placesData.forEach(place => {
              
-              // Fetch additional data for this place by its ID
               fetchPlaceDataById(place.id)
               .then(placeData => {
                 if (placeData.id === place.id) {
                   place.place_id = placeData.place_id;
                 }
-                 // Fetch feedback data for the user and place
+
                   fetchFeedbackDataByUserIdAndPlaceId(selectedUserId.id, placeData.place_id)
                   .then(hasFeedback => {
-                    // Add the disable_button property based on the presence of feedback
                     place.disable_button = hasFeedback;
                     
-                    // Assuming createBox is a function to create a box element for a place
                     const box = createBox(place);
                     boxContainer.appendChild(box);
                   })
@@ -157,9 +151,7 @@ document.addEventListener("DOMContentLoaded", function () {
   
 
   function addToFavorites(placeId) {
-    // const selectedUserId = 5;
 
-    // Prepare the data for the POST request
     const requestData = {
       place_id: placeId,
       user_id: selectedUserId,
@@ -167,7 +159,6 @@ document.addEventListener("DOMContentLoaded", function () {
       updated_at: getCurrentDate(),
     };
 
-    // Send a POST request to add the place to favorites
     fetch(`${API_PROTOCOL}://${API_HOSTNAME}/itinerary_favorites`, {
       method: 'POST',
       headers: {
@@ -190,7 +181,6 @@ document.addEventListener("DOMContentLoaded", function () {
   boxContainer.addEventListener('click', (event) => {
     const completedButton = event.target.closest('.completed-button');
     const deleteButton = event.target.closest('.delete-button');
-    // const addToFavoritesButton = event.target.closest('.add-to-favorites-button');
 
     if (completedButton) {
       ratingModal.show();
@@ -204,7 +194,6 @@ document.addEventListener("DOMContentLoaded", function () {
         boxToRemove.remove();
       }
       const accessToken = localStorage.getItem('access_token');
-      // Send DELETE request to remove from favorites on the server
       fetch(`${API_PROTOCOL}://${API_HOSTNAME}/itineraries/item/${selectedPlaceId}`, {
         method: 'DELETE',
         headers: {
@@ -221,13 +210,12 @@ document.addEventListener("DOMContentLoaded", function () {
           console.error('Error removing from favorites:', error);
         });
 
-      // Reset selectedPlaceId
       selectedPlaceId = null;
     } else if (addToFavoritesButton) {
       selectedPlaceId = addToFavoritesButton.getAttribute('data-place-id');
       addToFavorites(selectedPlaceId);
     } else {
-      selectedPlaceId = null; // Reset the selectedPlaceId if not clicking a button
+      selectedPlaceId = null; 
     }
   });
 
@@ -239,19 +227,17 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   saveRatingButton.addEventListener('click', (event) => {
-    // Your existing logic to collect the data
+
     const placeId = selectedPlaceId;
     const userId = selectedUserId;
     const rating = document.getElementById('rating').value;
     const comment = document.getElementById('comment').value;
 
-    // Prepare the data for the POST request
     const requestData = {
       place_id: placeId,
       rating: parseInt(rating),
       comment: comment,
-      // created_at: getCurrentDate(),
-      // updated_at: getCurrentDate(),
+
     };
     const accessToken = localStorage.getItem('access_token');
     // POST the rating and comment to the server
@@ -317,7 +303,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Function to fetch place data by ID
 function fetchPlaceDataById(placeId) {
   const accessToken = localStorage.getItem('access_token');
   return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/itineraries/item/${placeId}`, {
@@ -329,7 +314,6 @@ function fetchPlaceDataById(placeId) {
   .then(response => response.json());
 }
 
-// Function to fetch feedback data for a specific user and place_id
 function fetchFeedbackDataByUserIdAndPlaceId(userId, placeId) {
   const accessToken = localStorage.getItem('access_token');
   return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/feedbacks/user/${userId}`, {

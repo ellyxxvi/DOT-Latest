@@ -3,13 +3,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const visitedButton = document.getElementById("visitedButton");
   const builderButton = document.getElementById("builderButton");
 
-  // Add event listeners to the buttons
   favoritesButton.addEventListener("click", function() {
-    window.location.href = "itinerary_favorites.php"; // Redirect to index.html
+    window.location.href = "itinerary_favorites.php"; 
   });
 
   visitedButton.addEventListener("click", function() {
-    window.location.href = "itinerary_visited.php"; // Redirect to visited.html
+    window.location.href = "itinerary_visited.php"; 
   });
   accountButton.addEventListener("click", function () {
     window.location.href = "user-profile.php";
@@ -26,7 +25,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Add more image URLs as needed
   ];
 
-  // Dynamically add carousel items with images
   images.forEach((imageUrl, index) => {
     const carouselItem = document.createElement('div');
     carouselItem.classList.add('carousel-item');
@@ -40,11 +38,9 @@ document.addEventListener("DOMContentLoaded", function () {
     carouselInner.appendChild(carouselItem);
   });
 
-  // Check if the user is logged in
   const isLoggedIn = localStorage.getItem('access_token') !== null;
 
   if (isLoggedIn) {
-    // Function to get the user ID from localStorage
     function parseJwt(token) {
       var base64Url = token.split('.')[1];
       var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -57,10 +53,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const access_token = localStorage.getItem('access_token');
 
-    // Get the user ID of the logged-in user
     const userId = parseJwt(access_token);
 
-    // Fetch data from both endpoints
     Promise.all([
       fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places`),
       fetch(`${API_PROTOCOL}://${API_HOSTNAME}/feedbacks/user/${userId.id}`, {
@@ -81,7 +75,6 @@ document.addEventListener("DOMContentLoaded", function () {
           const box = document.createElement('div');
           box.classList.add('box');
 
-          // Calculate star ratings based on the rating value
           const starRatings = '<div class="star-ratings">' + '<i class="fas fa-star"></i>'.repeat(parseInt(item.rating)) + '</div>';
 
           box.innerHTML = `

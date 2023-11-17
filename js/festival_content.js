@@ -53,7 +53,6 @@ document.addEventListener('DOMContentLoaded', function () {
         galleryContainer.appendChild(col);
       }
 
-      // Initialize Magnific Popup for the gallery container
       $(".gallery").magnificPopup({
         delegate: "a",
         type: "image",

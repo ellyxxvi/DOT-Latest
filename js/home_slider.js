@@ -2,8 +2,8 @@ const learnMoreLink = window.frameElement ? window.frameElement.contentDocument.
     
     if (learnMoreLink) {
         learnMoreLink.addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent default link behavior
-            window.top.location.href = 'learn_more.php'; // Redirect the parent window
+            event.preventDefault(); 
+            window.top.location.href = 'learn_more.php'; 
         });
     }
 
