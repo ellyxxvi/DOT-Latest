@@ -6,10 +6,10 @@ $(document).ready(function () {
   });
 });
 
-// const API_PROTOCOL = 'https'
-// const API_HOSTNAME = 'goexplorebatangas.com/api'
-const API_PROTOCOL = 'http'
-const API_HOSTNAME = '13.229.101.17/api'
+const API_PROTOCOL = 'https'
+const API_HOSTNAME = 'goexplorebatangas.com/api'
+// const API_PROTOCOL = 'http'
+// const API_HOSTNAME = '13.229.101.17/api'
 
 
 document.addEventListener('DOMContentLoaded', function () {
