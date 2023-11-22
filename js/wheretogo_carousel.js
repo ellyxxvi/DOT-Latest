@@ -63,7 +63,7 @@ async function fetchAndGenerateCards(url, isFestival = false, city) {
         `;
 
         if (isFestival) {
-          cardElement.dataset.redirectUrl = 'festival_content.php';
+          cardElement.dataset.redirectUrl = `festival_content.php?id=${card.id}`;
         } else {
           cardElement.dataset.redirectUrl = `explore_cardcontent.php?id=${card.id}`;
         }
