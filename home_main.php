@@ -46,7 +46,7 @@
         </div>
         <div class="row">
           <div class="card3">
-            <a href="explore_main.php?category=tourist">
+            <a href="explore_main.php?category=tourists">
             <div class="icon-wrapper3">
               <i class="fa-solid fa-location-dot"></i>
             </div>
@@ -56,7 +56,7 @@
         </div>
         <div class="row">
           <div class="card4">
-            <a href="explore_main.php?category=hotels">
+            <a href="explore_main.php?category=resort">
             <div class="icon-wrapper4">
               <i class="fa-solid fa-hotel"></i>
             </div>

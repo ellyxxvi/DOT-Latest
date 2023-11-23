@@ -9,7 +9,7 @@ const servicesData = [];
 const iconMappings = {
   'swim': 'fas fa-water',
   'nature': 'fas fa-leaf',
-  'tourist': 'fas fa-map-marker-alt',
+  'tourists': 'fas fa-map-marker-alt',
   'resort': 'fas fa-hotel',
   'churches': 'fas fa-church',
   'events': 'fas fa-calendar-days',
@@ -161,9 +161,42 @@ categoryLinks.forEach(link => {
 
 $(document).ready(function() {
 
-  fetchServicesData();
+  // Function to fetch services data and return a promise
+  function fetchServicesData() {
+    return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places`)
+      .then(response => response.json())
+      .then(data => {
+        const mappedData = data.map(user => {
+          return {
+            id: user.id,
+            category: user.category,
+            title: user.title,
+            description: user.description,
+            backgroundImage: user.photos,
+          };
+        });
+        servicesData.push(...mappedData);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  }
 
-  
+  // Fetch data from the server and then process it
+  fetchServicesData().then(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoryFromUrl = urlParams.get('category');
+
+    // Check if a category is specified in the URL
+    if (categoryFromUrl) {
+      // Filter and display cards for the specified category
+      const filteredServices = servicesData.filter(service => service.category === categoryFromUrl);
+      displayServiceCards(filteredServices);
+    } else {
+      // Display initial set of cards
+      displayServiceCards(servicesData.slice(0, initialItems));
+    }
+  });
+
+  // Category link click handler
   $('.category-link').click(function(e) {
     e.preventDefault();
     $('.category-link').removeClass('active');
@@ -177,13 +210,10 @@ $(document).ready(function() {
       displayServiceCards(filteredServices);
     }
   });
-  
 
-const loadMoreBtn = document.getElementById('load-more-btn');
-loadMoreBtn.addEventListener('click', toggleLoadMore);
-
-displayServiceCards(servicesData.slice(0, initialItems));
-
+  // Load More button click handler
+  const loadMoreBtn = document.getElementById('load-more-btn');
+  loadMoreBtn.addEventListener('click', toggleLoadMore);
 });
 
 

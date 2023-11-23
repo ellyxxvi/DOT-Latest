@@ -8,10 +8,11 @@ const footerSections = [
     {
         title: "Categories",
         links: [
-            { title: "Dive", url: "explore_main.php" },
-            { title: "Nature", url: "explore_main.php" },
-            { title: "Beach", url: "explore_main.php" },
-            { title: "Adventure", url: "#explore_main.php" },
+            { title: "Churches", url: "explore_main.php?category=churches" },
+            { title: "Tourist Spot", url: "explore_main.php?category=tourists" },
+            { title: "Nature Trip", url: "explore_main.php?category=nature" },
+            { title: "Swim and Beaches", url: "explore_main.php?category=swim" },
+            { title: "Hotel", url: "explore_main.php?category=resort" },
             { title: "Festival", url: "calendar.php" }
         ]
     },

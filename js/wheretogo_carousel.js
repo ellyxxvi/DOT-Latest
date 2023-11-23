@@ -6,7 +6,7 @@ const API_HOSTNAME = 'goexplorebatangas.com/api';
 const categoryToIcon = {
   'swim': 'fas fa-water',
   'nature': 'fas fa-leaf',
-  'tourist': 'fas fa-location-dot',
+  'tourists': 'fas fa-location-dot',
   'hotels': 'fas fa-hotel',
   'churches': 'fas fa-church',
   'events': 'fas fa-calendar-days',
@@ -16,6 +16,7 @@ const categoryToIcon = {
 const carousel = document.querySelector('.carousel');
 
 async function fetchAndGenerateCards(url, isFestival = false, city) {
+  console.log('Function called');
   try {
     const response = await fetch(url);
     if (!response.ok) {
@@ -36,7 +37,7 @@ async function fetchAndGenerateCards(url, isFestival = false, city) {
     let firstCardWidth = 0; 
 
     cardData.forEach(card => {
-
+      
       if (card.city.toLowerCase() === city.toLowerCase()) {
         const cardElement = document.createElement('li');
         cardElement.className = 'card';
@@ -63,14 +64,19 @@ async function fetchAndGenerateCards(url, isFestival = false, city) {
         `;
 
         if (isFestival) {
-          cardElement.dataset.redirectUrl = `festival_content.php?id=${card.id}`;
+          // Check if card.id is valid before constructing the URL
+          const redirectUrl = card.id ? `festival_content.php?item_id=${card.id}` : '#';
+          cardElement.dataset.redirectUrl = redirectUrl;
         } else {
-          cardElement.dataset.redirectUrl = `explore_cardcontent.php?id=${card.id}`;
+          // Check if card.id is valid before constructing the URL
+          const redirectUrl = card.id ? `explore_cardcontent.php?id=${card.id}` : '#';
+          cardElement.dataset.redirectUrl = redirectUrl;
         }
-
+        
         cardElement.addEventListener('click', () => {
           const redirectUrl = cardElement.dataset.redirectUrl;
-          if (redirectUrl) {
+          console.log('Redirect URL:', redirectUrl); // Debugging log
+          if (redirectUrl && redirectUrl !== '#') {
             window.top.location.href = redirectUrl;
           }
         });
