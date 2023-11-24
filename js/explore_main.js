@@ -59,7 +59,7 @@ function fetchServicesData() {
       });
 
       servicesData.push(...mappedData);
-      displayServiceCards(servicesData.slice(0, initialItems));
+      displayServiceCards(servicesData.slice(0, initialItems), false);
     })
     .catch(error => console.error('Error fetching data:', error));
 }
@@ -82,7 +82,7 @@ if (currentPage * itemsPerPage + initialItems >= servicesData.length) {
 }
 
 
-function displayServiceCards(data) {
+function displayServiceCards(data, shouldScroll = true) {
 const servicesContent = document.querySelector('.services-content .row');
 servicesContent.innerHTML = '';
 
@@ -93,8 +93,11 @@ for (let i = 0; i < endIndex; i++) {
 }
 
 updateButtons();
-const contentContainer = document.getElementById('load-more-btn');
-contentContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+if (shouldScroll) {
+  const contentContainer = document.getElementById('load-more-btn');
+  contentContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 
 }
 
@@ -118,8 +121,8 @@ displayServiceCards(filteredServices);
 }
 
 
-const contentContainer = document.getElementById('load-more-btn');
-contentContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+// const contentContainer = document.getElementById('load-more-btn');
+// contentContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
 
 function resetContent() {
@@ -179,22 +182,22 @@ $(document).ready(function() {
       })
       .catch(error => console.error('Error fetching data:', error));
   }
+// Fetch data from the server and then process it
+fetchServicesData().then(() => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const categoryFromUrl = urlParams.get('category');
 
-  // Fetch data from the server and then process it
-  fetchServicesData().then(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const categoryFromUrl = urlParams.get('category');
+  // Check if a category is specified in the URL
+  if (categoryFromUrl) {
+    // Filter and display cards for the specified category
+    const filteredServices = servicesData.filter(service => service.category === categoryFromUrl);
+    displayServiceCards(filteredServices, false); // Prevent scrolling when the page is first loaded
+  } else {
+    // Display initial set of cards without scrolling
+    displayServiceCards(servicesData.slice(0, initialItems), false);
+  }
+});
 
-    // Check if a category is specified in the URL
-    if (categoryFromUrl) {
-      // Filter and display cards for the specified category
-      const filteredServices = servicesData.filter(service => service.category === categoryFromUrl);
-      displayServiceCards(filteredServices);
-    } else {
-      // Display initial set of cards
-      displayServiceCards(servicesData.slice(0, initialItems));
-    }
-  });
 
   // Category link click handler
   $('.category-link').click(function(e) {
