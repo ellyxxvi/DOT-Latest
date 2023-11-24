@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         const rawData = await userResponse.text();
         // Parse the response as JSON
         const userData = JSON.parse(rawData); // Move the declaration here
-       
+
         const totalUsers = userData.length;
         const menUsers = userData.filter(user => user.gender === 'male').length;
         const womenUsers = userData.filter(user => user.gender === 'female').length;
@@ -135,13 +135,13 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 // MOST RATED RESORT
 const resortsData = [];
-
 function calculateAverageRating(ratings) {
-    if (ratings.length === 0) return 0;
+    if (ratings.length === 0) return '0.00'; // Return '0.00' for no ratings
     const sum = ratings.reduce((total, rating) => total + parseFloat(rating), 0);
-    const average = (sum / ratings.length).toFixed(1);
+    const average = (sum / ratings.length).toFixed(2); // Use toFixed(2) to format to 2 decimal places
     return average;
 }
+
 
 // Function to fetch resort names
 async function fetchResortNames(accessToken) {
@@ -157,7 +157,7 @@ async function fetchResortNames(accessToken) {
         }
 
         const data = await response.json();
-       
+
         const resortNames = {};
         if (Array.isArray(data)) {
             data.forEach(place => {
@@ -229,11 +229,11 @@ async function populateAndSortResorts() {
                 const listItem = document.createElement("li");
                 listItem.innerHTML = `
                     <span class="chart-progress-indicator chart-progress-indicator--increase">
-                        <span class="chart-progress-indicator__number">${resort.ratings}</span>
+                        <span class="chart-progress-indicator__number">${parseFloat(resort.ratings).toFixed(2)}</span>
                     </span> 
                     <span class="bold-rank">Top ${index + 1}:</span> ${resort.name}
                     <div class="progress wds-progress progress-bar-blue">
-                        <div class="progress-bar" style="width: ${parseFloat(resort.ratings) * 20}%;"></div>
+                        <div class="progress-bar" style="width: ${(parseFloat(resort.ratings) * 20).toFixed(2)}%;"></div>
                     </div>
                 `;
                 resortList.appendChild(listItem);
@@ -413,7 +413,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             cardVisited.appendChild(row);
         });
-        
+
     }
 
     async function fetchData(url) {
@@ -466,7 +466,7 @@ document.addEventListener('DOMContentLoaded', function () {
         fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/feedbacks`),
         fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/itineraries`),
     ])
-        .then(([usersData, placesData, visitedData, favoritesData ]) => {
+        .then(([usersData, placesData, visitedData, favoritesData]) => {
             // Process favoritesData
             favoritesData.forEach(favorite => {
                 const user = usersData.find(user => user.id === favorite.user_id);

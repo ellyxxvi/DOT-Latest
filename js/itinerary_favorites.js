@@ -277,6 +277,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
           // Close the modal
           ratingModal.hide();
+          window.location.reload();
         } else {
           alert('Failed to add to feedback');
         }
