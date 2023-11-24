@@ -112,10 +112,10 @@ figure:hover img {
 } */
 
 .image-gallery {
-  height: 400px;
+  height: 320px;
   background-repeat: no-repeat;
   background-size: cover;
-  background-image: url('../image/places-bg.png');
+  background-image: url('../image/places-bg2.png');
   background-position: center;
 }
 #dynamic-gallery {
@@ -136,7 +136,7 @@ figure:hover img {
     height: 1034px;
     background-repeat: no-repeat;
     background-size: cover;
-    background-image: url('../image/places-bg.png');
+    background-image: url('../image/places-bg2.png');
     background-position: center;
   }
 }
@@ -146,7 +146,7 @@ figure:hover img {
     height: 1034px;
     background-repeat: no-repeat;
     background-size: cover;
-    background-image: url('../image/places-bg.png');
+    background-image: url('../image/places-bg2.png');
     background-position: center;
   }
 }

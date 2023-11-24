@@ -4,7 +4,7 @@
 
 <head>
     <link rel="icon" type="image/png" href="images/logo_tab.png" sizes="64x64">
-    <title>Our Portfolio</title>
+    <title>User Account</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
