@@ -81,43 +81,38 @@ if (currentPage * itemsPerPage + initialItems >= servicesData.length) {
 }
 }
 
+function displayServiceCards(data) {
+  const servicesContent = document.querySelector('.services-content .row');
+  servicesContent.innerHTML = '';
 
-function displayServiceCards(data, shouldScroll = true) {
-const servicesContent = document.querySelector('.services-content .row');
-servicesContent.innerHTML = '';
+  const endIndex = Math.min(currentPage * itemsPerPage + initialItems, data.length);
+  for (let i = 0; i < endIndex; i++) {
+    const cardMarkup = generateServiceCard(data[i]);
+    servicesContent.insertAdjacentHTML('beforeend', cardMarkup);
+  }
 
-const endIndex = Math.min(currentPage * itemsPerPage + initialItems, data.length);
-for (let i = 0; i < endIndex; i++) {
-  const cardMarkup = generateServiceCard(data[i]);
-  servicesContent.insertAdjacentHTML('beforeend', cardMarkup);
+  updateButtons();
 }
-
-updateButtons();
-if (shouldScroll) {
-  const contentContainer = document.getElementById('load-more-btn');
-  contentContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-
-}
-
-
 
 function toggleLoadMore() {
-const activeCategory = document.querySelector('.category-link.active');
-const selectedCategory = activeCategory ? activeCategory.getAttribute('data-category') : null;
+  const activeCategory = document.querySelector('.category-link.active');
+  const selectedCategory = activeCategory ? activeCategory.getAttribute('data-category') : null;
 
-const filteredServices = selectedCategory
-  ? servicesData.filter(service => service.category === selectedCategory)
-  : servicesData;
+  const filteredServices = selectedCategory
+    ? servicesData.filter(service => service.category === selectedCategory)
+    : servicesData;
 
-if (currentPage * itemsPerPage + initialItems >= filteredServices.length) {
-  currentPage = 0; 
-} else {
-  currentPage++;
-}
+  if (currentPage * itemsPerPage + initialItems >= filteredServices.length) {
+    currentPage = 0; 
+  } else {
+    currentPage++;
+  }
 
-displayServiceCards(filteredServices);
+  displayServiceCards(filteredServices);
+
+  // Scroll when "Load More" is clicked
+  const contentContainer = document.getElementById('load-more-btn');
+  contentContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 
@@ -182,7 +177,7 @@ $(document).ready(function() {
       })
       .catch(error => console.error('Error fetching data:', error));
   }
-// Fetch data from the server and then process it
+
 fetchServicesData().then(() => {
   const urlParams = new URLSearchParams(window.location.search);
   const categoryFromUrl = urlParams.get('category');
@@ -191,7 +186,7 @@ fetchServicesData().then(() => {
   if (categoryFromUrl) {
     // Filter and display cards for the specified category
     const filteredServices = servicesData.filter(service => service.category === categoryFromUrl);
-    displayServiceCards(filteredServices, false); // Prevent scrolling when the page is first loaded
+    displayServiceCards(filteredServices, false); 
   } else {
     // Display initial set of cards without scrolling
     displayServiceCards(servicesData.slice(0, initialItems), false);

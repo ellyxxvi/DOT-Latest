@@ -18,7 +18,7 @@
                         <div class="col-md-8 col-sm-6 col-xs-12">
                             <p class="copyright-text">
                                 Copyright &copy; 2023 All Rights Reserved by
-                                <a href="#">Go Explore</a>.
+                                <a href="https://goexplorebatangas.com/home_main.php">Go Explore</a>.
                             </p>
                         </div>
 

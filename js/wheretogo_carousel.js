@@ -7,7 +7,7 @@ const categoryToIcon = {
   'swim': 'fas fa-water',
   'nature': 'fas fa-leaf',
   'tourists': 'fas fa-location-dot',
-  'hotels': 'fas fa-hotel',
+  'resort': 'fas fa-hotel',
   'churches': 'fas fa-church',
   'events': 'fas fa-calendar-days',
 

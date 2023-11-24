@@ -1,5 +1,9 @@
-document.getElementById('playButton').addEventListener('click', function() {
-    var video = document.getElementById('video');
+const video = document.getElementById('video');
+
+video.addEventListener('click', function() {
+  if (video.paused) {
     video.play();
-    this.style.display = 'none'; 
+  } else {
+    video.pause();
+  }
 });

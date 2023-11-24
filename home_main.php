@@ -21,71 +21,70 @@
     <iframe src="home_slider.html" width="100%" height="775" frameborder="0" background="transparent"></iframe>
   </div>
 
-  <section>
-    <section>
+  <section id="interactive_buttons">
+    <div class="row">
       <div class="row">
-        <div class="row">
-          <div class="card">
-            <a href="explore_main.php?category=swim">
+        <div class="card">
+          <a href="explore_main.php?category=swim">
             <div class="icon-wrapper">
               <i class="fa-solid fa-water"></i>
             </div>
             <h3>Swim and Beaches</h3>
           </a>
-          </div>
         </div>
-        <div class="row">
-          <div class="card2">
-            <a href="explore_main.php?category=nature">
+      </div>
+      <div class="row">
+        <div class="card2">
+          <a href="explore_main.php?category=nature">
             <div class="icon-wrapper2">
               <i class="fa-solid fa-leaf"></i>
             </div>
             <h3>Nature Trip</h3>
           </a>
-          </div>
         </div>
-        <div class="row">
-          <div class="card3">
-            <a href="explore_main.php?category=tourists">
+      </div>
+      <div class="row">
+        <div class="card3">
+          <a href="explore_main.php?category=tourists">
             <div class="icon-wrapper3">
               <i class="fa-solid fa-location-dot"></i>
             </div>
             <h3>Tourist Spots</h3>
           </a>
-          </div>
         </div>
-        <div class="row">
-          <div class="card4">
-            <a href="explore_main.php?category=resort">
+      </div>
+      <div class="row">
+        <div class="card4">
+          <a href="explore_main.php?category=resort">
             <div class="icon-wrapper4">
               <i class="fa-solid fa-hotel"></i>
             </div>
             <h3>Hotel</h3>
           </a>
-          </div>
         </div>
-        <div class="row">
-          <div class="card5">
-            <a href="explore_main.php?category=churches">
+      </div>
+      <div class="row">
+        <div class="card5">
+          <a href="explore_main.php?category=churches">
             <div class="icon-wrapper5">
               <i class="fa-solid fa-church"></i>
             </div>
             <h3>Churches</h3>
           </a>
-          </div>
         </div>
-        <div class="row">
-          <div class="card6">
-            <a href="calendar.php?category=events">
+      </div>
+      <div class="row">
+        <div class="card6">
+          <a href="calendar.php?category=events">
             <div class="icon-wrapper6">
               <i class="fa-solid fa-calendar-days"></i>
             </div>
             <h3>Events and Culture</h3>
           </a>
-          </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
   <section class="video">
     <div class="hero">
@@ -93,7 +92,7 @@
         <h1> GO EXPLORE </h1>
         <br>
         <p class="dynamic-paragraph">Welcome to Batangas, where beautiful smiles are seen everywhere.
-          With the beautiful places and cultures, you'll be blown away! 
+          With the beautiful places and cultures, you'll be blown away!
           Tara sinsay na!
           <br><br>
         </p>
@@ -113,7 +112,7 @@
   <div class="iframe">
     <iframe src="home_most_viewed.html" width="100%" height="585" frameborder="0" background="transparent"></iframe>
   </div>
-  
+
   <script src="js/home_main.js"></script>
   <?php include 'footer.php'; ?>
 </body>
