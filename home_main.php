@@ -86,7 +86,7 @@
     </div>
   </section>
 
-  <section class="video">
+  <section class="video-section">
     <div class="hero">
       <div class="content">
         <h1> GO EXPLORE </h1>
@@ -96,7 +96,6 @@
           Tara sinsay na!
           <br><br>
         </p>
-
         <div class="video-container">
           <video loop class="video-element" id="video" controls>
             <source src="videos/video.mp4" type="video/mp4">
@@ -104,7 +103,9 @@
         </div>
       </div>
     </div>
+
   </section>
+
 
   <div class="iframe">
     <iframe src="home_most_rated.html" width="100%" height="585" frameborder="0" background="transparent"></iframe>
