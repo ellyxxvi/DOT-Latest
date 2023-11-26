@@ -5,7 +5,7 @@ var config = {
 
 var countrySelect = document.getElementById('from_country'),
     stateSelect = document.getElementById('current_province')
-    // citySelect = document.getElementById('current_city');
+
 
 function loadCountries() {
 
@@ -14,7 +14,7 @@ function loadCountries() {
     fetch(apiEndPoint, {headers: {"X-CSCAPI-KEY": config.ckey}})
     .then(Response => Response.json())
     .then(data => {
-        // console.log(data);
+
 
         data.forEach(country => {
             const option = document.createElement('option')
@@ -26,29 +26,29 @@ function loadCountries() {
     .catch(error => console.error('Error loading countries:', error))
 
     stateSelect.disabled = false
-    // citySelect.disabled = false
+
     stateSelect.style.pointerEvents = 'none'
-    // citySelect.style.pointerEvents = 'none'
+
 }
 
 function loadStates(selectedCountryCode1 = null, current_province = null, current_city = null) {
     stateSelect.disabled = false
-    // citySelect.disabled = false
+
     stateSelect.style.pointerEvents = 'auto'
-    // citySelect.style.pointerEvents = 'none'
+
 
     var selectedCountryCode = selectedCountryCode1;
     if(selectedCountryCode1 != null) {
         selectedCountryCode = countrySelect.value;
     }
     console.log(selectedCountryCode);
-    stateSelect.innerHTML = '<option value="">Select State</option>' // for clearing the existing states
-    // citySelect.innerHTML = '<option value="">Select City</option>' // Clear existing city options
+    stateSelect.innerHTML = '<option value="">Select State</option>' 
+
     console.log("Test: " + `${config.cUrl}/${selectedCountryCode}/states`, {headers: {"X-CSCAPI-KEY": config.ckey}});
     fetch(`${config.cUrl}/${selectedCountryCode}/states`, {headers: {"X-CSCAPI-KEY": config.ckey}})
     .then(response => response.json())
     .then(data => {
-        // console.log(data);
+
 
         data.forEach(state => {
             const option = document.createElement('option')
@@ -62,43 +62,10 @@ function loadStates(selectedCountryCode1 = null, current_province = null, curren
         if(current_province != null) {
             selectOptionByText(stateSelect, current_province);
         }
-        // if(current_city != null) {
-        //     loadCities(current_city);
-        // }
         
     })
     .catch(error => console.error('Error loading countries:', error))
 }
-
-// function loadCities(current_city = null) {
-//     citySelect.disabled = false
-//     citySelect.style.pointerEvents = 'auto'
-
-//     const selectedCountryCode = countrySelect.value
-//     const selectedStateCode = stateSelect.value
-//     console.log("loadCities: " +selectedCountryCode, selectedStateCode);
-
-//     citySelect.innerHTML = '<option value="">Select City</option>' // Clear existing city options
-
-//     fetch(`${config.cUrl}/${selectedCountryCode}/states/${selectedStateCode}/cities`, {headers: {"X-CSCAPI-KEY": config.ckey}})
-//     .then(response => response.json())
-//     .then(data => {
-//         // console.log(data);
-
-//         data.forEach(city => {
-//             const option = document.createElement('option')
-//             option.value = city.iso2
-//             option.textContent = city.name 
-//             citySelect.appendChild(option)
-//         })
-//     })
-//     .then(data => {
-//         if(current_city != null) {
-//             selectOptionByText(citySelect, current_city);
-//         }
-//     })
-
-// }
 
     function selectOptionByText(selectElement, text) {
         for (const option of selectElement.options) {
@@ -120,21 +87,27 @@ document.addEventListener("DOMContentLoaded", function () {
     const editModal = new bootstrap.Modal(document.getElementById('editModal'));
     loadCountries(); 
     loadStates();
-    // loadCities();
-    countrySelect.addEventListener('change', loadStates);
 
-    // stateSelect.addEventListener('change', loadCities);
+    document.getElementById("cancelButton").addEventListener("click", function() {
+        // Your code to handle the cancel button click
+    });
+    
+    countrySelect.addEventListener('change', loadStates);
 
     builderButton.addEventListener("click", function () {
         window.location.href = "itinerary-builder.php";
       });
 
-    // Function to handle errors
     function handleErrors(response) {
         if (!response.ok) {
             throw new Error('Network response was not ok.');
         }
         return response.json();
+    }
+    const accessToken = localStorage.getItem('access_token');
+    if (!accessToken) {
+      window.location.href = 'login_register.php';
+      return; 
     }
 
 
@@ -152,6 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         return JSON.parse(jsonPayload);
     }
+
     // EDIT PROFILE
     editProfileButton.addEventListener('click', function () {
         editModal.show();

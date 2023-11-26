@@ -1,8 +1,19 @@
+
 document.addEventListener("DOMContentLoaded", function () {
   const favoritesButton = document.getElementById("favoritesButton");
   const visitedButton = document.getElementById("visitedButton");
   const accountButton = document.getElementById("accountButton");
   const builderButton = document.getElementById("builderButton");
+  const accessToken = localStorage.getItem('access_token');
+
+  var myModalAdd = new bootstrap.Modal(document.getElementById('modal-view-event-add'));
+
+
+  if (!accessToken) {
+    // Redirect to the login page
+    window.location.href = 'login_register.php';
+    return; // Stop executing further code
+  }
 
   favoritesButton.addEventListener("click", function () {
     window.location.href = "itinerary_favorites.php";
@@ -57,7 +68,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function fetchFavoritePlaces() {
       const favoritesApiUrl = `${API_PROTOCOL}://${API_HOSTNAME}/itineraries/items/`;
-    
+
       fetch(favoritesApiUrl, {
         method: 'GET',
         headers: {
@@ -72,10 +83,10 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then((data) => {
           console.log('API Response for fetchFavoritePlaces:', data);
-    
+
           if (placeNameDropdown) {
             placeNameDropdown.innerHTML = '';
-    
+
             data.forEach((place) => {
               const option = document.createElement('option');
               option.value = place.id;
@@ -95,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function () {
           console.error('Error fetching favorite places:', error);
         });
     }
-    
+
     jQuery(document).ready(function () {
       console.log('Document is ready.');
 
@@ -106,6 +117,7 @@ document.addEventListener("DOMContentLoaded", function () {
         multipleDates: true,
         multipleDatesSeparator: " - ",
       });
+
       console.log('Datepicker initialized.');
 
       const calendar = jQuery('#calendar').fullCalendar({
@@ -114,35 +126,37 @@ document.addEventListener("DOMContentLoaded", function () {
         defaultView: 'month',
         editable: true,
         header: {
-            left: 'title',
-            right: 'today prev,next'
+          left: 'title',
+          right: 'today prev,next'
         },
-        events: eventData,
+        // events: eventData,
         eventRender: function (event, element) {
-            if (event.icon) {
-                element.find(".fc-title").prepend("<i class='fa fa-" + event.icon + "'></i>");
-            }
+          if (event.icon) {
+            element.find(".fc-title").prepend("<i class='fa fa-" + event.icon + "'></i>");
+          }
         },
         dayClick: function (date, jsEvent, view) {
-            jQuery('#modal-view-event-add').modal('show');
+          jQuery('#modal-view-event-add').modal('show');
         },
         eventClick: function (event, jsEvent, view) {
-            jQuery('.event-icon').html("<i class='fa fa-" + event.icon + "'></i>");
-            jQuery('.event-title').html(event.title);
-            jQuery('.event-body').html(event.description);
-            jQuery('.eventUrl').attr('href', event.url);
-            jQuery('#modal-view-event').modal('show');
+          jQuery('.event-icon').html("<i class='fa fa-" + event.icon + "'></i>");
+          jQuery('.event-title').html(event.title);
+          jQuery('.event-body').html(event.description);
+          jQuery('.eventUrl').attr('href', event.url);
+          jQuery('#modal-view-event').modal('show');
         },
-    });
-    
-    jQuery('#edit_event_color').change(function () {
-        var selectedColor = jQuery(this).val();
-    
-        jQuery('.fc-bg-pinkred').css('background', selectedColor);
-    });
-    
-      fetchEventsFromServer();
 
+      });
+
+      let eventStore = []; // Store event data
+
+      jQuery('#edit_event_color').change(function () {
+        var selectedColor = jQuery(this).val();
+
+        jQuery('.fc-bg-pinkred').css('background', selectedColor);
+      });
+
+      fetchEventsFromServer();
 
       fetchFavoritePlaces();
 
@@ -164,20 +178,31 @@ document.addEventListener("DOMContentLoaded", function () {
           .then((data) => {
             console.log('API Response for fetching events:', data);
             data.forEach((eventData) => {
-              addEventToCalendar({
-                title: eventData.place_name,
-                description: eventData.notes,
-                start: eventData.event_date,
-                className: eventData.event_color,
-                icon: eventData.event_icon,
-              });
+              addEventToCalendar(eventData); // Add events to the calendar
+              eventStore.push(eventData); // Store event data
             });
-
           })
           .catch((error) => {
             console.error('Error fetching events:', error);
           });
       }
+      // Function to add events to the calendar
+      function addEventToCalendar(eventData) {
+        calendar.fullCalendar('renderEvent', {
+          title: eventData.place_name,
+          description: eventData.notes,
+          start: eventData.event_date,
+          className: eventData.event_color,
+          icon: eventData.event_icon,
+        });
+      }
+      // Switch view callback
+      calendar.fullCalendar('option', 'viewRender', function (view) {
+        // When the view changes, re-add events from the eventStore
+        eventStore.forEach((eventData) => {
+          addEventToCalendar(eventData);
+        });
+      });
 
       function updateCalendarEvents(eventsData) {
         //calendar.fullCalendar('removeEvents');
@@ -236,46 +261,54 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log('Response Text:', JSON.stringify(jqXHR));
             console.log('Status:', textStatus);
             console.log('Error Thrown:', errorThrown);
+          },
+          viewRender: function (view, element) {
+            // Get the current view's start date (e.g., the start of the month)
+            const startDate = view.start.format('YYYY-MM-DD');
+
+            // Reload the page with the start date as a query parameter
+            window.location.href = window.location.pathname + '?start_date=' + startDate;
           }
         });
       });
+
 
     });
 
 
     // FOR NOTES 
-async function fetchNotesFromServer() {
-  const notesApiUrl = `${API_PROTOCOL}://${API_HOSTNAME}/itinerary-builder`;
+    async function fetchNotesFromServer() {
+      const notesApiUrl = `${API_PROTOCOL}://${API_HOSTNAME}/itinerary-builder`;
 
-  try {
-      const response = await fetch(notesApiUrl, {
+      try {
+        const response = await fetch(notesApiUrl, {
           method: 'GET',
           headers: {
-              'Authorization': 'Bearer ' + accessToken,
+            'Authorization': 'Bearer ' + accessToken,
           },
-      });
+        });
 
-      if (!response.ok) {
+        if (!response.ok) {
           throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        console.log('API Response for fetching notes:', data);
+        generateCards(data);
+      } catch (error) {
+        console.error('Error fetching notes:', error);
       }
+    }
 
-      const data = await response.json();
-      console.log('API Response for fetching notes:', data);
-      generateCards(data);
-  } catch (error) {
-      console.error('Error fetching notes:', error);
-  }
-}
+    function generateCards(notesData) {
+      const notesRow = document.getElementById('notes-row');
+      notesRow.innerHTML = '';
 
-function generateCards(notesData) {
-  const notesRow = document.getElementById('notes-row');
-  notesRow.innerHTML = '';
-
-  notesData.forEach(data => {
-    const colDiv = document.createElement('div');
-    colDiv.className = 'col-12 col-sm-3 col-md-3';
-    const colorClass = data.event_color; 
-    colDiv.innerHTML = `
+      notesData.forEach(data => {
+        const colDiv = document.createElement('div');
+        colDiv.className = 'col-12 col-sm-3 col-md-3';
+        const colorClass = data.event_color;
+        colDiv.innerHTML = `
         <div class="notes-card ${colorClass}">
             <div class="place">Where: ${data.place_name}</div>
             <div class="date">When: ${data.event_date}</div>
@@ -291,32 +324,32 @@ function generateCards(notesData) {
         </div>
     `;
 
-    notesRow.appendChild(colDiv);
+        notesRow.appendChild(colDiv);
 
-    const noteCard = colDiv.querySelector(".notes-card");
-    noteCard.addEventListener('click', () => {
-        noteCard.classList.toggle('notes-card-expanded');
+        const noteCard = colDiv.querySelector(".notes-card");
+        noteCard.addEventListener('click', () => {
+          noteCard.classList.toggle('notes-card-expanded');
+        });
+
+        colDiv.querySelector(".edit-button").addEventListener('click', (e) => {
+          e.stopPropagation();
+          handleEditNote(data);
+        });
+        colDiv.querySelector(".delete-button").addEventListener('click', (e) => {
+          e.stopPropagation();
+          handleDeleteNote(data.id);
+        });
+      });
+    }
+
+
+    jQuery(document).ready(function () {
+      jQuery('#event_color').change(function () {
+        var selectedColor = jQuery(this).val();
+        jQuery('#notes').removeClass('fc-bg-default fc-bg-darkpink fc-bg-darkorange fc-bg-purple')
+          .addClass(selectedColor);
+      });
     });
-
-    colDiv.querySelector(".edit-button").addEventListener('click', (e) => {
-        e.stopPropagation(); 
-        handleEditNote(data);
-    });
-    colDiv.querySelector(".delete-button").addEventListener('click', (e) => {
-        e.stopPropagation();
-        handleDeleteNote(data.id);
-    });
-  });
-}
-
-
-jQuery(document).ready(function () {
-  jQuery('#event_color').change(function () {
-      var selectedColor = jQuery(this).val();
-      jQuery('#notes').removeClass('fc-bg-default fc-bg-darkpink fc-bg-darkorange fc-bg-purple')
-                       .addClass(selectedColor);
-  });
-});
 
 
 
@@ -326,14 +359,14 @@ jQuery(document).ready(function () {
       const notesInput = document.getElementById('edit_notes');
       const eventColorSelect = document.getElementById('edit_event_color');
       const eventIconSelect = document.getElementById('edit_event_icon');
-    
+
       eventDateInput.value = new Date(noteData.event_date).toISOString().split('T')[0];
-    
+
       // Update other form fields with noteData
       notesInput.value = noteData.notes;
       eventColorSelect.value = noteData.event_color;
       eventIconSelect.value = noteData.event_icon;
-    
+
       // Update dropdown to select the option with the place_name value
       for (let i = 0; i < placeNameDropdown.options.length; i++) {
         if (placeNameDropdown.options[i].text === noteData.place_name) {
@@ -341,13 +374,13 @@ jQuery(document).ready(function () {
           break;
         }
       }
-    
+
       // Remove any previous submit event listeners to avoid duplicates
       const editForm = $('#editModal');
       editForm.off('submit').on('submit', function (e) {
         e.preventDefault();
         console.log("Submit event triggered");
-    
+
         const formData = {
           place_name: $('#edit_place_name option:selected').text(),
           event_date: new Date($('#edit_event_date').val()).toISOString(),
@@ -355,10 +388,10 @@ jQuery(document).ready(function () {
           event_color: $('#edit_event_color').val(),
           event_icon: $('#edit_event_icon').val(),
         };
-    
+
         const apiUrl = `${API_PROTOCOL}://${API_HOSTNAME}/itinerary-builder/${noteData.id}`;
         console.log("formData for edit: ", JSON.stringify(formData));
-    
+
         $.ajax({
           url: apiUrl,
           type: 'PUT',
@@ -369,7 +402,7 @@ jQuery(document).ready(function () {
           },
           success: function (data) {
             console.log('Note edited:', data);
-            fetchNotesFromServer(); 
+            fetchNotesFromServer();
             $('#editModal').modal('hide');
           },
           error: function (jqXHR, textStatus, errorThrown) {
@@ -380,7 +413,7 @@ jQuery(document).ready(function () {
         });
       });
     }
-    
+
 
 
     async function handleDeleteNote(noteId) {
@@ -394,9 +427,13 @@ jQuery(document).ready(function () {
           }
         });
 
-        const data = await response.json();
-        console.log('Note deleted:', data);
-        fetchNotesFromServer();
+        if (response.ok) {
+          console.log('Note deleted successfully');
+          // Refresh the window after deleting the note
+          window.location.reload();
+        } else {
+          console.error('Failed to delete note. Server returned status:', response.status);
+        }
       } catch (error) {
         console.error('Error deleting note:', error);
       }

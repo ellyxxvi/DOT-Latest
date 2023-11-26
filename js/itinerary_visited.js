@@ -2,6 +2,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const favoritesButton = document.getElementById("favoritesButton");
   const visitedButton = document.getElementById("visitedButton");
   const builderButton = document.getElementById("builderButton");
+  const accessToken = localStorage.getItem('access_token');
+  if (!accessToken) {
+    // Redirect to the login page
+    window.location.href = 'login_register.php';
+    return; // Stop executing further code
+  }
 
   favoritesButton.addEventListener("click", function() {
     window.location.href = "itinerary_favorites.php"; 

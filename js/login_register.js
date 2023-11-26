@@ -115,6 +115,22 @@ function loadStates() {
 
 // Wait for the DOM to load
 document.addEventListener('DOMContentLoaded', () => {
+     // Password toggle functionality
+     const passwordInput2 = document.getElementById('password2');
+     const passwordToggle2 = document.getElementById('password-toggle2');
+ 
+     passwordToggle2.addEventListener('click', () => {
+         if (passwordInput2.type === 'password') {
+             passwordInput2.type = 'text';
+             passwordToggle2.classList.remove('fa-eye-slash');
+             passwordToggle2.classList.add('fa-eye');
+         } else {
+             passwordInput2.type = 'password';
+             passwordToggle2.classList.remove('fa-eye');
+             passwordToggle2.classList.add('fa-eye-slash');
+         }
+     });
+
     loadCountries(); 
 
     countrySelect.addEventListener('change', loadStates);
@@ -157,7 +173,7 @@ function collectUserData() {
     const last_name = document.getElementById('last_name').value;
     const gender = document.getElementById('gender').value;
     const email = document.getElementById('emailInput').value;
-    const password = document.getElementById('passwordInput').value;
+    const password = document.getElementById('password2').value;
     const from_country = countrySelect.options[countrySelect.selectedIndex].text;
     const current_province = stateSelect.options[stateSelect.selectedIndex].text;
     const current_city = document.getElementById('current_city').value;    
@@ -266,17 +282,33 @@ function saveUserPreferences(selectedPreferences) {
 }
 
 
-
-//login
+//LOGIN
 document.addEventListener('DOMContentLoaded', () => {
     const loginButton = document.getElementById('loginButton');
     const staticBackdropModal = new bootstrap.Modal(document.getElementById('staticBackdrop'));
     const closeButton = staticBackdropModal._element.querySelector('.btn-close');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+
+    const passwordToggle = document.getElementById('password-toggle');
+
+    passwordToggle.addEventListener('click', function () {
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            passwordToggle.classList.remove('fa-eye-slash');
+            passwordToggle.classList.add('fa-eye');
+        } else {
+            passwordInput.type = 'password';
+            passwordToggle.classList.remove('fa-eye');
+            passwordToggle.classList.add('fa-eye-slash');
+        }
+    });
 
     if (loginButton) {
-        loginButton.addEventListener('click', () => {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+        // Function to handle form submission
+        const handleLogin = () => {
+            const email = emailInput.value;
+            const password = passwordInput.value;
 
             fetch(`${API_PROTOCOL}://${API_HOSTNAME}/auth/login`, {
                 method: 'POST',
@@ -301,6 +333,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 })
                 .catch(error => console.error('Error checking login:', error));
+        };
+
+        // Attach the handleLogin function to both click and Enter key press
+        loginButton.addEventListener('click', handleLogin);
+
+        // Listen for Enter key press in the email and password input fields
+        emailInput.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                handleLogin();
+            }
+        });
+
+        passwordInput.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                handleLogin();
+            }
         });
 
         closeButton.addEventListener('click', () => {

@@ -39,6 +39,25 @@ a {
     text-decoration: none;
     color: #0067AD;
 }
+.password-container {
+    position: relative;
+    display: inline-block;
+}
+
+#password {
+    padding-right: 265px; /* Adjust as needed */
+}
+#password2 {
+    padding-right: 265px; /* Adjust as needed */
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 5px; /* Adjust as needed */
+    transform: translateY(-50%);
+    cursor: pointer;
+}
 
 .login-reg-panel {
     position: absolute;
@@ -348,6 +367,12 @@ register-info-box-mini {
 
     .login-reg-panel-mini {
         display: block;
+    }
+    #password {
+        padding-right: 143px; /* Adjust as needed */
+    }
+    #password2 {
+        padding-right: 143px; /* Adjust as needed */
     }
 }
 @media (max-width: 330px){

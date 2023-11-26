@@ -494,7 +494,7 @@ hr.fc-divider {
   border-style: solid;
   border-width: 1px 1px 0 1px !important;
   padding: 0;
-  border-color: #eee;
+  border-color: #787878;
   vertical-align: top;
 }
 
@@ -1290,6 +1290,7 @@ a.fc-more:hover {
   -webkit-box-sizing: content-box;
   -moz-box-sizing: content-box;
   box-sizing: content-box;
+  font-weight: bold;
 }
 
 .fc-view,
@@ -1347,6 +1348,7 @@ a.fc-more:hover {
 
 .fc-ltr .fc-basic-view .fc-day-top .fc-day-number {
   float: right;
+  font-weight: 600;
 }
 
 .fc-rtl .fc-basic-view .fc-day-top .fc-day-number {

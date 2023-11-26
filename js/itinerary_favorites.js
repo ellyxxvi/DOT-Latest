@@ -10,6 +10,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const boxContainer = document.querySelector('.box-container');
   let selectedPlaceId;
   let selectedUserId;
+  const accessToken = localStorage.getItem('access_token');
+  if (!accessToken) {
+    // Redirect to the login page
+    window.location.href = 'login_register.php';
+    return; // Stop executing further code
+  }
 
   favoritesButton.addEventListener("click", function () {
     window.location.href = "itinerary_favorites.php";

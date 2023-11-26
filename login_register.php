@@ -36,7 +36,10 @@
                 <div class="login-show">
                     <h2>LOGIN</h2>
                     <input type="text" placeholder="Email" name="email" id="email">
-                    <input type="password" placeholder="Password" name="password" id="password">
+                    <div class="password-container">
+                        <input type="password" placeholder="Password" name="password" id="password">
+                        <i class="password-toggle fa fa-eye-slash" id="password-toggle"></i>
+                    </div>
                     <input type="button" value="Login" id="loginButton">
                     <p><br><br><br>This site is protected by reCAPTCHA and the <a href="https://policies.google.com/privacy?hl=en-US">Google Privacy Policy</a> and <a href="https://policies.google.com/terms?hl=en-US">Terms of Service</a> apply.</p>
                 </div>
@@ -52,7 +55,10 @@
                         </select>
                     </div>
                     <input type="text" placeholder="Email" name="email" id="emailInput" autocomplete="off" required>
-                    <input type="password" placeholder="Password" name="password" id="passwordInput" autocomplete="off" required>
+                    <div class="password-container">
+                        <input type="password" placeholder="Password" name="password" id="password2">
+                        <i class="password-toggle fa fa-eye-slash" id="password-toggle2"></i>
+                    </div>
                     <select name="from_country" id="from_country" required>
                         <option value="" disabled selected>Country</option>
                     </select>
