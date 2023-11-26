@@ -20,6 +20,22 @@ document.addEventListener('DOMContentLoaded', function () {
   const editForm = document.getElementById('edit-user-form');
   let updatedUser = {};
 
+  
+  const logoutButton = document.getElementById('logoutButton');
+
+  logoutButton.addEventListener('click', () => {
+    localStorage.removeItem('access_token');
+
+    window.location.href = 'login.html';
+  });
+
+  // Check if the user has an access token
+  const accessToken = localStorage.getItem('access_token');
+  if (!accessToken) {
+    window.location.href = 'login.html';
+    return; 
+  }
+
   function getAccessTokenFromLocalStorage() {
     const accessToken = localStorage.getItem('access_token');
     return accessToken;

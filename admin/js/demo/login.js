@@ -1,10 +1,6 @@
 const API_PROTOCOL = 'https';
 const API_HOSTNAME = 'goexplorebatangas.com/api';
 
-// const API_PROTOCOL = 'http'
-// const API_HOSTNAME = '13.229.101.17/api'
-
-
 document.addEventListener('DOMContentLoaded', () => {
     const loginButton = document.getElementById('loginButton');
     const staticBackdropModal = new bootstrap.Modal(document.getElementById('staticBackdrop'));
@@ -23,39 +19,51 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify({ email, password })
             })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.access_token && data.refresh_token) {
-                        // Valid login
+            .then(response => response.json())
+            .then(data => {
+                if (data.access_token && data.refresh_token) {
+                    const userRole = getRole(data.access_token);
+
+                    if (userRole === 'SUPER_ADMIN' || userRole === 'ADMIN') {
+                        // Login for SUPER_ADMIN or ADMIN
                         localStorage.setItem('access_token', data.access_token);
                         localStorage.setItem('refresh_token', data.refresh_token);
 
-                        // Log the user response
                         console.log('User response:', data);
                         console.log('Login successful');
                         window.location.href = 'index.html';
                     } else {
-                        // Invalid login
-                        console.log('Invalid login');
+                        console.log('Login failed: User role not authorized');
                         staticBackdropModal.show();
                     }
-                })
-                .catch(error => {
-                    // Log the error
-                    console.error('Error checking login:', error);
-                    if (error.response) {
-                        console.error('Response status:', error.response.status);
-                        error.response.text().then(text => {
-                            // Log the error response text
-                            console.error('Response text:', text);
-                        });
-                    }
-                });
+                } else {
+                    console.log('Invalid login');
+                    staticBackdropModal.show();
+                }
+            })
+            .catch(error => {
+                console.error('Error checking login:', error);
+                if (error.response) {
+                    console.error('Response status:', error.response.status);
+                    error.response.text().then(text => {
+                        console.error('Response text:', text);
+                    });
+                }
+            });
         });
 
-        // Close the modal when clicking on the close button
         closeButton.addEventListener('click', () => {
             staticBackdropModal.hide();
         });
     }
 });
+
+function getRole(token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload).role;
+}

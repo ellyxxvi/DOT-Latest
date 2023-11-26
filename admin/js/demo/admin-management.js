@@ -18,6 +18,32 @@ document.addEventListener('DOMContentLoaded', function () {
   const editForm = document.getElementById('edit-user-form');
   const searchButton = document.getElementById('searchButton');
   const searchInput = document.getElementById('searchInput');
+  // Add this code inside your DOMContentLoaded event listener
+  const logoutButton = document.getElementById('logoutButton');
+
+  logoutButton.addEventListener('click', () => {
+    // Clear the access token from local storage
+    localStorage.removeItem('access_token');
+
+    // Redirect to the login page
+    window.location.href = 'login.html';
+  });
+
+  // Check if the user has an access token
+  const accessToken = localStorage.getItem('access_token');
+  if (!accessToken) {
+    // Redirect to the login page
+    window.location.href = 'login.html';
+    return; // Stop executing further code
+  }
+  // Check if the user role is SUPER_ADMIN
+  const userRole = getUserRoleFromAccessToken();
+  if (userRole !== 'SUPER_ADMIN') {
+    // Redirect or hide table if the user is not SUPER_ADMIN
+    alert('Access denied: You do not have permission to view this page.');
+    window.location.href = 'index.html'; // Redirect to another page
+    return; // Stop executing further code
+  }
 
   // Function to fetch and populate the table
   async function populateTable() {
@@ -223,7 +249,7 @@ document.addEventListener('DOMContentLoaded', function () {
     user['from_country'] = "test";
     user['current_province'] = "test";
     user['current_city'] = "test";
-    
+
 
     const password = user['password'];
     if (password && password.length < 8) {
@@ -290,3 +316,16 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
 });
+
+function getUserRoleFromAccessToken() {
+  const accessToken = localStorage.getItem('access_token');
+  if (!accessToken) return null;
+
+  var base64Url = accessToken.split('.')[1];
+  var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+
+  return JSON.parse(jsonPayload).role;
+}

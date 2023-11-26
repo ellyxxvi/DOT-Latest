@@ -23,6 +23,24 @@ document.addEventListener('DOMContentLoaded', function () {
   const editForm1 = document.getElementById('edit-user-form1');
   const searchButton = document.getElementById('searchButton');
   const searchInput = document.getElementById('searchInput');
+
+  
+  const logoutButton = document.getElementById('logoutButton');
+
+  logoutButton.addEventListener('click', () => {
+    localStorage.removeItem('access_token');
+
+    window.location.href = 'login.html';
+  });
+
+  // Check if the user has an access token
+  const accessToken = localStorage.getItem('access_token');
+  if (!accessToken) {
+    window.location.href = 'login.html';
+    return; 
+  }
+
+  
     // Function to handle errors
     function handleErrors(response) {
       if (!response.ok) {

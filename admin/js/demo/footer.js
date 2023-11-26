@@ -15,7 +15,25 @@ document.addEventListener('DOMContentLoaded', function () {
   const tableBody = document.getElementById('tableBody');
   const editModal = new bootstrap.Modal(document.getElementById('editModal')); // Add this line
   const editForm = document.getElementById('edit-user-form'); // Add this line
+  // Add this code inside your DOMContentLoaded event listener
+  const logoutButton = document.getElementById('logoutButton');
 
+  logoutButton.addEventListener('click', () => {
+    // Clear the access token from local storage
+    localStorage.removeItem('access_token');
+
+    // Redirect to the login page
+    window.location.href = 'login.html';
+  });
+
+  // Check if the user has an access token
+  const accessToken = localStorage.getItem('access_token');
+  if (!accessToken) {
+    // Redirect to the login page
+    window.location.href = 'login.html';
+    return; // Stop executing further code
+  }
+  
   function getAccessTokenFromLocalStorage() {
     const accessToken = localStorage.getItem('access_token');
     return accessToken;

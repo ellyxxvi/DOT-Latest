@@ -208,6 +208,31 @@ document.addEventListener('DOMContentLoaded', function () {
   const searchButton = document.getElementById('searchButton');
   const searchInput = document.getElementById('searchInput');
   const addAccountButton = document.getElementById('btn-add-account');
+  // Add this code inside your DOMContentLoaded event listener
+  const logoutButton = document.getElementById('logoutButton');
+
+  logoutButton.addEventListener('click', () => {
+    // Clear the access token from local storage
+    localStorage.removeItem('access_token');
+
+    // Redirect to the login page
+    window.location.href = 'login.html';
+  });
+
+  // Check if the user has an access token
+  const accessToken = localStorage.getItem('access_token');
+  if (!accessToken) {
+    // Redirect to the login page
+    window.location.href = 'login.html';
+    return; // Stop executing further code
+  }
+    const userRole = getUserRoleFromAccessToken();
+    if (userRole !== 'SUPER_ADMIN') {
+      // Redirect or hide table if the user is not SUPER_ADMIN
+      alert('Access denied: You do not have permission to view this page.');
+      window.location.href = 'index.html'; // Redirect to another page
+      return; // Stop executing further code
+    }
 
   // Initial population of the table with all data
   populateTable();
@@ -464,10 +489,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
 
-  addButton.addEventListener('click', () => {
-    addModal.show();
-  });
-
   addAccountButton.addEventListener('click', async () => {
     const form = document.getElementById('add-user-form');
     const formData = new FormData(form);
@@ -480,14 +501,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const imageInput = form.querySelector("#profile_photo");
     const imageFile = imageInput.files[0];
     const accessToken = getAccessTokenFromLocalStorage();
-
+  
+    // Check if there is no image file and any other form data is empty
+    if (!imageFile && !formData.has('other_field_name')) { // Add all other form field names you want to check
+      alert('Please enter values.'); // Display an alert
+      return; // Stop execution of the function
+    }
+  
     if (imageFile) {
       formData.delete('photo');
       formData.append('photo', imageFile);
-
+  
       var formData2 = new FormData();
       formData2.append('photo', imageFile);
-
+  
       try {
         const imageResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/images`, {
           method: 'POST',
@@ -496,14 +523,14 @@ document.addEventListener('DOMContentLoaded', function () {
           },
           body: formData2,
         });
-
+  
         if (!imageResponse.ok) {
           throw new Error('Image upload failed.');
         }
-
+  
         const imageData = await imageResponse.json();
         const imageDataUrl = imageData.http_img_url;
-
+  
         formData.delete('photo');
         const user = {
           ...Object.fromEntries(formData.entries()),
@@ -512,7 +539,7 @@ document.addEventListener('DOMContentLoaded', function () {
           current_province,
           role: "REGULAR"
         };
-
+  
         const userResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users`, {
           method: 'POST',
           headers: {
@@ -521,11 +548,11 @@ document.addEventListener('DOMContentLoaded', function () {
           },
           body: JSON.stringify(user),
         });
-
+  
         if (!userResponse.ok) {
           throw new Error('User creation failed.');
         }
-
+  
         this.location.reload();
         form.reset();
         populateTable();
@@ -534,6 +561,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
   });
+  
 
   // Handle delete button
   async function deleteRow(event) {
@@ -568,3 +596,15 @@ document.addEventListener('DOMContentLoaded', function () {
     return '*'.repeat(password ? password.length : 0);
   }
 });
+function getUserRoleFromAccessToken() {
+  const accessToken = localStorage.getItem('access_token');
+  if (!accessToken) return null;
+
+  var base64Url = accessToken.split('.')[1];
+  var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+
+  return JSON.parse(jsonPayload).role;
+}

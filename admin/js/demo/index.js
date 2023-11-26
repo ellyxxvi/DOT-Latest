@@ -6,6 +6,24 @@ const API_HOSTNAME = 'goexplorebatangas.com/api';
 
 // USER STATISTICS
 document.addEventListener('DOMContentLoaded', async function () {
+      // Add this code inside your DOMContentLoaded event listener
+  const logoutButton = document.getElementById('logoutButton');
+
+  logoutButton.addEventListener('click', () => {
+    // Clear the access token from local storage
+    localStorage.removeItem('access_token');
+
+    // Redirect to the login page
+    window.location.href = 'login.html';
+  });
+
+  // Check if the user has an access token
+  const accessToken = localStorage.getItem('access_token');
+  if (!accessToken) {
+    // Redirect to the login page
+    window.location.href = 'login.html';
+    return; // Stop executing further code
+  }
     try {
         const accessToken = getAccessTokenFromLocalStorage();
 
@@ -52,6 +70,21 @@ function getAccessTokenFromLocalStorage() {
 
 //MOST VISITED
 document.addEventListener('DOMContentLoaded', async function () {
+
+  const logoutButton = document.getElementById('logoutButton');
+
+  logoutButton.addEventListener('click', () => {
+    localStorage.removeItem('access_token');
+
+    window.location.href = 'login.html';
+  });
+
+  // Check if the user has an access token
+  const accessToken = localStorage.getItem('access_token');
+  if (!accessToken) {
+    window.location.href = 'login.html';
+    return; 
+  }
     try {
         const accessToken = getAccessTokenFromLocalStorage();
 
@@ -308,6 +341,24 @@ const recentActivityFavorites = [];
 const recentActivityVisited = [];
 
 document.addEventListener('DOMContentLoaded', function () {
+      // Add this code inside your DOMContentLoaded event listener
+  const logoutButton = document.getElementById('logoutButton');
+
+  logoutButton.addEventListener('click', () => {
+    // Clear the access token from local storage
+    localStorage.removeItem('access_token');
+
+    // Redirect to the login page
+    window.location.href = 'login.html';
+  });
+
+  // Check if the user has an access token
+  const accessToken = localStorage.getItem('access_token');
+  if (!accessToken) {
+    // Redirect to the login page
+    window.location.href = 'login.html';
+    return; // Stop executing further code
+  }
     const cardFavorites = document.querySelector('.user-activity-card .card-block-favorites');
     const cardVisited = document.querySelector('.user-activity-card .card-block-visited');
 

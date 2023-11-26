@@ -19,6 +19,21 @@ document.addEventListener('DOMContentLoaded', function () {
   const editModal = new bootstrap.Modal(document.getElementById('editModal'));
   const editForm = document.getElementById('edit-user-form');
 
+  const logoutButton = document.getElementById('logoutButton');
+
+  logoutButton.addEventListener('click', () => {
+    localStorage.removeItem('access_token');
+
+    window.location.href = 'login.html';
+  });
+
+  // Check if the user has an access token
+  const accessToken = localStorage.getItem('access_token');
+  if (!accessToken) {
+    window.location.href = 'login.html';
+    return; 
+  }
+
   // Function to handle errors
   function handleErrors(response) {
     if (!response.ok) {
