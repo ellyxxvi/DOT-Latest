@@ -389,7 +389,25 @@ h3 {
   }
 
   .video-section {
-    height: 140vh;
+    height: 125vh;
+    margin-top: 50px;
+  }
+
+  .content h1 {
+    margin-top: 50px;
+    font-size: 30px;
+  }
+}
+
+@media screen and (max-width: 770px) {
+  .content {
+    margin-top: 200px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  .video-section {
+    height: 125vh;
     margin-top: 50px;
   }
 

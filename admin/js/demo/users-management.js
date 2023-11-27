@@ -304,8 +304,8 @@ document.addEventListener('DOMContentLoaded', function () {
           const row = document.createElement('tr');
           row.innerHTML = `
             <td>${user.id}</td>
-            <td><img src=${user.profile_photo} alt=""
-              class="img-thumbnail" width="100px"></td>
+            <td><img src="${user.profile_photo || getDefaultProfilePhoto(user.gender)}" alt=""
+                        class="img-thumbnail" width="100px"></td>
             <td>${user.first_name}</td>
             <td>${user.last_name}</td>
             <td>${user.gender}</td>
@@ -343,7 +343,16 @@ document.addEventListener('DOMContentLoaded', function () {
       console.error('Error fetching data:', error);
     }
   }
-
+  function getDefaultProfilePhoto(gender) {
+    if (gender === "female") {
+        return "../image/female.png"; 
+    } else if (gender === "male") {
+        return "../image/male.png"; 
+    } else {
+        console.error("Unknown gender:", gender);
+        return ""; 
+    }
+}
 
   searchButton.addEventListener('click', () => {
     const searchKeyword = searchInput.value.trim();

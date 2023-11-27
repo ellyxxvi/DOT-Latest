@@ -228,6 +228,37 @@ document.addEventListener("DOMContentLoaded", function () {
     async function processData() {
         console.log('processData called');
         try {
+            // Fetch user info with optional authorization header
+            async function fetchUserInfo(userId) {
+                try {
+                    const token = localStorage.getItem('access_token'); 
+                    const headers = {};
+
+                    if (token) {
+                        headers['Authorization'] = `Bearer ${token}`;
+                    }
+
+                    const userInfoResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users/${userId}`, {
+                        headers: headers
+                    });
+
+                    if (!userInfoResponse.ok) {
+                        if (userInfoResponse.status === 401 && !token) {
+                            // User is not logged in, continue without user info
+                            return null;
+                        } else {
+                            throw new Error(`Error fetching user info: ${userInfoResponse.status} ${userInfoResponse.statusText}`);
+                        }
+                    }
+
+                    const userInfo = await userInfoResponse.json();
+                    return userInfo;
+                } catch (error) {
+                    console.error(`Error in fetchUserInfo: ${error.message}`);
+                    throw error;
+                }
+            }
+
             const queryParams = new URLSearchParams(window.location.search);
             const desiredPlaceId = queryParams.get("id");
 
@@ -244,7 +275,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const titleElement = document.querySelector("h3");
             const paragraphElement = document.querySelector(".dynamic-paragraph");
 
-            let imageUrl = ""; 
+            let imageUrl = "";
 
             if (Array.isArray(desiredService.photos) && desiredService.photos.length > 0) {
                 const firstImageArray = desiredService.photos[0];
@@ -261,9 +292,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
             console.log('Adding click listener to background element with URL:', imageUrl);
-            backgroundElement.style.cursor = 'pointer'; 
+            backgroundElement.style.cursor = 'pointer';
             backgroundElement.addEventListener('click', (event) => {
-                event.preventDefault(); 
+                event.preventDefault();
                 console.log('Background element clicked, attempting to open image.');
                 openBackgroundImage(imageUrl);
             });
@@ -277,7 +308,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         },
                         type: 'image',
                         gallery: {
-                            enabled: false 
+                            enabled: false
                         },
                         mainClass: 'mfp-img-mobile',
                         image: {
@@ -297,11 +328,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 throw Error(`Error fetching comments: ${commentsResponse.status} ${commentsResponse.statusText}`);
             }
             const commentsData = await commentsResponse.json();
+            console.log('Fetched data:', commentsData);
             const placeComments = commentsData.all;
             calculateTotalRating(placeComments);
 
             if (placeComments.length > 0) {
-
                 commentCardsContainer.innerHTML = "";
 
                 placeComments.forEach((comment) => {
@@ -310,19 +341,42 @@ document.addEventListener("DOMContentLoaded", function () {
                     commentCard.setAttribute("data-rating", comment.rating);
                     commentCard.classList.add(`rating-${comment.rating}`);
 
-                    commentCard.innerHTML = `
-                    <div class="comment-content">
-                        <div class="rating">
-                            ${generateStars(comment.rating)}
-                        </div>
-                        <h3 class="comment-title">${desiredService.title}</h3>
-                        <p>${comment.comment}</p>
-                        <p class="comment-date">${comment.created_at}</p>
-                    </div>
-                `;
-                    commentCardsContainer.appendChild(commentCard);
+                    // Fetch user info using promises and then construct the comment card
+                    fetchUserInfo(comment.user_id)
+                        .then((userInfo) => {
+                            // Check if userInfo is null (user not logged in)
+                            const fullName = userInfo ? `${userInfo.first_name} ${userInfo.last_name}` : "Anonymous";
+                            const profilePhoto = userInfo ? `<img src="${userInfo.profile_photo}" alt="Profile Photo">` : "";
+                            const location = userInfo ? `${userInfo.current_city}, ${userInfo.current_province}, ${userInfo.from_country}` : "";
+
+                            commentCard.innerHTML = `
+                            <div class="comment-content">
+                                <div class="rating">
+                                    ${generateStars(comment.rating)}
+                                </div>
+                                <h3 class="comment-title">${desiredService.title}</h3>
+                                <p>${comment.comment}</p>
+                                <div class="user-info">
+                                    <div class="profile-photo">
+                                        ${profilePhoto}
+                                    </div>
+                                    <div class="user-details">
+                                        <p class="user-fullname">${fullName}</p>
+                                        <p class="user-location">${location}</p>
+                                    </div>
+                                </div>
+                                
+                                <p class="comment-date">${comment.created_at}</p>
+                            </div>
+                        `;
+                            commentCardsContainer.appendChild(commentCard);
+                        })
+                        .catch((error) => {
+                            console.error(`Error fetching user info: ${error.message}`);
+                        });
                 });
             }
+
 
             updateCommentCards();
         } catch (error) {
@@ -435,7 +489,7 @@ document.addEventListener("DOMContentLoaded", function () {
         navigator.clipboard.writeText(textToCopy)
             .then(() => {
                 copyContactButton.innerHTML = '<i class="fas fa-check"></i> Copied!';
-                copyContactButton.disabled = true;  
+                copyContactButton.disabled = true;
             })
             .catch(err => {
                 console.error("Copy failed:", err);
@@ -448,7 +502,7 @@ document.addEventListener("DOMContentLoaded", function () {
         navigator.clipboard.writeText(textToCopy)
             .then(() => {
                 copyAddressButton.innerHTML = '<i class="fas fa-check"></i> Copied!';
-                copyAddressButton.disabled = true; 
+                copyAddressButton.disabled = true;
             })
             .catch(err => {
                 console.error("Copy failed:", err);
@@ -466,11 +520,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 const desiredPlaceId = queryParams.get("id");
                 console.log(`Fetching data for place ID: ${desiredPlaceId}`);
                 const fetchedPlaceData = await fetchPlaceData(desiredPlaceId);
-        
-                console.log(`Fetched data:`, fetchedPlaceData); 
 
-                if (fetchedPlaceData?.social_links?.fb && 
-                    fetchedPlaceData.social_links.fb !== 'undefined' && 
+                console.log(`Fetched data:`, fetchedPlaceData);
+
+                if (fetchedPlaceData?.social_links?.fb &&
+                    fetchedPlaceData.social_links.fb !== 'undefined' &&
                     fetchedPlaceData.social_links.fb !== 'none' &&
                     fetchedPlaceData.social_links.fb !== '' &&
                     fetchedPlaceData.social_links.fb !== null) {
@@ -478,59 +532,59 @@ document.addEventListener("DOMContentLoaded", function () {
                     window.open(fetchedPlaceData.social_links.fb, "_blank");
                 } else {
                     console.warn("Facebook link not available, is 'undefined', 'none', or is a falsy value.");
-                    window.alert("Facebook link not available."); 
+                    window.alert("Facebook link not available.");
                 }
             } catch (error) {
                 console.error("Error occurred during fetching place data:", error);
-                window.alert("Error fetching Facebook link."); 
+                window.alert("Error fetching Facebook link.");
             }
         });
     }
-    
-    
-// Website button
-const websiteButton = document.getElementById("websiteIcon");
 
-if (!websiteButton) {
-    console.error("Website button not found on the page.");
-} else {
-    websiteButton.addEventListener("click", async function () {
-        console.log("Website button clicked.");
-        try {
-            const desiredPlaceId = queryParams.get("id");
-            console.log(`Fetching data for place ID: ${desiredPlaceId}`);
-            const fetchedPlaceData = await fetchPlaceData(desiredPlaceId);
 
-            console.log(`Fetched data:`, fetchedPlaceData); 
+    // Website button
+    const websiteButton = document.getElementById("websiteIcon");
 
-            if (fetchedPlaceData?.social_links?.website &&
-                fetchedPlaceData.social_links.website !== 'undefined' &&
-                fetchedPlaceData.social_links.website !== 'none') {
-                let websiteUrl = fetchedPlaceData.social_links.website;
-                if (!websiteUrl.startsWith('http://') && !websiteUrl.startsWith('https://')) {
-                    websiteUrl = `https://${websiteUrl}`;
+    if (!websiteButton) {
+        console.error("Website button not found on the page.");
+    } else {
+        websiteButton.addEventListener("click", async function () {
+            console.log("Website button clicked.");
+            try {
+                const desiredPlaceId = queryParams.get("id");
+                console.log(`Fetching data for place ID: ${desiredPlaceId}`);
+                const fetchedPlaceData = await fetchPlaceData(desiredPlaceId);
+
+                console.log(`Fetched data:`, fetchedPlaceData);
+
+                if (fetchedPlaceData?.social_links?.website &&
+                    fetchedPlaceData.social_links.website !== 'undefined' &&
+                    fetchedPlaceData.social_links.website !== 'none') {
+                    let websiteUrl = fetchedPlaceData.social_links.website;
+                    if (!websiteUrl.startsWith('http://') && !websiteUrl.startsWith('https://')) {
+                        websiteUrl = `https://${websiteUrl}`;
+                    }
+                    console.log(`Opening website link: ${websiteUrl}`);
+                    window.open(websiteUrl, "_blank");
+                } else {
+                    console.warn("Website link not available, or it is 'undefined' or 'none'.");
+                    alert("Website link not available.");
                 }
-                console.log(`Opening website link: ${websiteUrl}`);
-                window.open(websiteUrl, "_blank");
-            } else {
-                console.warn("Website link not available, or it is 'undefined' or 'none'.");
-                alert("Website link not available.");
+            } catch (error) {
+                console.error("Error occurred during fetching website data:", error);
+                alert("Error fetching website link.");
             }
-        } catch (error) {
-            console.error("Error occurred during fetching website data:", error);
-            alert("Error fetching website link.");
-        }
-    });
-}
+        });
+    }
 
-    
-    
+
+
 
 
     const dynamicData = [];
 
     function fetchServicesData() {
-        const accessToken = getAccessTokenFromLocalStorage(); 
+        const accessToken = getAccessTokenFromLocalStorage();
 
         const url = `${API_PROTOCOL}://${API_HOSTNAME}/places`;
         fetch(url, {
@@ -607,7 +661,7 @@ if (!websiteButton) {
                 return copy;
             })
             .catch(error => {
-                throw error; 
+                throw error;
             });
     }
 

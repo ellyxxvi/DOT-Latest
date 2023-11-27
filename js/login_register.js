@@ -89,29 +89,6 @@ function loadStates() {
     .catch(error => console.error('Error loading countries:', error))
 }
 
-// function loadCities() {
-//     citySelect.disabled = false
-//     citySelect.style.pointerEvents = 'auto'
-
-//     const selectedCountryCode = countrySelect.value
-//     const selectedStateCode = stateSelect.value
-//     // console.log(selectedCountryCode, selectedStateCode);
-
-//     citySelect.innerHTML = '<option value="">Select City</option>' // Clear existing city options
-
-//     fetch(`${config.cUrl}/${selectedCountryCode}/states/${selectedStateCode}/cities`, {headers: {"X-CSCAPI-KEY": config.ckey}})
-//     .then(response => response.json())
-//     .then(data => {
-//         // console.log(data);
-
-//         data.forEach(city => {
-//             const option = document.createElement('option')
-//             option.value = city.iso2
-//             option.textContent = city.name 
-//             citySelect.appendChild(option)
-//         })
-//     })
-// }
 
 // Wait for the DOM to load
 document.addEventListener('DOMContentLoaded', () => {
@@ -145,6 +122,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+
+const current_city = document.getElementById('current_city');
+current_city.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        
+        registerButton.click();
+    }
+});
+
     // Registration button functionality
     const registerButton = document.getElementById('registerButton');
     registerButton.addEventListener('click', () => {
@@ -159,7 +146,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const selectedPreferences = collectSelectedPreferences();
             saveUserPreferences(selectedPreferences);
         } else {
-            alert('User registration must be successful before saving preferences.');
+            const alertMessage = 'User registration must be successful before saving preferences.';
+            alert(alertMessage);
+            window.location.reload();
         }
     });
     
@@ -209,7 +198,6 @@ function registerUser(user) {
     })
     .then(response => {
         if (!response.ok) {
-            // Parse the response as JSON to access the error details
             return response.json().then(responseData => {
                 console.error(`Error creating user: ${response.status} ${response.statusText}`);
 
@@ -229,7 +217,6 @@ function registerUser(user) {
         registrationSuccessful = true;
     })
     .catch(error => {
-        // Handle any other errors that might have occurred
         console.error('Error creating user:', error);
     });
 }

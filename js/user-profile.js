@@ -435,7 +435,17 @@ function populateUserData(user, preferenced_categories) {
     }
     const profileImg = document.querySelector(".profile-img img");
     if (profileImg) {
-        profileImg.src = user.profile_photo;
+        if (user.profile_photo) {
+            profileImg.src = user.profile_photo;
+        } else {
+            if (user.gender === "female") {
+                profileImg.src = "image/female.png"; 
+            } else if (user.gender === "male") {
+                profileImg.src = "image/male.png";
+            } else {
+                console.error("Unknown gender:", user.gender);
+            }
+        }
     } else {
         console.error("profile-img img element not found.");
     }
