@@ -228,37 +228,7 @@ document.addEventListener("DOMContentLoaded", function () {
     async function processData() {
         console.log('processData called');
         try {
-            // Fetch user info with optional authorization header
-            async function fetchUserInfo(userId) {
-                try {
-                    const token = localStorage.getItem('access_token'); 
-                    const headers = {};
-
-                    if (token) {
-                        headers['Authorization'] = `Bearer ${token}`;
-                    }
-
-                    const userInfoResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users/${userId}`, {
-                        headers: headers
-                    });
-
-                    if (!userInfoResponse.ok) {
-                        if (userInfoResponse.status === 401 && !token) {
-                            // User is not logged in, continue without user info
-                            return null;
-                        } else {
-                            throw new Error(`Error fetching user info: ${userInfoResponse.status} ${userInfoResponse.statusText}`);
-                        }
-                    }
-
-                    const userInfo = await userInfoResponse.json();
-                    return userInfo;
-                } catch (error) {
-                    console.error(`Error in fetchUserInfo: ${error.message}`);
-                    throw error;
-                }
-            }
-
+           
             const queryParams = new URLSearchParams(window.location.search);
             const desiredPlaceId = queryParams.get("id");
 
@@ -323,6 +293,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             initializeImageGallery(desiredService.photos[0]);
 
+
             const commentsResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/feedbacks/place/${desiredPlaceId}`);
             if (!commentsResponse.ok) {
                 throw Error(`Error fetching comments: ${commentsResponse.status} ${commentsResponse.statusText}`);
@@ -331,53 +302,43 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log('Fetched data:', commentsData);
             const placeComments = commentsData.all;
             calculateTotalRating(placeComments);
-
+    
             if (placeComments.length > 0) {
                 commentCardsContainer.innerHTML = "";
-
+    
                 placeComments.forEach((comment) => {
                     const commentCard = document.createElement("div");
                     commentCard.classList.add("comment-card");
                     commentCard.setAttribute("data-rating", comment.rating);
                     commentCard.classList.add(`rating-${comment.rating}`);
-
-                    // Fetch user info using promises and then construct the comment card
-                    fetchUserInfo(comment.user_id)
-                        .then((userInfo) => {
-                            // Check if userInfo is null (user not logged in)
-                            const fullName = userInfo ? `${userInfo.first_name} ${userInfo.last_name}` : "Anonymous";
-                            const profilePhoto = userInfo ? `<img src="${userInfo.profile_photo}" alt="Profile Photo">` : "";
-                            const location = userInfo ? `${userInfo.current_city}, ${userInfo.current_province}, ${userInfo.from_country}` : "";
-
-                            commentCard.innerHTML = `
-                            <div class="comment-content">
-                                <div class="rating">
-                                    ${generateStars(comment.rating)}
-                                </div>
-                                <h3 class="comment-title">${desiredService.title}</h3>
-                                <p>${comment.comment}</p>
-                                <div class="user-info">
-                                    <div class="profile-photo">
-                                        ${profilePhoto}
-                                    </div>
-                                    <div class="user-details">
-                                        <p class="user-fullname">${fullName}</p>
-                                        <p class="user-location">${location}</p>
-                                    </div>
-                                </div>
-                                
-                                <p class="comment-date">${comment.created_at}</p>
+    
+                    const fullName = `${comment.first_name} ${comment.last_name}` || "Anonymous";
+                    const profilePhoto = comment.profile_photo ? `<img src="${comment.profile_photo}" alt="Profile Photo">` : "";
+                    const location = `${comment.current_city}, ${comment.current_province}, ${comment.from_country}` || "";
+    
+                    commentCard.innerHTML = `
+                        <div class="comment-content">
+                            <div class="rating">
+                                ${generateStars(comment.rating)}
                             </div>
-                        `;
-                            commentCardsContainer.appendChild(commentCard);
-                        })
-                        .catch((error) => {
-                            console.error(`Error fetching user info: ${error.message}`);
-                        });
+                            <h3 class="comment-title">${desiredService.title}</h3>
+                            <p>${comment.comment}</p>
+                            <div class="user-info">
+                                <div class="profile-photo">
+                                    ${profilePhoto}
+                                </div>
+                                <div class="user-details">
+                                    <p class="user-fullname">${fullName}</p>
+                                    <p class="user-location">${location}</p>
+                                </div>
+                            </div>
+                            <p class="comment-date">${comment.created_at}</p>
+                        </div>
+                    `;
+                    commentCardsContainer.appendChild(commentCard);
                 });
             }
-
-
+    
             updateCommentCards();
         } catch (error) {
             console.error("Error in processData:", error);
