@@ -24,12 +24,67 @@
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
     <link rel="icon" href="image/LOGO (2).png" type="image/png">
 
+    <style>
+        /* Modal styles */
+        #confirmationModal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        #confirmationModal .modal-content {
+            background-color: white;
+            width: 300px;
+            margin: 100px auto;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        p {
+            margin: 0;
+            padding: 10px 0;
+        }
+
+        button {
+            margin: 10px;
+            padding: 5px 15px;
+            cursor: pointer;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 3px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #cancelDeleteButton {
+            background-color: #ccc;
+        }
+    </style>
+
 </head>
 
 <body id="page-top">
 
     <!-- Page Wrapper -->
     <div id="wrapper">
+        <!-- Add this HTML for the confirmation modal -->
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content">
+                <p>Are you sure you want to delete this account?</p>
+                <button id="confirmDeleteButton">Yes</button>
+                <button id="cancelDeleteButton">No</button>
+            </div>
+        </div>
 
         <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
@@ -37,7 +92,8 @@
             <!-- Sidebar - Brand -->
             <div class="nav-logo d-flex align-items-center justify-content-center">
                 <a href="index.html">
-                    <img src="image/LOGO (5).png" alt="Go Explore Logo" class="logo-image mx-3 d-none d-md-block" style="width: 150px; height: auto; object-fit: cover; justify-content: center; align-items: center;">
+                    <img src="image/LOGO (5).png" alt="Go Explore Logo" class="logo-image mx-3 d-none d-md-block"
+                        style="width: 150px; height: auto; object-fit: cover; justify-content: center; align-items: center;">
                 </a>
             </div>
 
@@ -132,8 +188,8 @@
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-search fa-fw"></i>
                             </a> -->
-                            <!-- Dropdown - Messages -->
-                            <!-- <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+                        <!-- Dropdown - Messages -->
+                        <!-- <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
                                 aria-labelledby="searchDropdown">
                                 <form class="form-inline mr-auto w-100 navbar-search">
                                     <div class="input-group">
@@ -158,7 +214,8 @@
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal" id="logoutButton">
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"
+                                    id="logoutButton">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
                                 </a>
@@ -197,7 +254,7 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            
+
                                             <th>Email</th>
                                             <th>Password</th>
                                             <th>Date Created</th>
@@ -228,7 +285,7 @@
                             </div>
                             <div class="modal-body">
                                 <form id="add-user-form">
-                                    
+
                                     <div class="form-group">
                                         <label for="email">Email</label>
                                         <input type="email" class="form-control" name="email" id="email"
@@ -292,6 +349,8 @@
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
+
+
 
     <!-- Logout Modal-->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"

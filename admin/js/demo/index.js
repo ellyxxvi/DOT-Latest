@@ -341,14 +341,11 @@ const recentActivityFavorites = [];
 const recentActivityVisited = [];
 
 document.addEventListener('DOMContentLoaded', function () {
-      // Add this code inside your DOMContentLoaded event listener
   const logoutButton = document.getElementById('logoutButton');
 
   logoutButton.addEventListener('click', () => {
-    // Clear the access token from local storage
     localStorage.removeItem('access_token');
 
-    // Redirect to the login page
     window.location.href = 'login.html';
   });
 
@@ -369,52 +366,59 @@ document.addEventListener('DOMContentLoaded', function () {
         recentActivityFavorites.forEach(item => {
             const row = document.createElement('div');
             row.className = 'row m-b-25';
-
+        
             const col1 = document.createElement('div');
             col1.className = 'col-auto p-r-0';
-
+        
             const uImg = document.createElement('div');
             uImg.className = 'u-img';
             const coverImg = document.createElement('img');
-            coverImg.src = item.userImage;
+            
+            if (item.userImage) {
+                coverImg.src = item.userImage;
+            } else {
+                coverImg.src = '../image/male.png'; // Set the path to your default image
+            }
+            
             coverImg.alt = 'user image';
             coverImg.className = 'img-radius cover-img';
-            const profileImg = document.createElement('img');
-            profileImg.src = 'https://img.icons8.com/office/16/000000/active-state.png';
-            profileImg.alt = 'user image';
-            profileImg.className = 'img-radius profile-img';
-
+            // const profileImg = document.createElement('img');
+            // profileImg.src = 'https://img.icons8.com/office/16/000000/active-state.png';
+            // profileImg.alt = 'user image';
+            // profileImg.className = 'img-radius profile-img';
+        
             uImg.appendChild(coverImg);
-            uImg.appendChild(profileImg);
+            // uImg.appendChild(profileImg);
             col1.appendChild(uImg);
-
+        
             const col2 = document.createElement('div');
             col2.className = 'col';
-
+        
             const userName = document.createElement('h6');
             userName.className = 'm-b-5';
             userName.textContent = item.userName;
-
+        
             const activityText = document.createElement('p');
             activityText.className = 'text-muted m-b-0';
             activityText.textContent = item.activityText;
-
+        
             const timeAgo = document.createElement('p');
             timeAgo.className = 'text-muted m-b-0';
             const timerIcon = document.createElement('i');
             timerIcon.className = 'mdi mdi-timer feather icon-clock m-r-10';
             timeAgo.appendChild(timerIcon);
             timeAgo.textContent = formatTimeAgo(item.timestamp);
-
+        
             col2.appendChild(userName);
             col2.appendChild(activityText);
             col2.appendChild(timeAgo);
-
+        
             row.appendChild(col1);
             row.appendChild(col2);
-
+        
             cardFavorites.appendChild(row);
         });
+        
         recentActivityVisited.forEach(item => {
             const row = document.createElement('div');
             row.className = 'row m-b-25';
@@ -425,16 +429,22 @@ document.addEventListener('DOMContentLoaded', function () {
             const uImg = document.createElement('div');
             uImg.className = 'u-img';
             const coverImg = document.createElement('img');
-            coverImg.src = item.userImage;
+           
+            if (item.userImage) {
+                coverImg.src = item.userImage;
+            } else {
+                coverImg.src = '../image/male.png'; // Set the path to your default image
+            }
+            
             coverImg.alt = 'user image';
             coverImg.className = 'img-radius cover-img';
-            const profileImg = document.createElement('img');
-            profileImg.src = 'https://img.icons8.com/office/16/000000/active-state.png';
-            profileImg.alt = 'user image';
-            profileImg.className = 'img-radius profile-img';
+            // const profileImg = document.createElement('img');
+            // profileImg.src = 'https://img.icons8.com/office/16/000000/active-state.png';
+            // profileImg.alt = 'user image';
+            // profileImg.className = 'img-radius profile-img';
 
             uImg.appendChild(coverImg);
-            uImg.appendChild(profileImg);
+            // uImg.appendChild(profileImg);
             col1.appendChild(uImg);
 
             const col2 = document.createElement('div');

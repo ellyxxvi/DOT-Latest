@@ -129,8 +129,57 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         const deleteButtons = document.querySelectorAll('.delete-button');
-        deleteButtons.forEach((button) => {
-          button.addEventListener('click', deleteRow);
+        const confirmationModal = document.getElementById('confirmationModal');
+        const confirmDeleteButton = document.getElementById('confirmDeleteButton');
+        const cancelDeleteButton = document.getElementById('cancelDeleteButton');
+        let deleteTargetRow = null;
+        
+        deleteButtons.forEach(button => {
+          button.addEventListener('click', (event) => {
+            const button = event.target;
+            const row = button.closest('tr');
+            const userId = row.querySelector('td:first-child').textContent;
+            
+            // Store the target row for deletion
+            deleteTargetRow = row;
+        
+            // Show the confirmation modal
+            confirmationModal.style.display = 'block';
+          });
+        });
+        
+        confirmDeleteButton.addEventListener('click', async () => {
+          if (deleteTargetRow) {
+            const userId = deleteTargetRow.querySelector('td:first-child').textContent;
+        
+            try {
+              const accessToken = getAccessTokenFromLocalStorage();
+              const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places/${userId}?role=ADMIN`, {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${accessToken}`
+                }
+              });
+        
+              if (response.ok) {
+                deleteTargetRow.remove();
+              } else {
+                const responseData = await response.text();
+                console.error(`Error deleting user: ${response.status} ${response.statusText}`, responseData);
+              }
+            } catch (error) {
+              console.error('Error deleting user:', error.message);
+            } finally {
+              // Hide the confirmation modal
+              confirmationModal.style.display = 'none';
+            }
+          }
+        });
+        
+        cancelDeleteButton.addEventListener('click', () => {
+          // Hide the confirmation modal
+          confirmationModal.style.display = 'none';
         });
 
         const editButtons = document.querySelectorAll('.edit-button');
