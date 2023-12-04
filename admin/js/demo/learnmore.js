@@ -22,13 +22,14 @@ document.addEventListener('DOMContentLoaded', function () {
   const logoutButton = document.getElementById('logoutButton');
 
   logoutButton.addEventListener('click', () => {
-    localStorage.removeItem('access_token');
+    localStorage.removeItem('access_token_super_admin');
+    localStorage.removeItem('access_token_admin');
 
     window.location.href = 'login.html';
   });
 
   // Check if the user has an access token
-  const accessToken = localStorage.getItem('access_token');
+  const accessToken = localStorage.getItem('access_token_super_admin') || localStorage.getItem('access_token_admin');
   if (!accessToken) {
     window.location.href = 'login.html';
     return; 
@@ -47,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function getAccessTokenFromLocalStorage() {
-    const accessToken = localStorage.getItem('access_token');
+    const accessToken = localStorage.getItem('access_token_super_admin') || localStorage.getItem('access_token_admin');
     return accessToken;
   }
 
@@ -68,6 +69,8 @@ document.addEventListener('DOMContentLoaded', function () {
     })
       .then(handleErrors)
       .then(data => {
+        // Sort the data by created_at in descending order (newest first)
+      data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
         tableBody.innerHTML = '';
         data.forEach(user => {
           const row = document.createElement('tr');
@@ -428,4 +431,29 @@ async function sendEditRequest(updatedUser) {
   // Populate the table on page load
   populateTable();
 
-});  
+});
+function getUserRoleFromAccessToken() {
+  const accessToken = localStorage.getItem('access_token_super_admin') || localStorage.getItem('access_token_admin');
+  if (!accessToken) return null;
+
+  var base64Url = accessToken.split('.')[1];
+  var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+
+  return JSON.parse(jsonPayload).role;
+}
+// Get the user's role and update the UI
+var userRole = getUserRoleFromAccessToken();
+
+if (userRole) {
+  var userDropdown = document.getElementById('userDropdown');
+  var roleElement = userDropdown.querySelector('.role');
+
+  if (userRole === 'SUPER_ADMIN') {
+    roleElement.innerText = 'SUPER ADMIN';
+  } else if (userRole === 'ADMIN') {
+    roleElement.innerText = 'ADMIN/STAFF';
+  }
+}  

@@ -9,6 +9,7 @@ const API_HOSTNAME = 'goexplorebatangas.com/api'
 // const API_PROTOCOL = 'http'
 // const API_HOSTNAME = '13.229.101.17/api'
 
+
 document.addEventListener('DOMContentLoaded', function () {
   const tableBody = document.getElementById('tableBody');
   const addButton = document.getElementById('addButton');
@@ -21,28 +22,39 @@ document.addEventListener('DOMContentLoaded', function () {
   // Add this code inside your DOMContentLoaded event listener
   const logoutButton = document.getElementById('logoutButton');
 
-  logoutButton.addEventListener('click', () => {
-    // Clear the access token from local storage
-    localStorage.removeItem('access_token');
+  const passwordInput = document.getElementById('password');
+  const passwordToggle = document.getElementById('password-toggle');
 
-    // Redirect to the login page
+  passwordToggle.addEventListener('click', function () {
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      passwordToggle.classList.remove('fa-eye-slash'); // Remove the slash
+      passwordToggle.classList.add('fa-eye'); // Add the eye icon
+    } else {
+      passwordInput.type = 'password';
+      passwordToggle.classList.remove('fa-eye'); // Remove the eye icon
+      passwordToggle.classList.add('fa-eye-slash'); // Add the slash
+    }
+  });
+
+  logoutButton.addEventListener('click', () => {
+    localStorage.removeItem('access_token_super_admin');
+    localStorage.removeItem('access_token_admin');
+
     window.location.href = 'login.html';
   });
 
-  // Check if the user has an access token
-  const accessToken = localStorage.getItem('access_token');
+  const accessToken = localStorage.getItem('access_token_super_admin') || localStorage.getItem('access_token_admin');
   if (!accessToken) {
-    // Redirect to the login page
     window.location.href = 'login.html';
-    return; // Stop executing further code
+    return;
   }
   // Check if the user role is SUPER_ADMIN
   const userRole = getUserRoleFromAccessToken();
   if (userRole !== 'SUPER_ADMIN') {
-    // Redirect or hide table if the user is not SUPER_ADMIN
     alert('Access denied: You do not have permission to view this page.');
-    window.location.href = 'index.html'; // Redirect to another page
-    return; // Stop executing further code
+    window.location.href = 'index.html';
+    return;
   }
 
   // Function to fetch and populate the table
@@ -55,15 +67,18 @@ document.addEventListener('DOMContentLoaded', function () {
           'Authorization': `Bearer ${accessToken}`
         }
       });
-
+  
       if (!response.ok) {
         throw new Error(`Network response was not ok. Status: ${response.status}`);
       }
-
-      const data = await response.json();
-
+  
+      let data = await response.json();
+  
+      // Sort data by created_at in descending order (newest first)
+      data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  
       tableBody.innerHTML = '';
-
+  
       if (data.length === 0) {
         const noResultsRow = document.createElement('tr');
         noResultsRow.innerHTML = `
@@ -99,25 +114,25 @@ document.addEventListener('DOMContentLoaded', function () {
       const confirmDeleteButton = document.getElementById('confirmDeleteButton');
       const cancelDeleteButton = document.getElementById('cancelDeleteButton');
       let deleteTargetRow = null;
-      
+
       deleteButtons.forEach(button => {
         button.addEventListener('click', (event) => {
           const button = event.target;
           const row = button.closest('tr');
           const userId = row.querySelector('td:first-child').textContent;
-          
+
           // Store the target row for deletion
           deleteTargetRow = row;
-      
+
           // Show the confirmation modal
           confirmationModal.style.display = 'block';
         });
       });
-      
+
       confirmDeleteButton.addEventListener('click', async () => {
         if (deleteTargetRow) {
           const userId = deleteTargetRow.querySelector('td:first-child').textContent;
-      
+
           try {
             const accessToken = getAccessTokenFromLocalStorage();
             const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users/${userId}?role=ADMIN`, {
@@ -127,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 'Authorization': `Bearer ${accessToken}`
               }
             });
-      
+
             if (response.ok) {
               deleteTargetRow.remove();
             } else {
@@ -142,12 +157,12 @@ document.addEventListener('DOMContentLoaded', function () {
           }
         }
       });
-      
+
       cancelDeleteButton.addEventListener('click', () => {
         // Hide the confirmation modal
         confirmationModal.style.display = 'none';
       });
-      
+
 
       const editButtons = document.querySelectorAll('.edit-button');
       editButtons.forEach(button => {
@@ -164,14 +179,33 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
   function getAccessTokenFromLocalStorage() {
-    const accessToken = localStorage.getItem('access_token');
+    const accessToken = localStorage.getItem('access_token_super_admin') || localStorage.getItem('access_token_admin');
     return accessToken;
+  }
+
+  // Function to toggle password visibility
+  function togglePasswordVisibility(inputId, toggleId) {
+    const passwordInput = document.getElementById(inputId);
+    const passwordToggle = document.getElementById(toggleId);
+
+    passwordToggle.addEventListener('click', function () {
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        passwordToggle.classList.remove('fa-eye-slash');
+        passwordToggle.classList.add('fa-eye');
+      } else {
+        passwordInput.type = 'password';
+        passwordToggle.classList.remove('fa-eye');
+        passwordToggle.classList.add('fa-eye-slash');
+      }
+    });
   }
 
   async function editRow(event) {
     const button = event.target;
     const row = button.closest('tr');
     const userIdCell = row.querySelector('td:first-child');
+    const editForm = document.getElementById('edit-user-form');
 
     if (!userIdCell) {
       console.error('User ID cell not found.');
@@ -179,6 +213,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const userId = userIdCell.textContent.trim();
+    const passwordInput = editForm.querySelector('#password');
+    const newPasswordInput = editForm.querySelector('#new-password');
+    const confirmPasswordInput = editForm.querySelector('#confirm-password');
 
     try {
       const accessToken = getAccessTokenFromLocalStorage();
@@ -191,13 +228,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (!response.ok) {
         const responseData = await response.text();
-
       } else {
         const user = await response.json();
 
         editForm.elements.id.value = user.id;
         editForm.elements.email.value = user.email;
-        editForm.elements.password.value = user.password;
+        passwordInput.value = user.password;
 
         const updatedUser = {
           first_name: user.first_name || 'TEST',
@@ -209,14 +245,28 @@ document.addEventListener('DOMContentLoaded', function () {
           current_city: user.current_city || 'TEST',
         };
 
+        const editModal = new bootstrap.Modal(document.getElementById('editModal'));
         editModal.show();
+
+        // togglePasswordVisibility('password', 'password-toggle-edit');
+
+        const changePasswordLink = document.getElementById('change-password-link');
+        const changePasswordFields = document.getElementById('change-password-fields');
+        changePasswordLink.addEventListener('click', function (e) {
+          e.preventDefault();
+          changePasswordFields.style.display = 'block';
+
+          // document.getElementById('password-toggle-edit').style.display = 'none';
+
+          togglePasswordVisibility('new-password', 'new-password-toggle');
+          togglePasswordVisibility('confirm-password', 'confirm-password-toggle');
+        });
       }
     } catch (error) {
       console.error('Error fetching user data:', error.message);
     }
   }
 
-  // Handle edit form submission
   editForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
@@ -226,16 +276,22 @@ document.addEventListener('DOMContentLoaded', function () {
       updatedUser[key] = value;
     });
 
-    // Remove unrecognized keys from the user object
+    if (updatedUser['new-password'] !== updatedUser['confirm-password']) {
+      alert('New password and confirm password do not match.');
+      return;
+    }
+
+    updatedUser.password = updatedUser['new-password'];
+    delete updatedUser['new-password'];
+    delete updatedUser['confirm-password'];
+
     const { id, created_at, updated_at, email, ...validData } = updatedUser;
 
     try {
       const accessToken = getAccessTokenFromLocalStorage();
-
       const userId = id;
       const putUrl = `${API_PROTOCOL}://${API_HOSTNAME}/users/${userId}?role=ADMIN`;
 
-      // Make the PUT request with valid data
       const response = await fetch(putUrl, {
         method: 'PUT',
         headers: {
@@ -248,8 +304,8 @@ document.addEventListener('DOMContentLoaded', function () {
       if (response.ok) {
         editForm.reset();
         editModal.hide();
-
-        // Optionally, refresh the user table
+      // Reload the window
+      window.location.reload();
         populateTable();
       } else {
         const responseData = await response.text();
@@ -367,15 +423,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
+// Function to get the user's role from the access token
 function getUserRoleFromAccessToken() {
-  const accessToken = localStorage.getItem('access_token');
+  const accessToken = localStorage.getItem('access_token_super_admin') || localStorage.getItem('access_token_admin');
   if (!accessToken) return null;
 
   var base64Url = accessToken.split('.')[1];
   var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+  var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
     return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
   }).join(''));
 
   return JSON.parse(jsonPayload).role;
+}
+
+// Get the user's role and update the UI
+var userRole = getUserRoleFromAccessToken();
+
+if (userRole) {
+  var userDropdown = document.getElementById('userDropdown');
+  var roleElement = userDropdown.querySelector('.role');
+
+  if (userRole === 'SUPER_ADMIN') {
+    roleElement.innerText = 'SUPER ADMIN';
+  } else if (userRole === 'ADMIN') {
+    roleElement.innerText = 'ADMIN/STAFF';
+  }
 }

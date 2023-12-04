@@ -7,11 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeButton = staticBackdropModal._element.querySelector('.btn-close');
 
     if (loginButton) {
-       
-    
         const passwordInput = document.getElementById('password');
         const passwordToggle = document.getElementById('password-toggle');
-    
+
         passwordToggle.addEventListener('click', function () {
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
@@ -23,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 passwordToggle.classList.add('fa-eye-slash');
             }
         });
-    
+
         loginButton.addEventListener('click', () => {
             const email = document.getElementById('email').value;
             let password = document.getElementById('password').value; 
@@ -41,17 +39,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (data.access_token && data.refresh_token) {
                         const userRole = getRole(data.access_token);
     
-                        if (userRole === 'SUPER_ADMIN' || userRole === 'ADMIN') {
-                            // Login for SUPER_ADMIN or ADMIN
-                            localStorage.setItem('access_token', data.access_token);
-                            localStorage.setItem('refresh_token', data.refresh_token);
-    
-                            console.log('Login successful');
-                            window.location.href = 'index.html';
-                        } else {
-                            console.log('Login failed: User role not authorized');
-                            staticBackdropModal.show();
+                        if (userRole === 'SUPER_ADMIN') {
+                            // Login for SUPER_ADMIN
+                            localStorage.setItem('access_token_super_admin', data.access_token);
+                        } else if (userRole === 'ADMIN') {
+                            // Login for ADMIN
+                            localStorage.setItem('access_token_admin', data.access_token);
                         }
+                        localStorage.setItem('refresh_token', data.refresh_token);
+
+                        console.log('Login successful');
+                        window.location.href = 'index.html';
                     } else {
                         console.log('Invalid login');
                         staticBackdropModal.show();
@@ -68,7 +66,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
         });
     }
-    
 });
 
 function getRole(token) {

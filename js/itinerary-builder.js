@@ -404,6 +404,7 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log('Note edited:', data);
             fetchNotesFromServer();
             $('#editModal').modal('hide');
+            window.location.reload();
           },
           error: function (jqXHR, textStatus, errorThrown) {
             console.error('Error editing note:', errorThrown);

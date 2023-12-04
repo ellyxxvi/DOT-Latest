@@ -1,36 +1,56 @@
 const API_PROTOCOL = 'https';
 const API_HOSTNAME = 'goexplorebatangas.com/api';
-// const API_PROTOCOL = 'http'
-// const API_HOSTNAME = '13.229.101.17/api'
 
+// Function to get the user's role from the access token
+function getRole(token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload).role;
+}
+
+// Function to update the user interface based on the role
+function updateUI(role) {
+    var userDropdown = document.getElementById('userDropdown');
+    var roleElement = userDropdown.querySelector('.role');
+
+    if (role === 'SUPER_ADMIN') {
+        roleElement.innerText = 'SUPER ADMIN';
+    } else if (role === 'ADMIN') {
+        roleElement.innerText = 'ADMIN/STAFF';
+    }
+}
+
+// Get the access token from local storage
+var accessToken = localStorage.getItem('access_token_super_admin') || localStorage.getItem('access_token_admin');
+
+if (accessToken) {
+    var userRole = getRole(accessToken);
+    updateUI(userRole);
+}
 
 // USER STATISTICS
 document.addEventListener('DOMContentLoaded', async function () {
-      // Add this code inside your DOMContentLoaded event listener
-  const logoutButton = document.getElementById('logoutButton');
+    const logoutButton = document.getElementById('logoutButton');
 
-  logoutButton.addEventListener('click', () => {
-    // Clear the access token from local storage
-    localStorage.removeItem('access_token');
+    logoutButton.addEventListener('click', () => {
+        localStorage.removeItem('access_token_super_admin');
+        localStorage.removeItem('access_token_admin');
+        window.location.href = 'login.html';
+    });
 
-    // Redirect to the login page
-    window.location.href = 'login.html';
-  });
+    const accessToken = localStorage.getItem('access_token_super_admin') || localStorage.getItem('access_token_admin');
+    
+    if (!accessToken) {
+        window.location.href = 'login.html';
+        return; 
+    }
 
-  // Check if the user has an access token
-  const accessToken = localStorage.getItem('access_token');
-  if (!accessToken) {
-    // Redirect to the login page
-    window.location.href = 'login.html';
-    return; // Stop executing further code
-  }
     try {
-        const accessToken = getAccessTokenFromLocalStorage();
-
-        if (!accessToken) {
-            throw new Error('Access token not found in local storage');
-        }
-
+        // Use the accessToken variable obtained earlier
         const userResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users?role=REGULAR`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
@@ -45,7 +65,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         const rawData = await userResponse.text();
         // Parse the response as JSON
-        const userData = JSON.parse(rawData); // Move the declaration here
+        const userData = JSON.parse(rawData);
 
         const totalUsers = userData.length;
         const menUsers = userData.filter(user => user.gender === 'male').length;
@@ -61,33 +81,32 @@ document.addEventListener('DOMContentLoaded', async function () {
 });
 
 
+
 function getAccessTokenFromLocalStorage() {
-    const accessToken = localStorage.getItem('access_token');
+    const accessToken = localStorage.getItem('access_token_super_admin') || localStorage.getItem('access_token_admin');
     return accessToken;
 }
 
 
 
-//MOST VISITED
 document.addEventListener('DOMContentLoaded', async function () {
+    const logoutButton = document.getElementById('logoutButton');
 
-  const logoutButton = document.getElementById('logoutButton');
+    logoutButton.addEventListener('click', () => {
+        localStorage.removeItem('access_token_super_admin');
+        localStorage.removeItem('access_token_admin');
+        window.location.href = 'login.html';
+    });
 
-  logoutButton.addEventListener('click', () => {
-    localStorage.removeItem('access_token');
+    // Check if the user has an access token
+    const accessToken = localStorage.getItem('access_token_super_admin') || localStorage.getItem('access_token_admin');
+    
+    if (!accessToken) {
+        window.location.href = 'login.html';
+        return; 
+    }
 
-    window.location.href = 'login.html';
-  });
-
-  // Check if the user has an access token
-  const accessToken = localStorage.getItem('access_token');
-  if (!accessToken) {
-    window.location.href = 'login.html';
-    return; 
-  }
     try {
-        const accessToken = getAccessTokenFromLocalStorage();
-
         // Fetch visit data from the server with authentication headers
         const visitResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/places/most-visited?limit=5`, {
             headers: {
@@ -103,7 +122,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         const visitCounts = {};
 
-        //Count visits per place
+        // Count visits per place
         visitData.forEach(visit => {
             const placeId = visit.place_id;
             if (visitCounts.hasOwnProperty(placeId)) {
@@ -126,7 +145,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         const placeData = await placeResponse.json();
 
-        //Merge visit counts with place data
+        // Merge visit counts with place data
         placeData.forEach(place => {
             const placeId = place.id;
             place.visits = visitCounts[placeId] || 0;
@@ -164,6 +183,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         console.error('Error fetching data:', error);
     }
 });
+
 
 
 // MOST RATED RESORT
@@ -217,7 +237,7 @@ function calculateAverageRating(ratings) {
 async function populateAndSortResorts() {
     const resortList = document.getElementById("resort-list");
 
-    const accessToken = localStorage.getItem('access_token');
+    const accessToken = localStorage.getItem('access_token_super_admin') || localStorage.getItem('access_token_admin');
 
     if (!accessToken) {
         console.error('Access token is missing or invalid.');
@@ -293,26 +313,11 @@ function populateLocation() {
     })
         .then(response => response.json())
         .then(userData => {
-            const activeUsersByCity = {};
-            // userData.forEach(user => {
-            //     const cityName = user.current_city;
 
-            //     if (activeUsersByCity.hasOwnProperty(cityName)) {
-            //         activeUsersByCity[cityName]++;
-            //     } else {
-            //         activeUsersByCity[cityName] = 1;
-            //     }
-            // });
-
-            // Sort cities by active user count in descending order
-            //const sortedCities = Object.keys(activeUsersByCity).sort((a, b) => activeUsersByCity[b] - activeUsersByCity[a]);
 
             locationList.innerHTML = "";
 
-            // Display only the top 1 to top 5 cities
             for (let i = 0; i < Math.min(userData.length, 5); i++) {
-                // const cityName = sortedCities[i];
-                // const activeUsersCount = activeUsersByCity[cityName];
                 const listItem = document.createElement("li");
                 listItem.innerHTML = `
                         <span class="chart-progress-indicator chart-progress-indicator--increase">
@@ -332,7 +337,6 @@ function populateLocation() {
         });
 }
 
-// Call the function to populate the location list
 populateLocation();
 
 
@@ -344,13 +348,14 @@ document.addEventListener('DOMContentLoaded', function () {
   const logoutButton = document.getElementById('logoutButton');
 
   logoutButton.addEventListener('click', () => {
-    localStorage.removeItem('access_token');
+    localStorage.removeItem('access_token_super_admin');
+    localStorage.removeItem('access_token_admin');
 
     window.location.href = 'login.html';
   });
 
   // Check if the user has an access token
-  const accessToken = localStorage.getItem('access_token');
+  const accessToken = localStorage.getItem('access_token_super_admin') || localStorage.getItem('access_token_admin');
   if (!accessToken) {
     // Redirect to the login page
     window.location.href = 'login.html';
@@ -479,7 +484,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function fetchData(url) {
         try {
-            const accessToken = getAccessTokenFromLocalStorage();
+            const accessToken = localStorage.getItem('access_token_super_admin') || localStorage.getItem('access_token_admin');
             const response = await fetch(url, {
                 headers: {
                     'Authorization': `Bearer ${accessToken}`

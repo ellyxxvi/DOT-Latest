@@ -212,15 +212,15 @@ document.addEventListener('DOMContentLoaded', function () {
   const logoutButton = document.getElementById('logoutButton');
 
   logoutButton.addEventListener('click', () => {
-    // Clear the access token from local storage
-    localStorage.removeItem('access_token');
+    localStorage.removeItem('access_token_super_admin');
+    localStorage.removeItem('access_token_admin');
 
     // Redirect to the login page
     window.location.href = 'login.html';
   });
 
   // Check if the user has an access token
-  const accessToken = localStorage.getItem('access_token');
+  const accessToken = localStorage.getItem('access_token_super_admin') || localStorage.getItem('access_token_admin');
   if (!accessToken) {
     // Redirect to the login page
     window.location.href = 'login.html';
@@ -290,7 +290,8 @@ document.addEventListener('DOMContentLoaded', function () {
         ];
         return keywords.some(keyword => keyword.includes(searchKeyword));
       });
-
+      // Sort filteredData by created_at in descending order (newest first)
+      filteredData.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
       tableBody.innerHTML = '';
 
       if (filteredData.length === 0) {
@@ -409,7 +410,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   function getAccessTokenFromLocalStorage() {
-    const accessToken = localStorage.getItem('access_token');
+    const accessToken = localStorage.getItem('access_token_super_admin') || localStorage.getItem('access_token_admin');
     return accessToken;
   }
 
@@ -655,7 +656,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 function getUserRoleFromAccessToken() {
-  const accessToken = localStorage.getItem('access_token');
+  const accessToken = localStorage.getItem('access_token_super_admin') || localStorage.getItem('access_token_admin');
   if (!accessToken) return null;
 
   var base64Url = accessToken.split('.')[1];
@@ -665,4 +666,17 @@ function getUserRoleFromAccessToken() {
   }).join(''));
 
   return JSON.parse(jsonPayload).role;
+}
+// Get the user's role and update the UI
+var userRole = getUserRoleFromAccessToken();
+
+if (userRole) {
+  var userDropdown = document.getElementById('userDropdown');
+  var roleElement = userDropdown.querySelector('.role');
+
+  if (userRole === 'SUPER_ADMIN') {
+    roleElement.innerText = 'SUPER ADMIN';
+  } else if (userRole === 'ADMIN') {
+    roleElement.innerText = 'ADMIN/STAFF';
+  }
 }

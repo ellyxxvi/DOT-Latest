@@ -20,24 +20,25 @@ document.addEventListener('DOMContentLoaded', function () {
   const editForm = document.getElementById('edit-user-form');
   let updatedUser = {};
 
-  
+
   const logoutButton = document.getElementById('logoutButton');
 
   logoutButton.addEventListener('click', () => {
-    localStorage.removeItem('access_token');
+    localStorage.removeItem('access_token_super_admin');
+    localStorage.removeItem('access_token_admin');
 
     window.location.href = 'login.html';
   });
 
   // Check if the user has an access token
-  const accessToken = localStorage.getItem('access_token');
+  const accessToken = localStorage.getItem('access_token_super_admin') || localStorage.getItem('access_token_admin');
   if (!accessToken) {
     window.location.href = 'login.html';
-    return; 
+    return;
   }
 
   function getAccessTokenFromLocalStorage() {
-    const accessToken = localStorage.getItem('access_token');
+    const accessToken = localStorage.getItem('access_token_super_admin') || localStorage.getItem('access_token_admin');
     return accessToken;
   }
 
@@ -59,6 +60,8 @@ document.addEventListener('DOMContentLoaded', function () {
         return response.json();
       })
       .then(data => {
+        // Sort the data by created_at in descending order (newest first)
+        data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
         tableBody.innerHTML = '';
         data.forEach(user => {
           const row = document.createElement('tr');
@@ -88,25 +91,25 @@ document.addEventListener('DOMContentLoaded', function () {
         const confirmDeleteButton = document.getElementById('confirmDeleteButton');
         const cancelDeleteButton = document.getElementById('cancelDeleteButton');
         let deleteTargetRow = null;
-        
+
         deleteButtons.forEach(button => {
           button.addEventListener('click', (event) => {
             const button = event.target;
             const row = button.closest('tr');
             const userId = row.querySelector('td:first-child').textContent;
-            
+
             // Store the target row for deletion
             deleteTargetRow = row;
-        
+
             // Show the confirmation modal
             confirmationModal.style.display = 'block';
           });
         });
-        
+
         confirmDeleteButton.addEventListener('click', async () => {
           if (deleteTargetRow) {
             const userId = deleteTargetRow.querySelector('td:first-child').textContent;
-        
+
             try {
               const accessToken = getAccessTokenFromLocalStorage();
               const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/where-to-go/${userId}?role=ADMIN`, {
@@ -116,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function () {
                   'Authorization': `Bearer ${accessToken}`
                 }
               });
-        
+
               if (response.ok) {
                 deleteTargetRow.remove();
               } else {
@@ -131,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
           }
         });
-        
+
         cancelDeleteButton.addEventListener('click', () => {
           // Hide the confirmation modal
           confirmationModal.style.display = 'none';
@@ -150,141 +153,141 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // handles image uploads
   const addForm = document.getElementById('add-user-form');
-// Modified editRow function
-function editRow(event) {
-  const button = event.target;
-  const row = button.closest('tr');
-  const userId = row.querySelector('td:first-child').textContent;
-  
-  fetch(`${API_PROTOCOL}://${API_HOSTNAME}/where-to-go/${userId}`, {
-    headers: {
-      'Authorization': `Bearer ${getAccessTokenFromLocalStorage()}`,
-    },
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`Error fetching user data. Status: ${response.status}`);
-      }
-      return response.json();
+  // Modified editRow function
+  function editRow(event) {
+    const button = event.target;
+    const row = button.closest('tr');
+    const userId = row.querySelector('td:first-child').textContent;
+
+    fetch(`${API_PROTOCOL}://${API_HOSTNAME}/where-to-go/${userId}`, {
+      headers: {
+        'Authorization': `Bearer ${getAccessTokenFromLocalStorage()}`,
+      },
     })
-    .then(user => {
-      editForm.elements.id.value = user.id;
-      editForm.elements.title.value = user.title;
-      editForm.elements.description.value = user.description;
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Error fetching user data. Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(user => {
+        editForm.elements.id.value = user.id;
+        editForm.elements.title.value = user.title;
+        editForm.elements.description.value = user.description;
 
-      // Display the existing image URL
-      const existingImageURL = user.images;
-      const imagePreview = document.getElementById('edit-image-preview');
-      imagePreview.src = existingImageURL;
+        // Display the existing image URL
+        const existingImageURL = user.images;
+        const imagePreview = document.getElementById('edit-image-preview');
+        imagePreview.src = existingImageURL;
 
-      // Store the existing image URL in a hidden input field
-      editForm.elements.existingImage.value = existingImageURL;
+        // Store the existing image URL in a hidden input field
+        editForm.elements.existingImage.value = existingImageURL;
 
-      // Set the id property in the updatedUser object
-      updatedUser.id = user.id;
-      editModal.show();
-    })
-    .catch(error => {
-      console.error('Error fetching user data:', error);
-    });
-}
-
-// Handle edit form submission
-editForm.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  const formData = new FormData(editForm);
-  const updatedUser = {};
-
-  const userId = formData.get('id'); 
-
-  if (!userId) {
-    console.error('User ID not found.');
-    return;
+        // Set the id property in the updatedUser object
+        updatedUser.id = user.id;
+        editModal.show();
+      })
+      .catch(error => {
+        console.error('Error fetching user data:', error);
+      });
   }
 
-  // Set the user ID in the updatedUser object
-  updatedUser.id = userId;
+  // Handle edit form submission
+  editForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const formData = new FormData(editForm);
+    const updatedUser = {};
 
-  formData.forEach((value, key) => {
-    updatedUser[key] = value;
+    const userId = formData.get('id');
+
+    if (!userId) {
+      console.error('User ID not found.');
+      return;
+    }
+
+    // Set the user ID in the updatedUser object
+    updatedUser.id = userId;
+
+    formData.forEach((value, key) => {
+      updatedUser[key] = value;
+    });
+
+    const imageInput = editForm.querySelector('input[type="file"]');
+    const imageFile = imageInput.files[0];
+
+    if (!imageFile) {
+      updatedUser.images = [editForm.elements.existingImage.value];
+      await sendEditRequest(updatedUser);
+    } else {
+      const formData2 = new FormData();
+      formData2.append('photo', imageFile);
+
+      try {
+        const imageResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/images`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${getAccessTokenFromLocalStorage()}`,
+          },
+          body: formData2,
+        });
+
+        if (!imageResponse.ok) {
+          throw new Error('Image upload failed.');
+        }
+
+        const imageData = await imageResponse.json();
+        console.log('Uploaded image URL:', imageData.http_img_url);
+
+        updatedUser.images = [imageData.http_img_url];
+        await sendEditRequest(updatedUser);
+      } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+      }
+    }
   });
 
-  const imageInput = editForm.querySelector('input[type="file"]');
-  const imageFile = imageInput.files[0];
-
-  if (!imageFile) {
-    updatedUser.images = [editForm.elements.existingImage.value]; 
-    await sendEditRequest(updatedUser);
-  } else {
-    const formData2 = new FormData();
-    formData2.append('photo', imageFile);
-
+  // Function to send the PUT request to update user data
+  async function sendEditRequest(updatedUser) {
     try {
-      const imageResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/images`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${getAccessTokenFromLocalStorage()}`,
-        },
-        body: formData2,
-      });
-
-      if (!imageResponse.ok) {
-        throw new Error('Image upload failed.');
+      const accessToken = getAccessTokenFromLocalStorage();
+      if (!accessToken) {
+        console.error('Access token not found.');
+        return;
       }
 
-      const imageData = await imageResponse.json();
-      console.log('Uploaded image URL:', imageData.http_img_url);
+      // Create a clean object with only the expected properties
+      const { id, title, description, images } = updatedUser;
 
-      updatedUser.images = [imageData.http_img_url]; 
-      await sendEditRequest(updatedUser);
+      const requestBody = {
+        title,
+        description,
+        images,
+      };
+
+      const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/where-to-go/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!response.ok) {
+        const responseText = await response.text();
+        console.error(`Error updating item data. Status: ${response.status}`);
+        console.error('Error response text:', responseText);
+        return;
+      }
+
+      const data = await response.json();
+      editForm.reset();
+      editModal.hide();
+      populateTable();
     } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
+      console.error('Error updating item data:', error);
     }
   }
-});
-
-// Function to send the PUT request to update user data
-async function sendEditRequest(updatedUser) {
-  try {
-    const accessToken = getAccessTokenFromLocalStorage();
-    if (!accessToken) {
-      console.error('Access token not found.');
-      return;
-    }
-
-    // Create a clean object with only the expected properties
-    const { id, title, description, images } = updatedUser;
-
-    const requestBody = {
-      title,
-      description,
-      images,
-    };
-
-    const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/where-to-go/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify(requestBody),
-    });
-
-    if (!response.ok) {
-      const responseText = await response.text();
-      console.error(`Error updating item data. Status: ${response.status}`);
-      console.error('Error response text:', responseText);
-      return;
-    }
-
-    const data = await response.json();
-    editForm.reset();
-    editModal.hide();
-    populateTable();
-  } catch (error) {
-    console.error('Error updating item data:', error);
-  }
-}
 
   // Function to convert 'city' to 'title' using renameObjProperty
   function convertCityToTitle(obj) {
@@ -449,3 +452,28 @@ async function sendEditRequest(updatedUser) {
   populateTable();
 
 });
+function getUserRoleFromAccessToken() {
+  const accessToken = localStorage.getItem('access_token_super_admin') || localStorage.getItem('access_token_admin');
+  if (!accessToken) return null;
+
+  var base64Url = accessToken.split('.')[1];
+  var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+
+  return JSON.parse(jsonPayload).role;
+}
+// Get the user's role and update the UI
+var userRole = getUserRoleFromAccessToken();
+
+if (userRole) {
+  var userDropdown = document.getElementById('userDropdown');
+  var roleElement = userDropdown.querySelector('.role');
+
+  if (userRole === 'SUPER_ADMIN') {
+    roleElement.innerText = 'SUPER ADMIN';
+  } else if (userRole === 'ADMIN') {
+    roleElement.innerText = 'ADMIN/STAFF';
+  }
+}

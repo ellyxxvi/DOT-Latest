@@ -23,6 +23,8 @@
     <!-- Custom styles for this page -->
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
     <link rel="icon" href="image/LOGO (2).png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
 
     <style>
         /* Modal styles */
@@ -68,6 +70,41 @@
 
         #cancelDeleteButton {
             background-color: #ccc;
+        }
+
+        .password-toggle {
+            position: absolute;
+            top: 75%;
+            right: 30px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+        .password-toggle-edit1 {
+            position: absolute;
+            top: 49%;
+            right: 30px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+        .password-toggle-edit2 {
+            position: absolute;
+            top: 57%;
+            right: 30px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+        .password-toggle-edit3 {
+            position: absolute;
+            top: 75%;
+            right: 30px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        .password-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
         }
     </style>
 
@@ -208,7 +245,7 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">ADMIN</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small role">ADMIN</span>
                                 <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
                             </a>
                             <!-- Dropdown - User Information -->
@@ -278,7 +315,7 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Add New Admin</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">Add New Admin/Staff</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -295,6 +332,7 @@
                                         <label for="password">Password</label>
                                         <input type="password" class="form-control" name="password" id="password"
                                             placeholder="Enter password">
+                                        <i class="password-toggle fas fa-eye-slash" id="password-toggle"></i>
                                     </div>
                                 </form>
                             </div>
@@ -309,35 +347,60 @@
             </div>
 
             <div class="modal fade" id="editModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-                aria-labelledby="editModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="editModalLabel">Edit User</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="edit-user-form">
-                                <input type="hidden" name="id" id="edit-id">
-                                <div class="mb-3">
-                                    <label for="edit-email" class="form-label">Email</label>
-                                    <input type="text" class="form-control" id="email" name="email">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="edit-password" class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="password" name="password">
-                                </div>
-                                <input type="hidden" name="created_at">
-                                <input type="hidden" name="updated_at">
-                                <button type="submit" class="btn btn-primary">Save Changes</button>
-                            </form>
-                        </div>
-                        <!-- End of Main Content -->
+            aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Edit Admin/Staff Account</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
-                </div> <!-- Footer -->
-            </div>
+                    <div class="modal-body">
+                        <form id="edit-user-form">
+                            <input type="hidden" name="id" id="edit-id">
+                            <div class="mb-3">
+                                <label for="edit-email" class="form-label">Email</label>
+                                <input type="text" class="form-control" id="email" name="email">
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit-password" class="form-label">Password</label>
+                                <input type="password" placeholder="Password" name="password" id="password"
+                                    class="form-control" disabled>
+                                <!-- <i class="password-toggle-edit1 fas fa-eye-slash" id="password-toggle-edit"></i> -->
+                            </div>
+                            
+                            <div class="mb-3">
+                                <a href="#" id="change-password-link">Change Password</a>
+                            </div>
+                            <div id="change-password-fields" style="display: none;">
+                                <div class="mb-3">
+                                    <label for="new-password" class="form-label">Enter new password</label>
+                                    <input type="password" placeholder="New Password" name="new-password" id="new-password"
+                                        class="form-control">
+                                    <i class="password-toggle-edit2 fas fa-eye-slash" id="new-password-toggle"></i>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="confirm-password" class="form-label">Confirm new password</label>
+                                    <input type="password" placeholder="Confirm Password" name="confirm-password" id="confirm-password"
+                                        class="form-control">
+                                    <i class="password-toggle-edit3 fas fa-eye-slash" id="confirm-password-toggle"></i>
+                                </div>
+                            </div>
+                            <input type="hidden" name="created_at">
+                            <input type="hidden" name="updated_at">
+                            <div class="modal-footer">
+                                <button type="btn-cancel" id="btn-cancel" class="btn btn-secondary"
+                                    data-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- End of Main Content -->
+                </div>
+            </div> <!-- Footer -->
+        </div>
+        
 
         </div>
         <!-- End of Content Wrapper -->
