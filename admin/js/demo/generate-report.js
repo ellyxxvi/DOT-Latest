@@ -304,6 +304,6 @@ document.getElementById('generate-report').addEventListener('click', function ()
 
 // Function to get the access token from local storage
 function getAccessTokenFromLocalStorage() {
-    const accessToken = localStorage.getItem('access_token');
+    const accessToken = localStorage.getItem('access_token_super_admin') || localStorage.getItem('access_token_admin');
     return accessToken;
 }
