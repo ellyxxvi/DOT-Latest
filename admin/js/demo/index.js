@@ -1,6 +1,7 @@
 const API_PROTOCOL = 'https';
 const API_HOSTNAME = 'goexplorebatangas.com/api';
 
+
 // Function to get the user's role from the access token
 function getRole(token) {
     var base64Url = token.split('.')[1];
@@ -34,6 +35,39 @@ if (accessToken) {
 
 // USER STATISTICS
 document.addEventListener('DOMContentLoaded', async function () {
+    const userRole = getUserRoleFromAccessToken();
+
+if (userRole === 'ADMIN') {
+    // Hide the navigation items
+    const adminManagementNavItem = document.getElementById('adminManagement');
+    const userManagementNavItem = document.getElementById('userManagement');
+    
+    if (adminManagementNavItem) {
+        adminManagementNavItem.style.display = 'none';
+    }
+
+    if (userManagementNavItem) {
+        userManagementNavItem.style.display = 'none';
+    }
+} else if (userRole !== 'SUPER_ADMIN') {
+    window.location.href = 'index.html'; 
+    return;
+}
+// Function to get the user's role from the access token
+function getUserRoleFromAccessToken() {
+    const accessToken = localStorage.getItem('access_token_super_admin') || localStorage.getItem('access_token_admin');
+    if (!accessToken) return null;
+  
+    var base64Url = accessToken.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+  
+    return JSON.parse(jsonPayload).role;
+  }
+  
+  
     const logoutButton = document.getElementById('logoutButton');
 
     logoutButton.addEventListener('click', () => {

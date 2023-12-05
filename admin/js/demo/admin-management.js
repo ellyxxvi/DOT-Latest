@@ -46,15 +46,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const accessToken = localStorage.getItem('access_token_super_admin') || localStorage.getItem('access_token_admin');
   if (!accessToken) {
-    window.location.href = 'login.html';
-    return;
+      window.location.href = 'login.html';
+      return; 
   }
-  // Check if the user role is SUPER_ADMIN
+  
   const userRole = getUserRoleFromAccessToken();
-  if (userRole !== 'SUPER_ADMIN') {
-    alert('Access denied: You do not have permission to view this page.');
-    window.location.href = 'index.html';
-    return;
+  
+  if (userRole === 'ADMIN') {
+      // Hide the navigation items
+      const adminManagementNavItem = document.getElementById('adminManagement');
+      const userManagementNavItem = document.getElementById('userManagement');
+      
+      if (adminManagementNavItem) {
+          adminManagementNavItem.style.display = 'none';
+      }
+  
+      if (userManagementNavItem) {
+          userManagementNavItem.style.display = 'none';
+      }
+  } else if (userRole !== 'SUPER_ADMIN') {
+      window.location.href = 'index.html'; 
+      return;
   }
 
   // Function to fetch and populate the table
@@ -269,29 +281,37 @@ document.addEventListener('DOMContentLoaded', function () {
 
   editForm.addEventListener('submit', async (event) => {
     event.preventDefault();
-
+  
     const formData = new FormData(editForm);
     const updatedUser = {};
     formData.forEach((value, key) => {
       updatedUser[key] = value;
     });
-
-    if (updatedUser['new-password'] !== updatedUser['confirm-password']) {
-      alert('New password and confirm password do not match.');
-      return;
+  
+    // Remove password-related fields from the request payload if not changing the password
+    if (updatedUser['new-password'] === '' && updatedUser['confirm-password'] === '') {
+      delete updatedUser['new-password'];
+      delete updatedUser['confirm-password'];
+    } else {
+      // Check if new password and confirm password match
+      if (updatedUser['new-password'] !== updatedUser['confirm-password']) {
+        alert('New password and confirm password do not match.');
+        return;
+      }
+  
+      // Include the password field in the request payload
+      updatedUser.password = updatedUser['new-password'];
+      delete updatedUser['new-password'];
+      delete updatedUser['confirm-password'];
     }
-
-    updatedUser.password = updatedUser['new-password'];
-    delete updatedUser['new-password'];
-    delete updatedUser['confirm-password'];
-
-    const { id, created_at, updated_at, email, ...validData } = updatedUser;
-
+  
+    const { id, created_at, updated_at, ...validData } = updatedUser;
+  
     try {
       const accessToken = getAccessTokenFromLocalStorage();
       const userId = id;
       const putUrl = `${API_PROTOCOL}://${API_HOSTNAME}/users/${userId}?role=ADMIN`;
-
+  
       const response = await fetch(putUrl, {
         method: 'PUT',
         headers: {
@@ -300,12 +320,12 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         body: JSON.stringify(validData),
       });
-
+  
       if (response.ok) {
         editForm.reset();
         editModal.hide();
-      // Reload the window
-      window.location.reload();
+        // Reload the window
+        window.location.reload();
         populateTable();
       } else {
         const responseData = await response.text();
@@ -315,6 +335,7 @@ document.addEventListener('DOMContentLoaded', function () {
       console.error('Error updating user data:', error.message);
     }
   });
+  
 
 
 

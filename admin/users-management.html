@@ -24,8 +24,8 @@
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
     <link rel="icon" href="image/LOGO (2).png" type="image/png">
     <style>
-       /* Modal styles */
-       #confirmationModal {
+        /* Modal styles */
+        #confirmationModal {
             display: none;
             position: fixed;
             z-index: 1;
@@ -110,7 +110,7 @@
                 Interface
             </div>
             <!-- Nav Item - Admin Management Menu -->
-            <li class="nav-item">
+            <li class="nav-item" id="adminManagement">
                 <a class="nav-link" href="admin-management.html">
                     <i class="fas fa-fw fa-lock"></i>
                     <span>Admin Management</span>
@@ -118,12 +118,13 @@
             </li>
 
             <!-- Nav Item - User Management Menu -->
-            <li class="nav-item active">
+            <li class="nav-item active" id="userManagement">
                 <a class="nav-link" href="users-management.html">
                     <i class="fas fa-fw fa-user"></i>
                     <span>User Management</span>
                 </a>
             </li>
+
 
             <!-- Nav Item - Categories Collapse Menu -->
             <li class="nav-item">

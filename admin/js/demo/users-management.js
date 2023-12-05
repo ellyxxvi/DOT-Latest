@@ -208,31 +208,39 @@ document.addEventListener('DOMContentLoaded', function () {
   const searchButton = document.getElementById('searchButton');
   const searchInput = document.getElementById('searchInput');
   const addAccountButton = document.getElementById('btn-add-account');
-  // Add this code inside your DOMContentLoaded event listener
   const logoutButton = document.getElementById('logoutButton');
 
   logoutButton.addEventListener('click', () => {
     localStorage.removeItem('access_token_super_admin');
     localStorage.removeItem('access_token_admin');
-
-    // Redirect to the login page
     window.location.href = 'login.html';
   });
 
-  // Check if the user has an access token
   const accessToken = localStorage.getItem('access_token_super_admin') || localStorage.getItem('access_token_admin');
   if (!accessToken) {
-    // Redirect to the login page
-    window.location.href = 'login.html';
-    return; // Stop executing further code
+      window.location.href = 'login.html';
+      return; 
   }
-    const userRole = getUserRoleFromAccessToken();
-    if (userRole !== 'SUPER_ADMIN') {
-      // Redirect or hide table if the user is not SUPER_ADMIN
-      alert('Access denied: You do not have permission to view this page.');
-      window.location.href = 'index.html'; // Redirect to another page
-      return; // Stop executing further code
-    }
+  
+  const userRole = getUserRoleFromAccessToken();
+  
+  if (userRole === 'ADMIN') {
+      // Hide the navigation items
+      const adminManagementNavItem = document.getElementById('adminManagement');
+      const userManagementNavItem = document.getElementById('userManagement');
+      
+      if (adminManagementNavItem) {
+          adminManagementNavItem.style.display = 'none';
+      }
+  
+      if (userManagementNavItem) {
+          userManagementNavItem.style.display = 'none';
+      }
+  } else if (userRole !== 'SUPER_ADMIN') {
+      window.location.href = 'index.html'; 
+      return;
+  }
+  
 
   // Initial population of the table with all data
   populateTable();
