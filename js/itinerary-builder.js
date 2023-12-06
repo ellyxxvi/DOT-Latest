@@ -337,10 +337,37 @@ document.addEventListener("DOMContentLoaded", function () {
         });
         colDiv.querySelector(".delete-button").addEventListener('click', (e) => {
           e.stopPropagation();
-          handleDeleteNote(data.id);
+          // Show the confirmation modal when the delete button is clicked
+          showConfirmationModal(data.id);
         });
       });
     }
+
+    // Function to show the confirmation modal
+function showConfirmationModal(noteId) {
+  const confirmationModal = document.getElementById('confirmationModal');
+  const confirmDeleteButton = document.getElementById('confirmDeleteButton');
+  const cancelDeleteButton = document.getElementById('cancelDeleteButton');
+
+  // Set the noteId as a data attribute of the modal
+  confirmationModal.setAttribute('data-note-id', noteId);
+
+  // Show the modal
+  confirmationModal.style.display = 'block';
+
+  // Add event listener for the confirm delete button
+  confirmDeleteButton.addEventListener('click', () => {
+    const noteIdToDelete = confirmationModal.getAttribute('data-note-id');
+    handleDeleteNote(noteIdToDelete);
+    // Close the modal after confirming delete
+    confirmationModal.style.display = 'none';
+  });
+
+  // Add event listener for the cancel button to close the modal
+  cancelDeleteButton.addEventListener('click', () => {
+    confirmationModal.style.display = 'none';
+  });
+}
 
 
     jQuery(document).ready(function () {

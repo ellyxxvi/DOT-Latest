@@ -1,5 +1,46 @@
 
 document.addEventListener("DOMContentLoaded", function () {
+    async function fetchRating(desiredPlaceId) {
+        const apiUrl = `${API_PROTOCOL}://${API_HOSTNAME}/feedbacks/place/${desiredPlaceId}`;
+        
+        try {
+            const response = await fetch(apiUrl);
+    
+            if (response.ok) {
+                const data = await response.json();
+                
+                if (data && typeof data.avg !== 'undefined') {
+                    const rating = data.avg;
+                    const starsHTML = generateStarsHTML(rating);
+                    document.getElementById("total-rating").innerHTML = starsHTML;
+                } else {
+                    console.error("API response is missing expected data");
+                }
+            } else {
+                console.error(`Failed to fetch data from the API. Status: ${response.status}`);
+                const errorMessage = await response.text();
+                console.error("Error message:", errorMessage);
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    }
+    
+    // Function to generate HTML for stars based on the rating
+    function generateStarsHTML(rating) {
+        let starsHTML = '';
+    
+        for (let i = 0; i < rating; i++) {
+            if (i % 1 === 0) {
+                starsHTML += '<i class="fas fa-star"></i>';
+            } else {
+                starsHTML += '<i class="fas fa-star-half-alt"></i>';
+            }
+        }
+    
+        return starsHTML;
+    }
+    
     const filterButtons = document.querySelectorAll(".filter-nav button");
     const commentCardsContainer = document.querySelector(".comment-cards-container");
     const addToFavoritesBtn = document.getElementById("add-to-favorites");
@@ -152,7 +193,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const roundedAverage = Math.round(averageRating * 10) / 10;
 
         const starsHTML = generateStars(roundedAverage);
-        document.getElementById("total-rating").innerHTML = starsHTML;
+        // document.getElementById("total-rating").innerHTML = starsHTML;
 
         document.getElementById("number-of-visits").textContent = `${placeComments.length} visits`;
     }
@@ -228,18 +269,20 @@ document.addEventListener("DOMContentLoaded", function () {
     async function processData() {
         console.log('processData called');
         try {
-           
             const queryParams = new URLSearchParams(window.location.search);
             const desiredPlaceId = queryParams.get("id");
-
+    
             const desiredService = dynamicData.find((service) => service.id === desiredPlaceId);
-
+    
             if (!desiredService) {
                 console.error("Service not found for ID:", desiredPlaceId);
                 return;
             }
-
+    
             console.log('Desired Service:', desiredService);
+    
+            // Call fetchRating with desiredPlaceId
+            fetchRating(desiredPlaceId);
 
             const backgroundElement = document.querySelector(".background-image");
             const titleElement = document.querySelector("h3");
@@ -302,20 +345,20 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log('Fetched data:', commentsData);
             const placeComments = commentsData.all;
             calculateTotalRating(placeComments);
-    
+
             if (placeComments.length > 0) {
                 commentCardsContainer.innerHTML = "";
-    
+
                 placeComments.forEach((comment) => {
                     const commentCard = document.createElement("div");
                     commentCard.classList.add("comment-card");
                     commentCard.setAttribute("data-rating", comment.rating);
                     commentCard.classList.add(`rating-${comment.rating}`);
-    
+
                     const fullName = `${comment.first_name} ${comment.last_name}` || "Anonymous";
                     const profilePhoto = comment.profile_photo ? `<img src="${comment.profile_photo}" alt="Profile Photo">` : "";
                     const location = `${comment.current_city}, ${comment.current_province}, ${comment.from_country}` || "";
-    
+
                     commentCard.innerHTML = `
                         <div class="comment-content">
                             <div class="rating">
@@ -338,7 +381,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     commentCardsContainer.appendChild(commentCard);
                 });
             }
-    
+
             updateCommentCards();
         } catch (error) {
             console.error("Error in processData:", error);

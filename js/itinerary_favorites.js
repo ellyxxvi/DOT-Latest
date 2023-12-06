@@ -151,8 +151,64 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
       </div>
     `;
+
+    // Add event listener for the delete button
+  const deleteButton = box.querySelector('.delete-button');
+  deleteButton.addEventListener('click', () => {
+    showConfirmationModal(place.id);
+  });
   
     return box;
+  }
+
+  function showConfirmationModal(placeId) {
+    const confirmationModal = document.getElementById('confirmationModal');
+    const confirmDeleteButton = document.getElementById('confirmDeleteButton');
+    const cancelDeleteButton = document.getElementById('cancelDeleteButton');
+  
+    // Set the placeId as a data attribute of the modal
+    confirmationModal.setAttribute('data-place-id', placeId);
+  
+    // Show the modal
+    confirmationModal.style.display = 'block';
+  
+    // Add event listener for the confirm delete button
+    confirmDeleteButton.addEventListener('click', () => {
+      const placeIdToDelete = confirmationModal.getAttribute('data-place-id');
+      deleteBoxAndData(placeIdToDelete);
+      // Close the modal after confirming delete
+      confirmationModal.style.display = 'none';
+    });
+  
+    // Add event listener for the cancel button to close the modal
+    cancelDeleteButton.addEventListener('click', () => {
+      confirmationModal.style.display = 'none';
+    });
+  }
+
+  function deleteBoxAndData(placeIdToDelete) {
+    const boxToRemove = document.getElementById(`box-${placeIdToDelete}`);
+    if (boxToRemove) {
+      boxToRemove.remove();
+    }
+  
+    // Perform delete action
+    const accessToken = localStorage.getItem('access_token');
+    fetch(`${API_PROTOCOL}://${API_HOSTNAME}/itineraries/item/${placeIdToDelete}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    })
+      .then(response => {
+        if (!response.ok) {
+          console.error('Failed to remove from favorites:', response.statusText);
+        }
+      })
+      .catch(error => {
+        console.error('Error removing from favorites:', error);
+      });
   }
   
 
@@ -186,44 +242,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   boxContainer.addEventListener('click', (event) => {
     const completedButton = event.target.closest('.completed-button');
-    const deleteButton = event.target.closest('.delete-button');
-
+  
     if (completedButton) {
       ratingModal.show();
       selectedPlaceId = completedButton.getAttribute('data-place-id');
-    } else if (deleteButton) {
-      selectedPlaceId = deleteButton.getAttribute('data-favorites-id');
-
-      // Perform delete action
-      const boxToRemove = document.getElementById(`box-${selectedPlaceId}`);
-      if (boxToRemove) {
-        boxToRemove.remove();
-      }
-      const accessToken = localStorage.getItem('access_token');
-      fetch(`${API_PROTOCOL}://${API_HOSTNAME}/itineraries/item/${selectedPlaceId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
-        },
-      })
-        .then(response => {
-          if (!response.ok) {
-            console.error('Failed to remove from favorites:', response.statusText);
-          }
-        })
-        .catch(error => {
-          console.error('Error removing from favorites:', error);
-        });
-
-      selectedPlaceId = null;
-    } else if (addToFavoritesButton) {
-      selectedPlaceId = addToFavoritesButton.getAttribute('data-place-id');
-      addToFavorites(selectedPlaceId);
-    } else {
-      selectedPlaceId = null; 
     }
   });
+  
 
   stars.forEach(star => {
     star.addEventListener('click', () => {
