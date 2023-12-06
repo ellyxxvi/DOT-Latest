@@ -305,7 +305,7 @@ document.addEventListener('DOMContentLoaded', function () {
       delete updatedUser['confirm-password'];
     }
   
-    const { id, created_at, updated_at, ...validData } = updatedUser;
+    const { id, created_at, updated_at, email, ...validData } = updatedUser;
   
     try {
       const accessToken = getAccessTokenFromLocalStorage();
