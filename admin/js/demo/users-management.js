@@ -362,10 +362,14 @@ document.addEventListener('DOMContentLoaded', function () {
       confirmDeleteButton.addEventListener('click', async () => {
         if (deleteTargetRow) {
           const userId = deleteTargetRow.querySelector('td:first-child').textContent;
+          console.log('Deleting user with ID:', userId);
       
           try {
             const accessToken = getAccessTokenFromLocalStorage();
-            const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users/${userId}?role=ADMIN`, {
+            const deleteUrl = `${API_PROTOCOL}://${API_HOSTNAME}/users/${userId}`;
+            console.log('DELETE request URL:', deleteUrl);
+      
+            const response = await fetch(deleteUrl, {
               method: 'DELETE',
               headers: {
                 'Content-Type': 'application/json',
@@ -374,6 +378,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
       
             if (response.ok) {
+              console.log('User deleted successfully:', userId);
               deleteTargetRow.remove();
             } else {
               const responseData = await response.text();
@@ -388,6 +393,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       });
       
+      
       cancelDeleteButton.addEventListener('click', () => {
         // Hide the confirmation modal
         confirmationModal.style.display = 'none';
@@ -401,6 +407,8 @@ document.addEventListener('DOMContentLoaded', function () {
       console.error('Error fetching data:', error);
     }
   }
+
+
   function getDefaultProfilePhoto(gender) {
     if (gender === "female") {
         return "../image/female.png"; 
@@ -638,7 +646,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     try {
       const accessToken = getAccessTokenFromLocalStorage();
-      const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users/${userId}?role=REGULAR`, {
+      const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/users/${userId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
