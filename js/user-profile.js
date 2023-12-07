@@ -378,35 +378,32 @@ function updateProfile() {
             'Authorization': `Bearer ${accessToken}` 
         }
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Error fetching user data: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(user => {
-            fetchPreferenceData()
-                .then(preferenceData => {
-                    if (Array.isArray(preferenceData)) {
-                        const userPreferences = preferenceData.find(preference => preference.user_id === user.id);
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Error fetching user data: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(user => {
+        fetchPreferenceData()
+            .then(preferenceData => {
+                const userPreferences = Array.isArray(preferenceData)
+                    ? preferenceData.find(preference => preference.user_id === user.id)
+                    : null;
 
-                        if (userPreferences && userPreferences.preferenced_categories && userPreferences.preferenced_categories.length > 0) {
-                            populateUserData(user, userPreferences.preferenced_categories);
-                        } else {
-                            console.error('User preferences not found in data.');
-                        }
-                    } else {
-                        console.error('Preference data is not an array.');
-                    }
-                })
-                .catch(preferenceError => {
-                    console.error('Error fetching preference data:', preferenceError);
-                });
-        })
-        .catch(error => {
-            console.error('Error fetching user data:', error);
-        });
+                populateUserData(user, userPreferences ? userPreferences.preferenced_categories : []);
+            })
+            .catch(preferenceError => {
+                console.error('Error fetching preference data:', preferenceError);
+                // Call populateUserData with an empty array if there's an error fetching preferences
+                populateUserData(user, []);
+            });
+    })
+    .catch(error => {
+        console.error('Error fetching user data:', error);
+    });
 }
+
 
 function parseJwt(token) {
     var base64Url = token.split('.')[1];
