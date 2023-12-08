@@ -476,14 +476,14 @@
 
 .profile-img{
     text-align: center;
-    overflow: hidden; /* Hide any content that overflows the container */
-    border-radius: 50%; /* Make it a circle by setting the border-radius to 50% */
-    width: 300px; /* Set the desired width for your circular image */
-    height: 300px; /* Set the desired height for your circular image */
+    overflow: hidden; 
+    border-radius: 50%;
+    width: 300px; 
+    height: 300px; 
   }
 .profile-img img{
-    width: 100%;
-    height: 100%;
+    width: 80%;
+    height: 80%;
     object-fit: cover;
 }
 .profile-img .file {
@@ -535,13 +535,14 @@
     border-bottom:2px solid #0062cc;
 }
 .profile-work{
-    padding: 14%;
+    /* padding: 14%; */
+    margin-left: 50px;
     margin-top: 0%;
 }
 .profile-work p{
-    font-size: 12px;
-    color: #818182;
-    margin-top: 10%;
+    font-size: 15px;
+    color: #4f4f4f;
+    margin-top: 5%;
 }
 .profile-work a{
     text-decoration: none;

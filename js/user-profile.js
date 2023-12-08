@@ -448,30 +448,39 @@ function populateUserData(user, preferenced_categories) {
     }
 
     const preferencesElement = document.querySelector(".profile-work");
+
     if (preferencesElement) {
-
         preferencesElement.innerHTML = "";
-
-
+    
         if (preferenced_categories && preferenced_categories.length > 0) {
             const preferenceTitle = document.createElement("p");
             preferenceTitle.textContent = "Preferences:";
             preferencesElement.appendChild(preferenceTitle);
-
-
+    
             const preferenceList = document.createElement("ul");
-
+            preferenceList.classList.add("fa-ul"); // Add Font Awesome list class
+    
             preferenced_categories.forEach((preference) => {
                 const preferenceItem = document.createElement("li");
-                preferenceItem.textContent = preference;
+    
+                // Create a Font Awesome icon (e.g., a checkmark)
+                const icon = document.createElement("i");
+                icon.classList.add("fas", "fa-check", "fa-li"); // Adjust the icon class as needed
+    
+                preferenceItem.appendChild(icon);
+                
+                // Add the preference text
+                preferenceItem.appendChild(document.createTextNode(` ${preference}`));
+    
                 preferenceList.appendChild(preferenceItem);
             });
-
+    
             preferencesElement.appendChild(preferenceList);
         }
     } else {
         console.error("profile-work element not found.");
     }
+    
 
     const table = document.querySelector("table");
     if (table) {
