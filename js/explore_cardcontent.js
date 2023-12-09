@@ -219,37 +219,45 @@ document.addEventListener("DOMContentLoaded", function () {
     function initializeImageGallery(imageUrls) {
         console.log('initializeImageGallery called ' + JSON.stringify(imageUrls));
         const galleryContainer = document.getElementById('dynamic-gallery');
-
+    
+        // Check if there is only one image
+        if (imageUrls.length === 1) {
+            // Hide the image gallery section
+            const imageGallerySection = document.querySelector('.image-gallery');
+            imageGallerySection.style.display = 'none';
+            return;
+        }
+    
         galleryContainer.innerHTML = '';
-
+    
         imageUrls.slice(1, 5).forEach((imageUrl, index) => {
             const col = document.createElement('div');
             col.className = 'col-lg-3 col-md-4 col-xs-6 thumb';
-
+    
             const link = document.createElement('a');
             link.href = imageUrl;
             link.classList.add('image-popup');
-
+    
             const figure = document.createElement('figure');
-
+    
             const image = document.createElement('img');
             image.className = 'img-fluid img-thumbnail';
             image.src = imageUrl;
             image.alt = `Image ${index + 1}`;
-
+    
             image.style.width = '250px';
             image.style.height = '200px';
             image.style.objectFit = 'cover';
-
+    
             figure.appendChild(image);
             link.appendChild(figure);
             col.appendChild(link);
-
+    
             galleryContainer.appendChild(col);
-
+    
             console.log("test");
         });
-
+    
         $(".gallery").magnificPopup({
             delegate: "a",
             type: "image",
@@ -265,6 +273,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+    
 
     async function processData() {
         console.log('processData called');

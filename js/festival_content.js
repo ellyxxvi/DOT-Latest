@@ -23,36 +23,46 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function initializeImageGallery(imageUrls) {
     const galleryContainer = document.getElementById('dynamic-gallery');
-    if (galleryContainer) {
+    const festivalTitleContainer = document.querySelector('.festival-title');
+  
+    if (galleryContainer && festivalTitleContainer) {
+      // Check if there is only one image
+      if (imageUrls.length === 1) {
+        // Hide the entire image gallery section
+        const imageGallerySection = document.querySelector('.image-gallery');
+        imageGallerySection.style.display = 'none';
+        return;
+      }
+  
       galleryContainer.innerHTML = '';
-
+  
       for (let index = 1; index <= 4 && index < imageUrls.length; index++) {
         const imageUrl = imageUrls[index];
-
+  
         const col = document.createElement('div');
         col.className = 'col-lg-3 col-md-4 col-xs-6 thumb';
-
+  
         const link = document.createElement('a');
         link.href = imageUrl;
-
+  
         const figure = document.createElement('figure');
-
+  
         const image = document.createElement('img');
         image.className = 'img-fluid img-thumbnail';
         image.src = imageUrl;
         image.alt = `Image ${index + 1}`;
-
+  
         image.style.width = '250px';
         image.style.height = '200px';
         image.style.objectFit = 'cover';
-
+  
         figure.appendChild(image);
         link.appendChild(figure);
         col.appendChild(link);
-
+  
         galleryContainer.appendChild(col);
       }
-
+  
       $(".gallery").magnificPopup({
         delegate: "a",
         type: "image",
@@ -68,9 +78,11 @@ document.addEventListener('DOMContentLoaded', function () {
         },
       });
     } else {
-      console.error("The 'dynamic-gallery' element was not found in the DOM.");
+      console.error("The 'dynamic-gallery' or 'festival-title' elements were not found in the DOM.");
     }
   }
+  
+
 
   function populateElements(data) {
     if (data.images && data.images.length > 0) {
