@@ -2,13 +2,13 @@
 document.addEventListener("DOMContentLoaded", function () {
     async function fetchRating(desiredPlaceId) {
         const apiUrl = `${API_PROTOCOL}://${API_HOSTNAME}/feedbacks/place/${desiredPlaceId}`;
-        
+
         try {
             const response = await fetch(apiUrl);
-    
+
             if (response.ok) {
                 const data = await response.json();
-                
+
                 if (data && typeof data.avg !== 'undefined') {
                     const rating = data.avg;
                     const starsHTML = generateStarsHTML(rating);
@@ -25,11 +25,11 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("Error fetching data:", error);
         }
     }
-    
+
     // Function to generate HTML for stars based on the rating
     function generateStarsHTML(rating) {
         let starsHTML = '';
-    
+
         for (let i = 0; i < rating; i++) {
             if (i % 1 === 0) {
                 starsHTML += '<i class="fas fa-star"></i>';
@@ -37,10 +37,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 starsHTML += '<i class="fas fa-star-half-alt"></i>';
             }
         }
-    
+
         return starsHTML;
     }
-    
+
     const filterButtons = document.querySelectorAll(".filter-nav button");
     const commentCardsContainer = document.querySelector(".comment-cards-container");
     const addToFavoritesBtn = document.getElementById("add-to-favorites");
@@ -271,16 +271,16 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
             const queryParams = new URLSearchParams(window.location.search);
             const desiredPlaceId = queryParams.get("id");
-    
+
             const desiredService = dynamicData.find((service) => service.id === desiredPlaceId);
-    
+
             if (!desiredService) {
                 console.error("Service not found for ID:", desiredPlaceId);
                 return;
             }
-    
+
             console.log('Desired Service:', desiredService);
-    
+
             // Call fetchRating with desiredPlaceId
             fetchRating(desiredPlaceId);
 
@@ -341,46 +341,54 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!commentsResponse.ok) {
                 throw Error(`Error fetching comments: ${commentsResponse.status} ${commentsResponse.statusText}`);
             }
+
             const commentsData = await commentsResponse.json();
             console.log('Fetched data:', commentsData);
             const placeComments = commentsData.all;
             calculateTotalRating(placeComments);
 
-            if (placeComments.length > 0) {
-                commentCardsContainer.innerHTML = "";
+            placeComments.forEach((comment) => {
+                const commentCard = document.createElement("div");
+                commentCard.classList.add("comment-card");
+                commentCard.setAttribute("data-rating", comment.rating);
+                commentCard.classList.add(`rating-${comment.rating}`);
 
-                placeComments.forEach((comment) => {
-                    const commentCard = document.createElement("div");
-                    commentCard.classList.add("comment-card");
-                    commentCard.setAttribute("data-rating", comment.rating);
-                    commentCard.classList.add(`rating-${comment.rating}`);
+                const fullName = `${comment.first_name} ${comment.last_name}` || "Anonymous";
 
-                    const fullName = `${comment.first_name} ${comment.last_name}` || "Anonymous";
-                    const profilePhoto = comment.profile_photo ? `<img src="${comment.profile_photo}" alt="Profile Photo">` : "";
-                    const location = `${comment.current_city}, ${comment.current_province}, ${comment.from_country}` || "";
+                // Update the profilePhoto assignment
+                let profilePhoto = comment.profile_photo ? `<img src="${comment.profile_photo}" alt="Profile Photo">` : "";
+                if (!profilePhoto) {
+                    // If no profile photo, use default based on gender
+                    if (comment.gender === "male") {
+                        profilePhoto = `<img src="image/male.png" alt="Male Profile Photo">`;
+                    } else if (comment.gender === "female") {
+                        profilePhoto = `<img src="image/female.png" alt="Female Profile Photo">`;
+                    }
+                }
 
-                    commentCard.innerHTML = `
-                        <div class="comment-content">
-                            <div class="rating">
-                                ${generateStars(comment.rating)}
-                            </div>
-                            <h3 class="comment-title">${desiredService.title}</h3>
-                            <p>${comment.comment}</p>
-                            <div class="user-info">
-                                <div class="profile-photo">
-                                    ${profilePhoto}
-                                </div>
-                                <div class="user-details">
-                                    <p class="user-fullname">${fullName}</p>
-                                    <p class="user-location">${location}</p>
-                                </div>
-                            </div>
-                            <p class="comment-date">${comment.created_at}</p>
+                const location = `${comment.current_city}, ${comment.current_province}, ${comment.from_country}` || "";
+
+                commentCard.innerHTML = `
+                    <div class="comment-content">
+                        <div class="rating">
+                            ${generateStars(comment.rating)}
                         </div>
-                    `;
-                    commentCardsContainer.appendChild(commentCard);
-                });
-            }
+                        <h3 class="comment-title">${desiredService.title}</h3>
+                        <p>${comment.comment}</p>
+                        <div class="user-info">
+                            <div class="profile-photo">
+                                ${profilePhoto}
+                            </div>
+                            <div class="user-details">
+                                <p class="user-fullname">${fullName}</p>
+                                <p class="user-location">${location}</p>
+                            </div>
+                        </div>
+                        <p class="comment-date">${comment.created_at}</p>
+                    </div>
+                `;
+                commentCardsContainer.appendChild(commentCard);
+            });
 
             updateCommentCards();
         } catch (error) {
