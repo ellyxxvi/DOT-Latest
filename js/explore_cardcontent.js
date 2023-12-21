@@ -382,8 +382,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <div class="rating">
                             ${generateStars(comment.rating)}
                         </div>
-                        <h3 class="comment-title">${desiredService.title}</h3>
-                        <p>${comment.comment}</p>
+                        <p class="comment-text">Comment: ${comment.comment}</p>
                         <div class="user-info">
                             <div class="profile-photo">
                                 ${profilePhoto}

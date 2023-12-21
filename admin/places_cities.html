@@ -260,7 +260,7 @@
                                         <tr>
                                             <th>ID</th>
                                             <th>Image</th>
-                                            <th>City</th>
+                                            <th>Municipality</th>
                                             <th>Description</th>
                                             <th>Date Created</th>
                                             <th>Date Updated</th>
@@ -277,8 +277,7 @@
                 </div>
                 <!-- /.container-fluid -->
 
-                <div class="modal fade" id="addEventModal" tabindex="-1" aria-labelledby="addEventModalLabel"
-                    aria-hidden="true">
+                <div class="modal fade" id="addEventModal" tabindex="-1" aria-labelledby="addEventModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -292,35 +291,69 @@
                                 <form id="add-user-form" enctype="multipart/form-data">
                                     <div class="mb-3">
                                         <label for="eventImage" class="form-label">Places Image</label>
-                                        <input type="file" class="form-control" id="images" name="images"
-                                            accept="images/*">
+                                        <input type="file" class="form-control" id="images" name="images" accept="images/*">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="eventCity" class="form-label">City</label>
-                                        <input type="text" class="form-control" id="PlacesCity" name="city" required>
+                                        <label for="eventCity" class="form-label">Municipality</label>
+                                        <select class="form-control" id="PlacesCity" name="city" required>
+                                            <option value="Agoncillo">Agoncillo</option>
+                                            <option value="Alitagtag">Alitagtag</option>
+                                            <option value="Balayan">Balayan</option>
+                                            <option value="Balete">Balete</option>
+                                            <option value="Batangas City">Batangas City</option>
+                                            <option value="Bauan">Bauan</option>
+                                            <option value="Calaca">Calaca</option>
+                                            <option value="Calatagan">Calatagan</option>
+                                            <option value="Cuenca">Cuenca</option>
+                                            <option value="Ibaan">Ibaan</option>
+                                            <option value="Laurel">Laurel</option>
+                                            <option value="Lemery">Lemery</option>
+                                            <option value="Lian">Lian</option>
+                                            <option value="Lipa City">Lipa City</option>
+                                            <option value="Lobo">Lobo</option>
+                                            <option value="Mabini">Mabini</option>
+                                            <option value="Malvar">Malvar</option>
+                                            <option value="Mataas na Kahoy">Mataas na Kahoy</option>
+                                            <option value="Nasugbu">Nasugbu</option>
+                                            <option value="Padre Garcia">Padre Garcia</option>
+                                            <option value="Rosario">Rosario</option>
+                                            <option value="San Jose">San Jose</option>
+                                            <option value="San Juan">San Juan</option>
+                                            <option value="San Luis">San Luis</option>
+                                            <option value="San Nicolas">San Nicolas</option>
+                                            <option value="San Pascual">San Pascual</option>
+                                            <option value="Sta. Teresita">Sta. Teresita</option>
+                                            <option value="Sto. Tomas">Sto. Tomas</option>
+                                            <option value="Taal">Taal</option>
+                                            <option value="Talisay">Talisay</option>
+                                            <option value="Tanauan">Tanauan</option>
+                                            <option value="Taysan"> Taysan</option>
+                                            <option value="Tingloy">Tingloy</option>
+                                            <option value="Tuy">Tuy</option>
+                                        </select>
+                                        
                                     </div>
                                     <div class="mb-3">
                                         <label for="eventDescription" class="form-label">Description</label>
-                                        <textarea class="form-control" id="PlacesDescription" name="description"
-                                            rows="3" required></textarea>
+                                        <textarea class="form-control" id="PlacesDescription" name="description" rows="3" required></textarea>
                                     </div>
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" id="btn-cancel" class="btn btn-secondary"
-                                    data-dismiss="modal">Cancel</button>
+                                <button type="button" id="btn-cancel" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                 <button type="button" id="btn-add-account" class="btn btn-primary">Add</button>
                             </div>
                         </div>
                     </div>
                 </div>
+                
             </div>
             <div class="modal fade" id="editModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
                 aria-labelledby="editModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="editModalLabel">Edit User</h5>
+                            <h5 class="modal-title" id="editModalLabel">Edit Place</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -341,8 +374,43 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="eventCity" class="form-label">City</label>
-                                    <input type="text" class="form-control" id="title" name="title" required>
+                                    <label for="eventCity" class="form-label">Municipality</label>
+                                    <select class="form-control" id="PlacesCity" name="title" required>
+                                        <option value="Agoncillo">Agoncillo</option>
+                                        <option value="Alitagtag">Alitagtag</option>
+                                        <option value="Balayan">Balayan</option>
+                                        <option value="Balete">Balete</option>
+                                        <option value="Batangas City">Batangas City</option>
+                                        <option value="Bauan">Bauan</option>
+                                        <option value="Calaca">Calaca</option>
+                                        <option value="Calatagan">Calatagan</option>
+                                        <option value="Cuenca">Cuenca</option>
+                                        <option value="Ibaan">Ibaan</option>
+                                        <option value="Laurel">Laurel</option>
+                                        <option value="Lemery">Lemery</option>
+                                        <option value="Lian">Lian</option>
+                                        <option value="Lipa City">Lipa City</option>
+                                        <option value="Lobo">Lobo</option>
+                                        <option value="Mabini">Mabini</option>
+                                        <option value="Malvar">Malvar</option>
+                                        <option value="Mataas na Kahoy">Mataas na Kahoy</option>
+                                        <option value="Nasugbu">Nasugbu</option>
+                                        <option value="Padre Garcia">Padre Garcia</option>
+                                        <option value="Rosario">Rosario</option>
+                                        <option value="San Jose">San Jose</option>
+                                        <option value="San Juan">San Juan</option>
+                                        <option value="San Luis">San Luis</option>
+                                        <option value="San Nicolas">San Nicolas</option>
+                                        <option value="San Pascual">San Pascual</option>
+                                        <option value="Sta. Teresita">Sta. Teresita</option>
+                                        <option value="Sto. Tomas">Sto. Tomas</option>
+                                        <option value="Taal">Taal</option>
+                                        <option value="Talisay">Talisay</option>
+                                        <option value="Tanauan">Tanauan</option>
+                                        <option value="Taysan"> Taysan</option>
+                                        <option value="Tingloy">Tingloy</option>
+                                        <option value="Tuy">Tuy</option>
+                                    </select>
                                 </div>
                                 <div class="mb-3">
                                     <label for="eventDescription" class="form-label">Description</label>
@@ -361,6 +429,7 @@
                     <!-- End of Content Wrapper -->
 
                 </div>
+            </div>
                 <!-- End of Page Wrapper -->
 
                 <!-- Scroll to Top Button-->

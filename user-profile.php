@@ -8,6 +8,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 
     <!-- Bootstrap CSS CDN -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> -->
@@ -112,7 +113,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="profile-img">
-                        <img src="" alt="Profile Image"  id="profile-img" />
+                        <img src="" alt="Profile Image" id="profile-img" />
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -130,11 +131,12 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="profile-work">
-                        <p>Preference</p>
+                        <p>Preference <a href="#" class="edit-button" onclick="editPreferences()"><i class="fas fa-edit"></i></a></p>
                         <!-- Dynamic preference items will be generated here -->
                     </div>
                 </div>
-                <div class="col-md-8">
+
+                <div class="col-md-8 user-information">
                     <div class="tab-content profile-tab" id="myTabContent">
                         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                             <table style="width:100%">
@@ -145,6 +147,62 @@
                 </div>
             </div>
         </form>
+    </div>
+     <!-- Preference Modal -->
+     <div class="modal fade" id="preferenceModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit User Preference</h5>
+                
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <h6>Please choose what you are interested in the most:</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="preference-button btn btn-swim" id="preferenceSwim" value="Swim and Beaches">
+                                    <i class="fas fa-swimmer"></i> Swim and Beaches
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="preference-button btn btn-nature" id="preferenceNature" value="Nature Trip">
+                                    <i class="fas fa-tree"></i> Nature Trip
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="preference-button btn btn-churches" id="preferenceChurches" value="Churches">
+                                    <i class="fas fa-church"></i> Churches
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="preference-button btn btn-events" id="preferenceEvents" value="Events and Culture">
+                                    <i class="fas fa-calendar-alt"></i> Events and Culture
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="preference-button btn btn-hotel" id="preferenceHotel" value="Hotel">
+                                    <i class="fas fa-hotel"></i> Hotel
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="preference-button btn btn-tourist-spots" id="preferenceTouristSpots" value="Tourist Spots">
+                                    <i class="fas fa-camera"></i> Tourist Spots
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancelButton" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="savePreferences">Save Preferences</button>
+                </div>
+            </div>
+        </div>
     </div>
     <!-- edit modal -->
     <div class="modal fade" id="editModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
@@ -228,7 +286,7 @@
                     Are you sure you want to logout?
                 </div>
                 <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="cancelButton" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" id="cancelButton" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-primary" id="confirmLogout">Logout</button>
                 </div>
             </div>

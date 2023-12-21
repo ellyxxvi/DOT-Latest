@@ -87,6 +87,7 @@ h1{
   align-items: center;
 }
 .carousel .card {
+  position: relative; 
   scroll-snap-align: start;
   height: 342px;
   list-style: none;
@@ -98,14 +99,31 @@ h1{
   padding: 15px;
   flex-direction: column;
   border-radius: 8px;
-  background-size: 100% 100%; /* Initial background size */
+  background-size: 100% 100%;
   transition: transform 0.3s, filter 0.3s;
 }
 
+.carousel .card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5); 
+  border-radius: 8px;
+}
+
+.carousel .card h1, .carousel .card p .carousel .card span {
+  color: #fff; 
+  z-index: 2;
+}
+
+
 .carousel .card:hover {
-  transform: scale(1.05); /* Apply a slight scale to the card */
+  transform: scale(1.05); 
   background-size: 100% 100%; 
-  border-radius: 8px;/* Zoom in background size */
+  border-radius: 8px;
 }
 
 .carousel .card h2 {
@@ -123,6 +141,7 @@ h1{
   font-size: 20px;
   text-align: center;
   text-shadow: 2px 2px 4px #000000;
+  z-index: 2;
 }
 
 .carousel .card .icon.card-icon {

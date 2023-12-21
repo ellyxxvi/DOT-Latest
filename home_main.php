@@ -113,6 +113,9 @@
   <div class="iframe">
     <iframe src="home_most_viewed.html" width="100%" height="585" frameborder="0" background="transparent"></iframe>
   </div>
+  <div class="iframe">
+    <iframe iframe id="recommendedIframe" src="home_recommended.html" width="100%" height="585" frameborder="0" background="transparent"></iframe>
+  </div>
 
   <script src="js/home_main.js"></script>
   <?php include 'footer.php'; ?>

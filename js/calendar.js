@@ -175,57 +175,69 @@ function populateCarousel() {
                 );
             });
 
-            for (let i = 0; i < incomingFestivals.length; i += 3) {
-                const carouselItem = document.createElement('div');
-                carouselItem.classList.add('carousel-item');
+            // Reference to the INCOMING FESTIVAL section
+            const incomingFestivalSection = document.getElementById('incoming-festival');
 
-                const row = document.createElement('div');
-                row.classList.add('row');
+            // Check if there are incoming festivals
+            if (incomingFestivals.length > 0) {
+                for (let i = 0; i < incomingFestivals.length; i += 3) {
+                    const carouselItem = document.createElement('div');
+                    carouselItem.classList.add('carousel-item');
 
-                for (let j = i; j < i + 3 && j < incomingFestivals.length; j++) {
-                    const col = document.createElement('div');
-                    col.classList.add('col-md-4', 'mb-3');
+                    const row = document.createElement('div');
+                    row.classList.add('row');
 
-                    const link = document.createElement('a');
-                    link.href = `festival_content.php?item_id=${incomingFestivals[j].id}`;
-                    link.style.textDecoration = 'none';
-                    link.style.color = 'black';
+                    for (let j = i; j < i + 3 && j < incomingFestivals.length; j++) {
+                        const col = document.createElement('div');
+                        col.classList.add('col-md-4', 'mb-3');
 
-                    const card = document.createElement('div');
-                    card.classList.add('card');
+                        const link = document.createElement('a');
+                        link.href = `festival_content.php?item_id=${incomingFestivals[j].id}`;
+                        link.style.textDecoration = 'none';
+                        link.style.color = 'black';
 
-                    const img = document.createElement('img');
-                    img.classList.add('img-fluid');
-                    img.alt = '100%x280';
-                    img.src = incomingFestivals[j].images[0]; 
+                        const card = document.createElement('div');
+                        card.classList.add('card');
 
-                    const cardBody = document.createElement('div');
-                    cardBody.classList.add('card-body');
+                        const img = document.createElement('img');
+                        img.classList.add('img-fluid');
+                        img.alt = '100%x280';
+                        img.src = incomingFestivals[j].images[0];
 
-                    const title = document.createElement('h4');
-                    title.classList.add('card-title');
-                    title.textContent = incomingFestivals[j].title;
+                        const cardBody = document.createElement('div');
+                        cardBody.classList.add('card-body');
 
-                    const city = document.createElement('p');
-                    city.classList.add('card-text');
-                    city.textContent = incomingFestivals[j].city;
+                        const title = document.createElement('h4');
+                        title.classList.add('card-title');
+                        title.textContent = incomingFestivals[j].title;
 
-                    cardBody.appendChild(title);
-                    cardBody.appendChild(city);
-                    card.appendChild(img);
-                    card.appendChild(cardBody);
-                    link.appendChild(card);
-                    col.appendChild(link);
-                    row.appendChild(col);
+                        const city = document.createElement('p');
+                        city.classList.add('card-text');
+                        city.textContent = incomingFestivals[j].city;
+
+                        cardBody.appendChild(title);
+                        cardBody.appendChild(city);
+                        card.appendChild(img);
+                        card.appendChild(cardBody);
+                        link.appendChild(card);
+                        col.appendChild(link);
+                        row.appendChild(col);
+                    }
+
+                    carouselItem.appendChild(row);
+
+                    if (i === 0) {
+                        carouselItem.classList.add('active');
+                    }
+
+                    carouselInner.appendChild(carouselItem);
                 }
 
-                carouselItem.appendChild(row);
-
-                if (i === 0) {
-                    carouselItem.classList.add('active');
-                }
-
-                carouselInner.appendChild(carouselItem);
+                // Show the INCOMING FESTIVAL section
+                incomingFestivalSection.style.display = 'block';
+            } else {
+                // Hide the INCOMING FESTIVAL section
+                incomingFestivalSection.style.display = 'none';
             }
         })
         .catch(error => console.error('Error fetching data:', error));

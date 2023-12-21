@@ -38,9 +38,9 @@
                 <a class="nav-link-2" href="wheretogo_main.php">Where to Go</a>
                 <a class="nav-link-3" href="calendar.php">Calendar of Activities</a>
                 <a class="nav-link-4" href="love_our_planet.php">Love Our Planet</a>
-                <a class="nav-search-icon" href="search_page.php">
+                <!-- <a class="nav-search-icon" href="search_page.php">
                     <i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i>
-                </a>
+                </a> -->
             </div>
 
             <script>

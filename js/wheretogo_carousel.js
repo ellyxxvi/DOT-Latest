@@ -4,11 +4,11 @@ const API_HOSTNAME = 'goexplorebatangas.com/api';
 // const API_HOSTNAME = '13.229.101.17/api'
 
 const categoryToIcon = {
-  'swim': 'fas fa-water',
-  'nature': 'fas fa-leaf',
-  'tourists': 'fas fa-location-dot',
-  'resort': 'fas fa-hotel',
-  'churches': 'fas fa-church',
+  'Swim and Beaches': 'fas fa-water',
+  'Nature Trip': 'fas fa-leaf',
+  'Tourist Spots': 'fas fa-location-dot',
+  'Hotel': 'fas fa-hotel',
+  'Churches': 'fas fa-church',
   'events': 'fas fa-calendar-days',
 
 };
@@ -37,53 +37,50 @@ async function fetchAndGenerateCards(url, isFestival = false, city) {
     let firstCardWidth = 0; 
 
     cardData.forEach(card => {
-      
       if (card.city.toLowerCase() === city.toLowerCase()) {
         const cardElement = document.createElement('li');
         cardElement.className = 'card';
-
-
+    
         const imageUrl = Array.isArray(card.images) && card.images.length > 0
           ? card.images[0]
           : Array.isArray(card.photos) && card.photos.length > 0
             ? card.photos[0]
             : '';
-
+    
         cardElement.style.backgroundImage = `url('${imageUrl}')`;
         cardElement.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
-
-        const words = card.description.split(' ');
-        const truncatedDescription = words.length > 10 ? words.slice(0, 10).join(' ') + '...' : card.description;
-
+    
         const iconClass = isFestival ? 'fas fa-calendar-days' : categoryToIcon[card.category];
-
+    
+        const modifiedCity = card.city.toLowerCase().includes('city') ? card.city : `${card.city} City`;
+    
         cardElement.innerHTML = `
           <div class="icon card-icon ${iconClass}"></div>
           <h2>${card.title}</h2>
-          <span>${truncatedDescription}</span>
+          <span> ${modifiedCity}, ${card.province}</span>
         `;
-
+    
         if (isFestival) {
-          // Check if card.id is valid before constructing the URL
           const redirectUrl = card.id ? `festival_content.php?item_id=${card.id}` : '#';
           cardElement.dataset.redirectUrl = redirectUrl;
         } else {
-          // Check if card.id is valid before constructing the URL
           const redirectUrl = card.id ? `explore_cardcontent.php?id=${card.id}` : '#';
           cardElement.dataset.redirectUrl = redirectUrl;
         }
-        
+    
         cardElement.addEventListener('click', () => {
           const redirectUrl = cardElement.dataset.redirectUrl;
-          console.log('Redirect URL:', redirectUrl); // Debugging log
+          console.log('Redirect URL:', redirectUrl);
           if (redirectUrl && redirectUrl !== '#') {
             window.top.location.href = redirectUrl;
           }
         });
-
+    
         carousel.appendChild(cardElement);
       }
     });
+    
+    
 
     // Get the first card's width if there are cards
     const firstCard = carousel.querySelector('.card');

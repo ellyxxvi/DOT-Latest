@@ -38,9 +38,9 @@
     <iframe src="wheretogo_carousel.html" width="100%" height="585" frameborder="0" background="transparent"></iframe>
   </div>
 
-  <div class="iframe">
+  <!-- <div class="iframe">
     <iframe src="wheretogo_maps.html" width="100%" height="585" frameborder="0" background="transparent"></iframe>
-  </div>
+  </div> -->
 
   <script src="js/wheretogo_cardcontent.js"></script>
 </body>

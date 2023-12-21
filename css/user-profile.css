@@ -462,7 +462,10 @@
   .slider-content p {
     font-size: 16px;
   }
-
+  .user-information{
+    margin-top: 0% !important;
+    line-height: 1.5 !important;
+  }
 }
 
 .emp-profile{
@@ -478,12 +481,13 @@
     text-align: center;
     overflow: hidden; 
     border-radius: 50%;
-    width: 300px; 
-    height: 300px; 
+    width: 270px; 
+    height: 270px; 
+    margin-left: 20px;
   }
 .profile-img img{
-    width: 80%;
-    height: 80%;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
 }
 .profile-img .file {
@@ -537,8 +541,17 @@
 .profile-work{
     /* padding: 14%; */
     margin-left: 50px;
-    margin-top: 0%;
+    margin-top: 30px;
 }
+.profile-work .edit-button {
+  margin-left: 10px; /* Adjust the margin as needed */
+  z-index: 2;
+}
+
+.profile-work .edit-button i {
+  margin-right: 5px; /* Adjust the margin as needed */
+}
+
 .profile-work p{
     font-size: 15px;
     color: #4f4f4f;
@@ -594,3 +607,68 @@
 .profile-logout-btn:hover {
     background-color: #c82333;
 }
+
+.user-information{
+  margin-top: -5%;
+  line-height: 2;
+}
+ /* Style for the preference buttons */
+ .preference-button {
+  width: 100%;
+  height: 130px;
+  margin: 10px 0;
+  padding: 10px;
+  border: 2px solid transparent;
+  border-radius: 5px;
+  font-size: 18px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-direction: column;
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+
+/* Style for the selected button */
+.preference-button.selected {
+  background-color: #0074D9;
+  border-color: #0074D9;
+  color: #ffffff;
+}
+
+.preference-button i {
+  margin-bottom: 5px;
+}
+
+/* Define custom border and text colors for each button */
+.btn-swim {
+  border-color: #0019f7;
+  color: #0019f7;
+}
+
+.btn-nature {
+  border-color: #47d40f;
+  color: #47d40f;
+}
+
+.btn-churches {
+  border-color: #d66000;
+  color: #d66000;
+}
+
+.btn-events {
+  border-color: #8d0092;
+  color: #8d0092;
+}
+
+.btn-hotel {
+  border-color: #00694f;
+  color: #00694f;
+}
+
+.btn-tourist-spots {
+  border-color: #b3b600;
+  color: #b3b600;
+}
+

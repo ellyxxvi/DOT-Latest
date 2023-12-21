@@ -114,6 +114,7 @@ figure:hover img {
   display: flex;
   align-items: center;
   justify-content: center;
+  border-top: 1px solid #ccc; 
 }
 
 .user-info p{
@@ -427,4 +428,7 @@ figure:hover img {
   border-top: 1px solid #ccc; 
   padding-top: 10px; 
   margin-top: 10px;
+}
+.comment-text{
+margin-bottom: 10px;
 }

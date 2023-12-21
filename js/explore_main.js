@@ -7,14 +7,20 @@ const MAX_VISITS = 100;
 const servicesData = []; 
 
 const iconMappings = {
-  'swim': 'fas fa-water',
-  'nature': 'fas fa-leaf',
-  'tourists': 'fas fa-map-marker-alt',
-  'resort': 'fas fa-hotel',
-  'churches': 'fas fa-church',
+  'Swim and Beaches': 'fas fa-water',
+  'Nature Trip': 'fas fa-leaf',
+  'Tourist Spots': 'fas fa-location-dot',
+  'Hotel': 'fas fa-hotel',
+  'Churches': 'fas fa-church',
   'events': 'fas fa-calendar-days',
 };
 
+// Get elements
+const searchInput = document.getElementById('search-input');
+const searchButton = document.getElementById('search-button');
+const servicesContent = document.getElementById('services-content');
+
+// Function to generate service card
 function generateServiceCard(service) {
   const iconClass = iconMappings[service.category] || 'fas fa-map-marker-alt';
 
@@ -23,7 +29,7 @@ function generateServiceCard(service) {
     words.slice(0, 15).join(" ") + "..." :
     service.description;
 
-  const firstImage = service.backgroundImage[0] || ''; 
+  const firstImage = service.backgroundImage && service.backgroundImage.length > 0 ? service.backgroundImage[0] : ''; 
 
   return `
     <div class="column card-link" service-id="${service.id}">
@@ -35,13 +41,53 @@ function generateServiceCard(service) {
           </div>
           <div class="card-content">
             <h3>${service.title}</h3>
-            <p>${truncatedDescription}</p>
+            <p>${service.city}, ${service.province}</p>
           </div>
         </div>
       </a>
     </div>
   `;
 }
+
+// Function to fetch and display search results
+function searchPlaces() {
+  const searchValue = searchInput.value.trim();
+
+  if (searchValue !== '') {
+    fetch(`${API_PROTOCOL}://${API_HOSTNAME}/search/place?q=${searchValue}`)
+      .then(response => response.json())
+      .then(data => {
+        console.log('Search results:', data);
+
+        // Create a container for services
+        const servicesContainer = document.createElement('div');
+        servicesContainer.classList.add('services-container');
+
+        if (data.searchedPlaces && Array.isArray(data.searchedPlaces)) {
+          data.searchedPlaces.forEach(item => {
+            if (typeof item === 'object') {
+              const cardHTML = generateServiceCard(item);
+              servicesContainer.innerHTML += cardHTML;
+            } else {
+              console.error('Invalid data format for item:', item);
+            }
+          });
+
+          // Append the container to the main content
+          servicesContent.innerHTML = ''; // Clear existing content
+          servicesContent.appendChild(servicesContainer);
+        } else {
+          console.error('Invalid data format or no search results:', data);
+        }
+      })
+      .catch(error => console.error('Error fetching search results:', error));
+  }
+}
+
+// Event listener for search button click
+searchButton.addEventListener('click', searchPlaces);
+
+
 
 
 function fetchServicesData() {
@@ -164,12 +210,16 @@ $(document).ready(function() {
     return fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places`)
       .then(response => response.json())
       .then(data => {
+        
+        console.log('Data fetched from places:', data);
         const mappedData = data.map(user => {
           return {
             id: user.id,
             category: user.category,
             title: user.title,
             description: user.description,
+            city: user.city,
+            province: user.province,
             backgroundImage: user.photos,
           };
         });

@@ -279,7 +279,7 @@
                                             <th>Description</th>
                                             <th>Festival Date</th>
                                             <th>Province</th>
-                                            <th>City</th>
+                                            <th>Municipality</th>
                                             <th>Date Created</th>
                                             <th>Date Updated</th>
                                             <th>Actions</th>
@@ -328,15 +328,54 @@
                                         <input type="text" class="form-control" id="date" name="date" required
                                             placeholder="Month Day"
                                             pattern="^(January|February|March|April|May|June|July|August|September|October|November|December) (0?[1-9]|[12][0-9]|3[01])$">
+                                            <div class="mb-3">
+                                                <label for="eventProvince" class="form-label">Province</label>
+                                                <!-- Hidden input to store the fixed province value -->
+                                                <input type="hidden" id="province" name="province" value="Batangas">
+                                                <!-- Display the fixed value in a disabled input field for reference -->
+                                                <input type="text" class="form-control" id="displayProvince" value="Batangas" disabled>
+                                            </div>
+                                            
                                         <div class="mb-3">
-                                            <label for="eventProvince" class="form-label">Province</label>
-                                            <input type="text" class="form-control" id="province" name="province"
-                                                required>
+                                            <label for="eventCity" class="form-label">Municipality</label>
+                                            <select class="form-control" id="city" name="city" required>
+                                                <option value="Agoncillo">Agoncillo</option>
+                                                <option value="Alitagtag">Alitagtag</option>
+                                                <option value="Balayan">Balayan</option>
+                                                <option value="Balete">Balete</option>
+                                                <option value="Batangas City">Batangas City</option>
+                                                <option value="Bauan">Bauan</option>
+                                                <option value="Calaca">Calaca</option>
+                                                <option value="Calatagan">Calatagan</option>
+                                                <option value="Cuenca">Cuenca</option>
+                                                <option value="Ibaan">Ibaan</option>
+                                                <option value="Laurel">Laurel</option>
+                                                <option value="Lemery">Lemery</option>
+                                                <option value="Lian">Lian</option>
+                                                <option value="Lipa City">Lipa City</option>
+                                                <option value="Lobo">Lobo</option>
+                                                <option value="Mabini">Mabini</option>
+                                                <option value="Malvar">Malvar</option>
+                                                <option value="Mataas na Kahoy">Mataas na Kahoy</option>
+                                                <option value="Nasugbu">Nasugbu</option>
+                                                <option value="Padre Garcia">Padre Garcia</option>
+                                                <option value="Rosario">Rosario</option>
+                                                <option value="San Jose">San Jose</option>
+                                                <option value="San Juan">San Juan</option>
+                                                <option value="San Luis">San Luis</option>
+                                                <option value="San Nicolas">San Nicolas</option>
+                                                <option value="San Pascual">San Pascual</option>
+                                                <option value="Sta. Teresita">Sta. Teresita</option>
+                                                <option value="Sto. Tomas">Sto. Tomas</option>
+                                                <option value="Taal">Taal</option>
+                                                <option value="Talisay">Talisay</option>
+                                                <option value="Tanauan">Tanauan</option>
+                                                <option value="Taysan"> Taysan</option>
+                                                <option value="Tingloy">Tingloy</option>
+                                                <option value="Tuy">Tuy</option>
+                                            </select>
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="eventCity" class="form-label">City</label>
-                                            <input type="text" class="form-control" id="city" name="city" required>
-                                        </div>
+                                        
                                 </form>
                             </div>
                             <div class="modal-footer">
@@ -386,11 +425,46 @@
                                 </div> -->
                                 <div class="mb-3">
                                     <label for="province" class="form-label">Province</label>
-                                    <input type="text" class="form-control" id="province" name="province" required>
-                                </div>
+                                    <input type="text" class="form-control" id="province" name="province" value="Batangas" readonly>
+                                </div>                                
                                 <div class="mb-3">
-                                    <label for="city" class="form-label">City</label>
-                                    <input type="text" class="form-control" id="city" name="city" required>
+                                    <label for="eventCity" class="form-label">Municipality</label>
+                                    <select class="form-control" id="city" name="city" required>
+                                        <option value="Agoncillo">Agoncillo</option>
+                                        <option value="Alitagtag">Alitagtag</option>
+                                        <option value="Balayan">Balayan</option>
+                                        <option value="Balete">Balete</option>
+                                        <option value="Batangas City">Batangas City</option>
+                                        <option value="Bauan">Bauan</option>
+                                        <option value="Calaca">Calaca</option>
+                                        <option value="Calatagan">Calatagan</option>
+                                        <option value="Cuenca">Cuenca</option>
+                                        <option value="Ibaan">Ibaan</option>
+                                        <option value="Laurel">Laurel</option>
+                                        <option value="Lemery">Lemery</option>
+                                        <option value="Lian">Lian</option>
+                                        <option value="Lipa City">Lipa City</option>
+                                        <option value="Lobo">Lobo</option>
+                                        <option value="Mabini">Mabini</option>
+                                        <option value="Malvar">Malvar</option>
+                                        <option value="Mataas na Kahoy">Mataas na Kahoy</option>
+                                        <option value="Nasugbu">Nasugbu</option>
+                                        <option value="Padre Garcia">Padre Garcia</option>
+                                        <option value="Rosario">Rosario</option>
+                                        <option value="San Jose">San Jose</option>
+                                        <option value="San Juan">San Juan</option>
+                                        <option value="San Luis">San Luis</option>
+                                        <option value="San Nicolas">San Nicolas</option>
+                                        <option value="San Pascual">San Pascual</option>
+                                        <option value="Sta. Teresita">Sta. Teresita</option>
+                                        <option value="Sto. Tomas">Sto. Tomas</option>
+                                        <option value="Taal">Taal</option>
+                                        <option value="Talisay">Talisay</option>
+                                        <option value="Tanauan">Tanauan</option>
+                                        <option value="Taysan"> Taysan</option>
+                                        <option value="Tingloy">Tingloy</option>
+                                        <option value="Tuy">Tuy</option>
+                                    </select>
                                 </div>
                                 <input type="hidden" name="created_at">
                                 <input type="hidden" name="updated_at">

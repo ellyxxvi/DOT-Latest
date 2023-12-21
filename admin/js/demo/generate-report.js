@@ -18,7 +18,7 @@ async function fetchUserData(accessToken) {
 
 //MOST VISITED FETCH
 async function fetchMostVisitedPlaces(accessToken) {
-    const visitResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/places/most-visited?limit=5`, {
+    const visitResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/places/most-visited`, {
         headers: {
             'Authorization': `Bearer ${accessToken}`
         }
@@ -42,7 +42,7 @@ async function fetchMostVisitedPlaces(accessToken) {
         }
     });
 
-    const placeResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/places/most-visited?limit=5`, {
+    const placeResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/places/most-visited`, {
         headers: {
             'Authorization': `Bearer ${accessToken}`,
         },
@@ -64,9 +64,9 @@ async function fetchMostVisitedPlaces(accessToken) {
 }
 
 //MOST RATED RESORT
-async function fetchMostRatedResorts(accessToken, limit = 5) {
+async function fetchMostRatedResorts(accessToken) {
     try {
-        const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/places/most-rated?category=resort&limit=${limit}`, {
+        const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/places/most-rated?category=Hotel`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             }
@@ -101,7 +101,7 @@ async function fetchMostRatedResorts(accessToken, limit = 5) {
 // USER ACTIVITY LOCATIONS
 async function fetchUserActivityLocations(accessToken) {
     try {
-        const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/users/most-active?limit=5`, {
+        const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/users/most-active`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             }
@@ -150,21 +150,15 @@ async function generateExcelReport() {
             throw new Error('Access token not found in local storage');
         }
 
-        // Fetch user data
         const userData = await fetchUserData(accessToken);
 
-        // Fetch most visited places
         const mostVisitedPlaces = await fetchMostVisitedPlaces(accessToken);
 
-        // Fetch most rated resorts
         const mostRatedResorts = await fetchMostRatedResorts(accessToken);
 
-        // Fetch user activity locations
         const userActivityLocations = await fetchUserActivityLocations(accessToken);
 
         
-
-        // Fetch recent activity data from your four endpoints
         const [usersData, placesData, feedbacksData, itinerariesData] = await Promise.all([
             fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/users`),
             fetchData(`${API_PROTOCOL}://${API_HOSTNAME}/places`),
