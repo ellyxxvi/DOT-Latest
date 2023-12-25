@@ -123,36 +123,36 @@
                         <h6>Please choose what you are interested in the most:</h6>
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="preference-button btn btn-swim" id="preferenceSwim" value="Swim and Beaches">
+                                <div class="preference-button btn btn-swim" id="preferenceSwim" value="swim and beaches">
                                     <i class="fas fa-swimmer"></i> Swim and Beaches
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="preference-button btn btn-nature" id="preferenceNature" value="Nature Trip">
+                                <div class="preference-button btn btn-nature" id="preferenceNature" value="nature trip">
                                     <i class="fas fa-tree"></i> Nature Trip
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="preference-button btn btn-churches" id="preferenceChurches" value="Churches">
+                                <div class="preference-button btn btn-churches" id="preferenceChurches" value="churches">
                                     <i class="fas fa-church"></i> Churches
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="preference-button btn btn-events" id="preferenceEvents" value="Events and Culture">
+                                <div class="preference-button btn btn-events" id="preferenceEvents" value="events and culture">
                                     <i class="fas fa-calendar-alt"></i> Events and Culture
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="preference-button btn btn-hotel" id="preferenceHotel" value="Hotel">
+                                <div class="preference-button btn btn-hotel" id="preferenceHotel" value="hotel">
                                     <i class="fas fa-hotel"></i> Hotel
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="preference-button btn btn-tourist-spots" id="preferenceTouristSpots" value="Tourist Spots">
+                                <div class="preference-button btn btn-tourist-spots" id="preferenceTouristSpots" value="tourist spots">
                                     <i class="fas fa-camera"></i> Tourist Spots
                                 </div>
                             </div>

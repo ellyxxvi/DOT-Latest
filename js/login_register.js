@@ -28,7 +28,7 @@ $('.login-reg-panel input[type="radio"]').on('change', function () {
         $('.register-show').removeClass('show-log-panel');
     }
 });
-// Initialize a flag to track registration status
+
 let registrationSuccessful = false;
 var config = {
     cUrl: 'https://api.countrystatecity.in/v1/countries',
@@ -37,7 +37,6 @@ var config = {
 
 var countrySelect = document.getElementById('from_country'),
     stateSelect = document.getElementById('current_province')
-    // citySelect = document.getElementById('current_city');
 
 function loadCountries() {
 
@@ -46,7 +45,6 @@ function loadCountries() {
     fetch(apiEndPoint, {headers: {"X-CSCAPI-KEY": config.ckey}})
     .then(Response => Response.json())
     .then(data => {
-        // console.log(data);
 
         data.forEach(country => {
             const option = document.createElement('option')
@@ -58,26 +56,19 @@ function loadCountries() {
     .catch(error => console.error('Error loading countries:', error))
 
     stateSelect.disabled = true
-    // citySelect.disabled = true
     stateSelect.style.pointerEvents = 'none'
-    // citySelect.style.pointerEvents = 'none'
 }
 
 function loadStates() {
     stateSelect.disabled = false
-    // citySelect.disabled = true
     stateSelect.style.pointerEvents = 'auto'
-    // citySelect.style.pointerEvents = 'none'
 
     const selectedCountryCode = countrySelect.value
-    // console.log(selectedCountryCode);
-    stateSelect.innerHTML = '<option value="">Select State</option>' // for clearing the existing states
-    // citySelect.innerHTML = '<option value="">Select City</option>' // Clear existing city options
+    stateSelect.innerHTML = '<option value="">Select State</option>'
 
     fetch(`${config.cUrl}/${selectedCountryCode}/states`, {headers: {"X-CSCAPI-KEY": config.ckey}})
     .then(response => response.json())
     .then(data => {
-        // console.log(data);
 
         data.forEach(state => {
             const option = document.createElement('option')
@@ -92,7 +83,6 @@ function loadStates() {
 
 // Wait for the DOM to load
 document.addEventListener('DOMContentLoaded', () => {
-     // Password toggle functionality
      const passwordInput2 = document.getElementById('password2');
      const passwordToggle2 = document.getElementById('password-toggle2');
  
@@ -112,9 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     countrySelect.addEventListener('change', loadStates);
 
-    // stateSelect.addEventListener('change');
 
-    // Preference button functionality
     const preferenceButtons = document.querySelectorAll(".preference-button");
     preferenceButtons.forEach((button) => {
         button.addEventListener("click", function () {
@@ -132,14 +120,12 @@ current_city.addEventListener('keydown', (event) => {
     }
 });
 
-    // Registration button functionality
     const registerButton = document.getElementById('registerButton');
     registerButton.addEventListener('click', () => {
         const user = collectUserData();
         registerUser(user);
     });
 
-    // Save preferences button functionality
     const savePreferencesButton = document.getElementById('savePreferences');
     savePreferencesButton.addEventListener('click', () => {
         if (registrationSuccessful) {
@@ -156,7 +142,6 @@ current_city.addEventListener('keydown', (event) => {
 window.onload = loadCountries
 
 
-// Function to collect user registration data
 function collectUserData() {
     const first_name = document.getElementById('first_name').value;
     const last_name = document.getElementById('last_name').value;
@@ -221,7 +206,6 @@ function registerUser(user) {
     });
 }
 
-// Function to collect selected preferences
 function collectSelectedPreferences() {
     const selectedPreferences = [];
     const preferenceButtons = document.querySelectorAll(".preference-button");
@@ -235,7 +219,6 @@ function collectSelectedPreferences() {
     return selectedPreferences;
 }
 
-// Function to save user preferences
 function saveUserPreferences(selectedPreferences) {
     const token = localStorage.getItem('access_token');
 
@@ -292,7 +275,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (loginButton) {
-        // Function to handle form submission
         const handleLogin = () => {
             const email = emailInput.value;
             const password = passwordInput.value;
@@ -322,10 +304,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 .catch(error => console.error('Error checking login:', error));
         };
 
-        // Attach the handleLogin function to both click and Enter key press
         loginButton.addEventListener('click', handleLogin);
 
-        // Listen for Enter key press in the email and password input fields
         emailInput.addEventListener('keyup', (event) => {
             if (event.key === 'Enter') {
                 handleLogin();

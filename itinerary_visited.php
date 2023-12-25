@@ -41,7 +41,7 @@
                 <h2>BATANGAS PHILIPPINES</h2>
               </div>
               <div class="row">
-                <p>Where Heritage Meets Nature, a Paradise to Treasure!</p>
+              <p>Where heritage meets nature, a paradise to treasure!</p>
               </div>
             </div>
           </div>

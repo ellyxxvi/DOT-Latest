@@ -25,11 +25,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const carouselInner = document.querySelector('.carousel-inner');
   const images = [
-    'image/places/churches.png',
-    'image/places/hotels.png',
-    'image/places/naturetrip.png',
-    // Add more image URLs as needed
-  ];
+    'image/banig.jpg',
+    'image/bg1.jpg',
+    'image/barako.jpg',
+];
+
 
   images.forEach((imageUrl, index) => {
     const carouselItem = document.createElement('div');

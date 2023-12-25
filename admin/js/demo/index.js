@@ -295,23 +295,24 @@ async function populateAndSortResorts() {
 
         if (Array.isArray(data)) {
             // Filter only resorts
-            const resorts = data.filter(place => place.category === "Hotel");
+            const resorts = data.filter(place => place.category.toLowerCase() === "hotel");
+        
             resortsData.length = 0;
-
+        
             resorts.forEach(user => {
                 const resort = {
                     name: user.title,
                     ratings: user.avg_rating
                 };
-
+        
                 resortsData.push(resort);
             });
-
+        
             // Sort resorts by average rating
             resortsData.sort((a, b) => parseFloat(b.ratings) - parseFloat(a.ratings));
-
+        
             resortList.innerHTML = "";
-
+        
             resortsData.slice(0, 5).forEach((resort, index) => {
                 const listItem = document.createElement("li");
                 listItem.innerHTML = `
@@ -328,6 +329,7 @@ async function populateAndSortResorts() {
         } else {
             console.error('Fetched data is not an array:', data);
         }
+        
     } catch (error) {
         console.error('Error fetching data:', error);
     }

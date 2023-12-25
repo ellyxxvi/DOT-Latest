@@ -87,178 +87,192 @@ document.addEventListener('DOMContentLoaded', function () {
   function populateTable(searchKeyword = '') {
     const searchUrl = `${API_PROTOCOL}://${API_HOSTNAME}/places`;
 
+    // Fetch places data
     fetch(searchUrl)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        const filteredData = data.filter((user) => {
-          const lowerKeyword = searchKeyword.toLowerCase();
-          const contact = typeof user.contact === 'string' ? user.contact : '';
-          return (
-            user.title.toLowerCase().includes(lowerKeyword) ||
-            user.category.toLowerCase().includes(lowerKeyword) ||
-            user.province.toLowerCase().includes(lowerKeyword) ||
-            user.city.toLowerCase().includes(lowerKeyword) ||
-            user.barangay.toLowerCase().includes(lowerKeyword) ||
-            contact.toLowerCase().includes(lowerKeyword)
-          );
-        });
-
-        // Sort data by 'created_at' in descending order
-        filteredData.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
-        tableBody.innerHTML = '';
-
-        if (filteredData.length === 0) {
-          const noResultsRow = document.createElement('tr');
-          noResultsRow.innerHTML = `
-              <td colspan="13" style="text-align: center;">There are no relevant search results.</td>
-            `;
-          tableBody.appendChild(noResultsRow);
-        } else {
-          // Populate the table with sorted search results
-          filteredData.forEach((user, index) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${user.id}</td>
-                <td>
-                  <button class="img-button btn-primary btn-sm" data-index="${index}" data-toggle="modal" data-target="#imageModal" data-image-src="${user.photos && user.photos.length > 0 ? user.photos.join(',') : ''}">
-                  <i class="fa fa-image"></i>
-                  </button>
-                </td>
-                <td>${user.title}</td>
-                <td>${user.description}</td>
-                <td>${user.category}</td>
-                <td>${user.province}</td>
-                <td>${user.city}</td>
-                <td>${user.barangay}</td>
-                <td>${user.contact}</td>
-                <td>
-                  <ul>
-                    <li>Facebook: <a href="${user.social_links ? user.social_links.fb : ''}" target="_blank">${user.social_links ? user.social_links.fb : ''
-              }</a></li>
-                    <li>Website: <a href="${user.social_links ? user.social_links.website : ''}" target="_blank">${user.social_links ? user.social_links.website : ''
-              }</a></li>
-                  </ul>
-                </td>
-                <td>${user.created_at}</td>
-                <td>${user.updated_at}</td>
-                <td>
-                  <button class="btn btn-primary btn-sm edit-button" data-user-id="${user.id}">
-                    <i class="fa fa-pen"></i>
-                  </button>
-                  <button class="btn btn-danger btn-sm delete-button">
-                    <i class="fa fa-trash"></i>
-                  </button>
-                </td>
-              `;
-            tableBody.appendChild(row);
-          });
-        }
-
-        const deleteButtons = document.querySelectorAll('.delete-button');
-        const confirmationModal = document.getElementById('confirmationModal');
-        const confirmDeleteButton = document.getElementById('confirmDeleteButton');
-        const cancelDeleteButton = document.getElementById('cancelDeleteButton');
-        let deleteTargetRow = null;
-        
-        deleteButtons.forEach(button => {
-          button.addEventListener('click', (event) => {
-            const button = event.target;
-            const row = button.closest('tr');
-            const userId = row.querySelector('td:first-child').textContent;
-            
-            // Store the target row for deletion
-            deleteTargetRow = row;
-        
-            // Show the confirmation modal
-            confirmationModal.style.display = 'block';
-          });
-        });
-        
-        confirmDeleteButton.addEventListener('click', async () => {
-          if (deleteTargetRow) {
-            const userId = deleteTargetRow.querySelector('td:first-child').textContent;
-        
-            try {
-              const accessToken = getAccessTokenFromLocalStorage();
-              const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places/${userId}?role=ADMIN`, {
-                method: 'DELETE',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${accessToken}`
-                }
-              });
-        
-              if (response.ok) {
-                deleteTargetRow.remove();
-              } else {
-                const responseData = await response.text();
-                console.error(`Error deleting user: ${response.status} ${response.statusText}`, responseData);
-              }
-            } catch (error) {
-              console.error('Error deleting user:', error.message);
-            } finally {
-              // Hide the confirmation modal
-              confirmationModal.style.display = 'none';
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
-          }
-        });
-        
-        cancelDeleteButton.addEventListener('click', () => {
-          // Hide the confirmation modal
-          confirmationModal.style.display = 'none';
-        });
+            return response.json();
+        })
+        .then(async (data) => {
+            // Fetch seasons data
+            const seasonsResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/seasons`);
+            if (!seasonsResponse.ok) {
+                throw new Error(`HTTP error! Status: ${seasonsResponse.status}`);
+            }
+            const seasonsData = await seasonsResponse.json();
 
-        const editButtons = document.querySelectorAll('.edit-button');
-        editButtons.forEach((button) => {
-          button.addEventListener('click', editRow);
-        });
-        // After rows are added to the table, find all img-buttons and add event listeners
-        const imgButtons = document.querySelectorAll(".img-button");
-        imgButtons.forEach(button => {
-          button.addEventListener("click", function () {
-            const index = this.getAttribute("data-index"); // Retrieve index from data attribute
-            const userData = filteredData[index]; // Access the user data using the index
-            console.log('Data for clicked row:', userData);
+            const filteredData = data.filter((user) => {
+                const lowerKeyword = searchKeyword.toLowerCase();
+                const contact = typeof user.contact === 'string' ? user.contact : '';
+                return (
+                    user.title.toLowerCase().includes(lowerKeyword) ||
+                    user.category.toLowerCase().includes(lowerKeyword) ||
+                    user.province.toLowerCase().includes(lowerKeyword) ||
+                    user.city.toLowerCase().includes(lowerKeyword) ||
+                    user.barangay.toLowerCase().includes(lowerKeyword) ||
+                    contact.toLowerCase().includes(lowerKeyword)
+                );
+            });
 
-            const imageSrcArray = userData.photos || []; // Directly use userData.images array
-            const imageGallery = document.getElementById("imageGallery");
+            // Sort data by 'created_at' in descending order
+            filteredData.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-            // Clear previous images
-            imageGallery.innerHTML = '';
+            tableBody.innerHTML = '';
 
-            // Check if there are images and create an img element for each one
-            if (imageSrcArray.length > 0) {
-              imageSrcArray.forEach(imageSrc => {
-                const imgElement = document.createElement('img');
-                imgElement.src = imageSrc;
-
-                // Set a fixed size for the image
-                imgElement.style.width = "120px";
-                imgElement.style.height = "120px";
-                imgElement.style.objectFit = "cover";
-                imgElement.style.margin = "10px";
-                imageGallery.style.justifyContent = 'center';
-                imageGallery.style.alignItems = 'center';
-
-                imgElement.alt = "Festival Image";
-                imgElement.classList.add("img-fluid");
-                imageGallery.appendChild(imgElement);
-              });
+            if (filteredData.length === 0) {
+                const noResultsRow = document.createElement('tr');
+                noResultsRow.innerHTML = `
+                    <td colspan="14" style="text-align: center;">There are no relevant search results.</td>
+                `;
+                tableBody.appendChild(noResultsRow);
             } else {
-              // If no images, display a placeholder or message
-              imageGallery.innerHTML = `<p>No images available.</p>`;
+                // Populate the table with sorted search results
+                filteredData.forEach((user, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${user.id}</td>
+                        <td>
+                            <button class="img-button btn-primary btn-sm" data-index="${index}" data-toggle="modal" data-target="#imageModal" data-image-src="${user.photos && user.photos.length > 0 ? user.photos.join(',') : ''}">
+                                <i class="fa fa-image"></i>
+                            </button>
+                        </td>
+                        <td>${user.title}</td>
+                        <td>${user.description}</td>
+                        <td>${user.category}</td>
+                        <td>${user.province}</td>
+                        <td>${user.city}</td>
+                        <td>${user.barangay}</td>
+                        <td>${user.contact}</td>
+                        <td>
+                            <ul>
+                                <li>Facebook: <a href="${user.social_links ? user.social_links.fb : ''}" target="_blank">${user.social_links ? user.social_links.fb : ''}</a></li>
+                                <li>Website: <a href="${user.social_links ? user.social_links.website : ''}" target="_blank">${user.social_links ? user.social_links.website : ''}</a></li>
+                            </ul>
+                        </td>
+                        <td>${getSeasonNameById(user.season_id, seasonsData)}</td>
+                        <td>${user.created_at}</td>
+                        <td>${user.updated_at}</td>
+                        <td>
+                            <button class="btn btn-primary btn-sm edit-button" data-user-id="${user.id}">
+                                <i class="fa fa-pen"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm delete-button">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
             }
-          });
-        });
-      })
-      .catch((error) => console.error('Error fetching data:', error));
-  }
+
+            const deleteButtons = document.querySelectorAll('.delete-button');
+            const confirmationModal = document.getElementById('confirmationModal');
+            const confirmDeleteButton = document.getElementById('confirmDeleteButton');
+            const cancelDeleteButton = document.getElementById('cancelDeleteButton');
+            let deleteTargetRow = null;
+
+            deleteButtons.forEach((button) => {
+                button.addEventListener('click', (event) => {
+                    const button = event.target;
+                    const row = button.closest('tr');
+                    const userId = row.querySelector('td:first-child').textContent;
+
+                    // Store the target row for deletion
+                    deleteTargetRow = row;
+
+                    // Show the confirmation modal
+                    confirmationModal.style.display = 'block';
+                });
+            });
+
+            confirmDeleteButton.addEventListener('click', async () => {
+                if (deleteTargetRow) {
+                    const userId = deleteTargetRow.querySelector('td:first-child').textContent;
+
+                    try {
+                        const accessToken = getAccessTokenFromLocalStorage();
+                        const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places/${userId}?role=ADMIN`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${accessToken}`
+                            }
+                        });
+
+                        if (response.ok) {
+                            deleteTargetRow.remove();
+                        } else {
+                            const responseData = await response.text();
+                            console.error(`Error deleting user: ${response.status} ${response.statusText}`, responseData);
+                        }
+                    } catch (error) {
+                        console.error('Error deleting user:', error.message);
+                    } finally {
+                        // Hide the confirmation modal
+                        confirmationModal.style.display = 'none';
+                    }
+                }
+            });
+
+            cancelDeleteButton.addEventListener('click', () => {
+                // Hide the confirmation modal
+                confirmationModal.style.display = 'none';
+            });
+
+            const editButtons = document.querySelectorAll('.edit-button');
+            editButtons.forEach((button) => {
+                button.addEventListener('click', editRow);
+            });
+
+            // After rows are added to the table, find all img-buttons and add event listeners
+            const imgButtons = document.querySelectorAll(".img-button");
+            imgButtons.forEach((button) => {
+                button.addEventListener("click", function () {
+                    const index = this.getAttribute("data-index"); // Retrieve index from data attribute
+                    const userData = filteredData[index]; // Access the user data using the index
+                    console.log('Data for clicked row:', userData);
+
+                    const imageSrcArray = userData.photos || []; // Directly use userData.images array
+                    const imageGallery = document.getElementById("imageGallery");
+
+                    // Clear previous images
+                    imageGallery.innerHTML = '';
+
+                    // Check if there are images and create an img element for each one
+                    if (imageSrcArray.length > 0) {
+                        imageSrcArray.forEach((imageSrc) => {
+                            const imgElement = document.createElement('img');
+                            imgElement.src = imageSrc;
+
+                            // Set a fixed size for the image
+                            imgElement.style.width = "120px";
+                            imgElement.style.height = "120px";
+                            imgElement.style.objectFit = "cover";
+                            imgElement.style.margin = "10px";
+                            imageGallery.style.justifyContent = 'center';
+                            imageGallery.style.alignItems = 'center';
+
+                            imgElement.alt = "Festival Image";
+                            imgElement.classList.add("img-fluid");
+                            imageGallery.appendChild(imgElement);
+                        });
+                    } else {
+                        // If no images, display a placeholder or message
+                        imageGallery.innerHTML = `<p>No images available.</p>`;
+                    }
+                });
+            });
+        })
+        .catch((error) => console.error('Error fetching data:', error));
+}
+
+function getSeasonNameById(seasonId, seasonsData) {
+    const season = seasonsData.find((season) => season.id === seasonId);
+    return season ? season.name : 'Unknown Season';
+}
+
 
 
 

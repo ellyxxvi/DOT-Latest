@@ -4,11 +4,11 @@ const API_HOSTNAME = 'goexplorebatangas.com/api';
 // const API_HOSTNAME = '13.229.101.17/api'
 
 const categoryToIcon = {
-  'Swim and Beaches': 'fas fa-water',
-  'Nature Trip': 'fas fa-leaf',
-  'Tourist Spots': 'fas fa-location-dot',
-  'Hotel': 'fas fa-hotel',
-  'Churches': 'fas fa-church',
+  'swim and beaches': 'fas fa-water',
+  'nature trip': 'fas fa-leaf',
+  'tourist spots': 'fas fa-location-dot',
+  'hotel': 'fas fa-hotel',
+  'churches': 'fas fa-church',
   'events': 'fas fa-calendar-days',
 
 };

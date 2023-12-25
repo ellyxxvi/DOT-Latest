@@ -33,10 +33,11 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   const images = [
-    'image/places/churches.png',
-    'image/places/hotels.png',
-    'image/places/naturetrip.png',
-  ];
+    'image/banig.jpg',
+    'image/bg1.jpg',
+    'image/barako.jpg',
+];
+
 
   const carouselInner = document.querySelector('.carousel-inner');
 

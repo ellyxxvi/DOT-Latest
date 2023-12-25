@@ -30,12 +30,11 @@ document.addEventListener("DOMContentLoaded", function () {
   builderButton.addEventListener("click", function () {
     window.location.href = "itinerary-builder.php";
   });
-
   const images = [
-    'image/places/churches.png',
-    'image/places/hotels.png',
-    'image/places/naturetrip.png',
-  ];
+    'image/banig.jpg',
+    'image/bg1.jpg',
+    'image/barako.jpg',
+];
 
   const carouselInner = document.querySelector('.carousel-inner');
 

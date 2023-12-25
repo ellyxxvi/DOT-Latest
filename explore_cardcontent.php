@@ -16,10 +16,12 @@
     <script src="https://kit.fontawesome.com/e173e574d6.js" crossorigin="anonymous"></script>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css" rel="stylesheet">
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
 
 
     <link rel="icon" href="image/LOGO (2).png" type="image/png">
+
 
 </head>
 
@@ -44,21 +46,6 @@
         <button id="add-to-favorites" class="add-to-favorites">
             <i class="fas fa-heart"></i> Add to Favorites
         </button>
-        <div class="extra-icons">
-            <button class="icon-button" id="contact-icon">
-                <i class="fas fa-phone"></i> Contact
-            </button>
-            <button class="icon-button" id="facebookIcon">
-                <i class="fab fa-facebook"></i> Facebook
-            </button>
-            <button class="icon-button" id="websiteIcon">
-                <i class="fas fa-globe"></i> Website
-            </button>
-
-            <button class="icon-button" id="address-icon">
-                <i class="fas fa-map-marker-alt"></i> Address
-            </button>
-        </div>
     </section>
 
 
@@ -115,16 +102,64 @@
         <button data-rating="1">1 Star</button>
     </div>
 
-    <!-- Comments Section -->
-    <section class="comments-section">
-        <div class="comment-cards-container"></div>
-    </section>
+    <div class="row">
+        <!-- Comments Section Column -->
+        <div class="col-md-6">
+            <section class="comments-section">
+                <div class="comment-cards-container" id="commentCardsContainer">
+                    <!-- Your comment cards go here -->
+                </div>
+            </section>
+        </div>
+
+        <div class="col-md-6 place-details">
+            <div class="contact-card">
+                <!-- Contact Details -->
+                <div class="contact-details">
+                    <!-- dynamic details -->
+                </div>
+
+                <!-- Address -->
+                <div class="address">
+                    <!-- dynamic details -->
+                </div>
+
+                <!-- Social Links as buttons -->
+                <div class="social-links">
+                    <h5>Social Links</h5>
+                    <button id="facebookIcon" class="social-button"><i class="fab fa-facebook"></i> Facebook</button>
+                    <button id="websiteIcon" class="social-button"><i class="fas fa-globe"></i> Website</button>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-6 map-placement">
+                    <div class="iframe">
+                        <iframe src="wheretogo_maps.html" width="100%" height="585" frameborder="0" background="transparent"></iframe>
+                    </div>
+                </div>
+                <div id="nearbyPlacesContainer" class="col-md-6 list-nearby-places">
+                    <div class="list-card overflow-auto">
+                        <h5>Nearby Places</h5>
+                        <ul id="ul-nearby-places" class="ul-nearby-places">
+                            <!-- List items will be appended here dynamically -->
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
     <?php include 'footer.php'; ?>
     <script src="js/explore_cardcontent.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.5/popper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
+
+
 </body>
 
 </html>

@@ -2,11 +2,10 @@
 <!-- Coding By CodingNepal - youtube.com/codingnepal -->
 <html lang="en" dir="ltr">
 
-
 <head>
     <meta charset="utf-8">
-    <title>RECOMMENDED</title>
-    <link rel="stylesheet" href="css/home_recommended.css">
+    <title>SEASON</title>
+    <link rel="stylesheet" href="css/home_season.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Fontawesome Link for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
@@ -14,129 +13,118 @@
 </head>
 
 <body>
-    <div>
-        <h1>RECOMMENDED</h1>
+    <div class="row">
+        <div class="wrapper">
+            <i id="left" class="fa-solid fa-angle-left"></i>
+            <ul class="carousel">
+                <!-- Cards will be generated dynamically here -->
+            </ul>
+            <i id="right" class="fa-solid fa-angle-right"></i>
+        </div>
     </div>
-    <div class="wrapper">
-        <i id="left" class="fa-solid fa-angle-left"></i>
-        <ul class="carousel">
-            <!-- Cards will be generated dynamically here -->
-        </ul>
-        <i id="right" class="fa-solid fa-angle-right"></i>
-    </div>
+     
     <script>
-const token = localStorage.getItem('access_token');
-if (!token) {
-    document.documentElement.style.display = 'none';
-}
-const API_PROTOCOL = 'https';
-const API_HOSTNAME = 'goexplorebatangas.com/api';
+        const API_PROTOCOL = 'https';
+        const API_HOSTNAME = 'goexplorebatangas.com/api';
 
-async function fetchUserPreferences() {
-    try {
-        const token = localStorage.getItem('access_token');
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
+        async function fetchPlacesData() {
+            try {
+                const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
 
-        const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/recommendation/user/preferences?type=most-visited`, {
-            headers: headers,
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error fetching user preferences: ${response.status}`);
+                return Array.isArray(data) ? data : [];
+            } catch (error) {
+                console.error('Error fetching all places data:', error);
+                return [];
+            }
         }
 
-        const data = await response.json();
-        return Array.isArray(data) ? data : [];
-    } catch (error) {
-        console.error('Error fetching user preferences:', error);
-        return [];
-    }
-}
-
-// Function to fetch user history
-async function fetchUserHistory() {
-    try {
-        const token = localStorage.getItem('access_token');
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
-
-        const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/recommendation/user/preferences?type=most-rated`, {
-            headers: headers,
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error fetching user history: ${response.status}`);
+        async function fetchSeasonsData() {
+            try {
+               
+                const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/seasons`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const seasonsData = await response.json();
+               
+                return seasonsData;
+            } catch (error) {
+                console.error('Error fetching seasons data:', error);
+                return [];
+            }
         }
 
-        const data = await response.json();
-        return Array.isArray(data) ? data : [];
-    } catch (error) {
-        console.error('Error fetching user history:', error);
-        return [];
-    }
-}
+        async function displayRecommendedPlaces() {
+            try {
+                const allPlacesData = await fetchPlacesData();
+                const seasonsData = await fetchSeasonsData();
 
-function parseJwt(token) {
-    try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(
-            atob(base64)
-                .split('')
-                .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-                .join('')
-        );
-        return JSON.parse(jsonPayload);
-    } catch (error) {
-        console.error('Error parsing JWT:', error);
-        console.log('Token:', token);
-        return null;
-    }
-}
+                if (allPlacesData.length === 0 || seasonsData.length === 0) {
+                    console.error('No places or seasons data found.');
+                    return;
+                }
 
-async function displayRecommendedPlaces() {
-    try {
-        const recommendedPlaces = await fetchUserPreferences();
+                // Find the current season based on the current date
+                const currentDate = new Date();
+                const currentMonthDay = currentDate.toISOString().slice(5, 10); // Get only MM-DD format
 
-        console.log('Recommended Places:', recommendedPlaces);
+                const currentSeason = seasonsData.find(season => {
+                    const fromMonthDay = season.from_date.slice(5, 10);
+                    const toMonthDay = season.to_date.slice(5, 10);
 
-        const carousel = document.querySelector('.carousel');
+                    // Handle the case where the season spans the end of the year
+                    if (fromMonthDay <= toMonthDay) {
+                        return currentMonthDay >= fromMonthDay && currentMonthDay <= toMonthDay;
+                    } else {
+                        // Season spans the end of the year (e.g., Dec 25 to Jan 5)
+                        return currentMonthDay >= fromMonthDay || currentMonthDay <= toMonthDay;
+                    }
+                });
 
-        // Clear existing carousel content
-        carousel.innerHTML = '';
+                if (!currentSeason) {
+                    console.error('No matching season found for the current date.');
+                    return;
+                }
 
-        recommendedPlaces.forEach(place => {
-            if (!place || !place.category || !place.photos || place.photos.length === 0) {
-                console.log('Invalid place data:', place);
-                return;
-            }
 
-            const cardElement = document.createElement("li");
-            cardElement.className = "card";
+                // Filter places based on the current season's id
+                const placesWithSameSeason = allPlacesData.filter(place => place.season_id === currentSeason.id);
 
-            const firstPhotoUrl = place.photos[0];
+                const carousel = document.querySelector('.carousel');
 
-            if (firstPhotoUrl) {
-                cardElement.style.backgroundImage = `url('${firstPhotoUrl}')`;
-            } else {
-                console.log('NO PHOTO for place:', place.title);
-            }
+                placesWithSameSeason.forEach(place => {
+                    if (!place || !place.category || !place.photos || place.photos.length === 0) {
+                      
+                        return;
+                    }
 
-            cardElement.innerHTML = `
-            <div class="icon card-icon fas fa-check"></div>
-            <h2>${place.title}</h2>
-            <span>${place.category}</span>
-        `;
+                    const cardElement = document.createElement("li");
+                    cardElement.className = "card";
 
-            cardElement.addEventListener("click", () => {
-                window.top.location.href = `explore_cardcontent.php?id=${place.id}`;
-            });
+                    const firstPhotoUrl = place.photos[0];
 
-            carousel.appendChild(cardElement);
-        });
+                    if (firstPhotoUrl) {
+                        cardElement.style.backgroundImage = `url('${firstPhotoUrl}')`;
+                    } else {
+                        console.log('NO PHOTO for place:', place.title);
+                    }
+
+                    cardElement.innerHTML = `
+                        <div class="icon card-icon fas fa-bell"></div>
+                        <h2>${place.title}</h2>
+                        <span>${place.category}</span>
+                    `;
+
+                    cardElement.addEventListener("click", () => {
+                        window.top.location.href = `explore_cardcontent.php?id=${place.id}`;
+                    });
+
+                    carousel.appendChild(cardElement);
+                });
 
                 const firstCard = carousel.querySelector(".card");
                 if (firstCard) {
@@ -219,10 +207,7 @@ async function displayRecommendedPlaces() {
         }
 
         document.addEventListener('DOMContentLoaded', displayRecommendedPlaces);
-
-
     </script>
-
 </body>
 
 </html>

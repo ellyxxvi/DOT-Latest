@@ -40,19 +40,19 @@
         <div class="header">
           <h1>EXPLORE INTERESTS</h1>
         </div>
-        <li><a href="#" class="category-link swim-beaches" data-category="Swim and Beaches"><i class="fa-solid fa-water"></i>
+        <li><a href="#" class="category-link swim-beaches" data-category="swim and beaches"><i class="fa-solid fa-water"></i>
             <p>Swim and Beaches</p>
           </a></li>
-        <li><a href="#" class="category-link nature-trip" data-category="Nature Trip"><i class="fa-solid fa-leaf"></i>
+        <li><a href="#" class="category-link nature-trip" data-category="nature trip"><i class="fa-solid fa-leaf"></i>
             <p>Nature Trip</p>
           </a></li>
-        <li><a href="#" class="category-link tourist-spots" data-category="Tourist Spots"><i class="fas fa-map-marker-alt"></i>
+        <li><a href="#" class="category-link tourist-spots" data-category="tourist spots"><i class="fas fa-map-marker-alt"></i>
             <p>Tourist Spots</p>
           </a></li>
-        <li><a href="#" class="category-link hotel" data-category="Hotel"><i class="fa-solid fa-hotel"></i>
+        <li><a href="#" class="category-link hotel" data-category="hotel"><i class="fa-solid fa-hotel"></i>
             <p>Hotel</p>
           </a></li>
-        <li><a href="#" class="category-link churches" data-category="Churches"><i class="fa-solid fa-church"></i>
+        <li><a href="#" class="category-link churches" data-category="churches"><i class="fa-solid fa-church"></i>
             <p>Churches</p>
           </a></li>
         <!-- <li><a href="#" class="category-link events-culture" data-category="events"><i class="fa-solid fa-calendar-days"></i><p>Events and Culture</p></a></li> -->

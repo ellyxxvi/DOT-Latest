@@ -25,7 +25,7 @@
     <div class="row">
       <div class="row">
         <div class="card">
-          <a href="explore_main.php?category=swim">
+          <a href="explore_main.php?category=swim and beaches">
             <div class="icon-wrapper">
               <i class="fa-solid fa-water"></i>
             </div>
@@ -35,7 +35,7 @@
       </div>
       <div class="row">
         <div class="card2">
-          <a href="explore_main.php?category=nature">
+          <a href="explore_main.php?category=nature trip">
             <div class="icon-wrapper2">
               <i class="fa-solid fa-leaf"></i>
             </div>
@@ -45,7 +45,7 @@
       </div>
       <div class="row">
         <div class="card3">
-          <a href="explore_main.php?category=tourists">
+          <a href="explore_main.php?category=tourist spots">
             <div class="icon-wrapper3">
               <i class="fa-solid fa-location-dot"></i>
             </div>
@@ -55,7 +55,7 @@
       </div>
       <div class="row">
         <div class="card4">
-          <a href="explore_main.php?category=resort">
+          <a href="explore_main.php?category=hotel">
             <div class="icon-wrapper4">
               <i class="fa-solid fa-hotel"></i>
             </div>
@@ -115,6 +115,15 @@
   </div>
   <div class="iframe">
     <iframe iframe id="recommendedIframe" src="home_recommended.html" width="100%" height="585" frameborder="0" background="transparent"></iframe>
+  </div>
+  <section class="season-heading">
+        <div>
+            <h1 id="seasonTitle" class="season-title"></h1>
+           <p id="seasonDescription" class="season-description"></p>
+        </div>
+  </section>
+  <div class="iframe">
+    <iframe iframe id="recommendedIframe" src="home_season.html" width="100%" height="585" frameborder="0" background="transparent"></iframe>
   </div>
 
   <script src="js/home_main.js"></script>
