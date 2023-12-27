@@ -82,184 +82,158 @@ document.addEventListener('DOMContentLoaded', function () {
     return response.json();
   }
 
-  // Fetch data from JSON server and populate the table
-  function populateTable() {
-    fetch(`${API_PROTOCOL}://${API_HOSTNAME}/where-to-go`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        // Sort the data by created_at in descending order (newest first)
-        data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-        tableBody.innerHTML = '';
-        data.forEach(user => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${user.id}</td>
-            <td><img src=${user.images} alt="" class="img-thumbnail" width="100px"></td>
-            <td>${user.title}</td>
-            <td>${user.description}</td>
-            <td>${formatHotlines(user.hotlines)}</td> <!-- Display hotlines here -->
-            <td>${user.created_at}</td>
-            <td>${user.updated_at}</td>
-            
-            <td>
-              <button class="btn btn-primary btn-sm edit-button" data-user-id="${user.id}">
-                <i class="fa fa-pen"></i>
-              </button>
-              <button class="btn btn-danger btn-sm delete-button">
-                <i class="fa fa-trash"></i>
-              </button>
-            </td>
-          `;
-          tableBody.appendChild(row);
-        });
-
-        function formatHotlines(hotlines) {
-          if (!hotlines) return '';
-
-          let result = '<ul>';
-          for (const [name, number] of Object.entries(hotlines)) {
-            result += `<li>${name}: ${number}</li>`;
+    // Fetch data from JSON server and populate the table
+    function populateTable() {
+      fetch(`${API_PROTOCOL}://${API_HOSTNAME}/where-to-go`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
           }
-          result += '</ul>';
-          return result;
-        }
-
-        const deleteButtons = document.querySelectorAll('.delete-button');
-        const confirmationModal = document.getElementById('confirmationModal');
-        const confirmDeleteButton = document.getElementById('confirmDeleteButton');
-        const cancelDeleteButton = document.getElementById('cancelDeleteButton');
-        let deleteTargetRow = null;
-
-        deleteButtons.forEach(button => {
-          button.addEventListener('click', (event) => {
-            const button = event.target;
-            const row = button.closest('tr');
-            const userId = row.querySelector('td:first-child').textContent;
-
-            // Store the target row for deletion
-            deleteTargetRow = row;
-
-            // Show the confirmation modal
-            confirmationModal.style.display = 'block';
+          return response.json();
+        })
+        .then(data => {
+          // Sort the data by created_at in descending order (newest first)
+          data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+          tableBody.innerHTML = '';
+          data.forEach(user => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${user.id}</td>
+              <td><img src=${user.images} alt="" class="img-thumbnail" width="100px"></td>
+              <td>${user.title}</td>
+              <td>${user.description}</td>
+              <td>${formatHotlines(user.hotlines)}</td> <!-- Display hotlines here -->
+              <td>${user.created_at}</td>
+              <td>${user.updated_at}</td>
+              
+              <td>
+                <button class="btn btn-primary btn-sm edit-button" data-user-id="${user.id}">
+                  <i class="fa fa-pen"></i>
+                </button>
+                <button class="btn btn-danger btn-sm delete-button">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            `;
+            tableBody.appendChild(row);
           });
-        });
-
-        confirmDeleteButton.addEventListener('click', async () => {
-          if (deleteTargetRow) {
-            const userId = deleteTargetRow.querySelector('td:first-child').textContent;
-
-            try {
-              const accessToken = getAccessTokenFromLocalStorage();
-              const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/where-to-go/${userId}?role=ADMIN`, {
-                method: 'DELETE',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${accessToken}`
-                }
-              });
-
-              if (response.ok) {
-                deleteTargetRow.remove();
-              } else {
-                const responseData = await response.text();
-                console.error(`Error deleting user: ${response.status} ${response.statusText}`, responseData);
-              }
-            } catch (error) {
-              console.error('Error deleting user:', error.message);
-            } finally {
-              // Hide the confirmation modal
-              confirmationModal.style.display = 'none';
+  
+          function formatHotlines(hotlines) {
+            if (!hotlines) return '';
+  
+            let result = '<ul>';
+            for (const [name, number] of Object.entries(hotlines)) {
+              result += `<li>${name}: ${number}</li>`;
             }
+            result += '</ul>';
+            return result;
           }
+  
+          const deleteButtons = document.querySelectorAll('.delete-button');
+          const confirmationModal = document.getElementById('confirmationModal');
+          const confirmDeleteButton = document.getElementById('confirmDeleteButton');
+          const cancelDeleteButton = document.getElementById('cancelDeleteButton');
+          let deleteTargetRow = null;
+  
+          deleteButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+              const button = event.target;
+              const row = button.closest('tr');
+              const userId = row.querySelector('td:first-child').textContent;
+  
+              // Store the target row for deletion
+              deleteTargetRow = row;
+  
+              // Show the confirmation modal
+              confirmationModal.style.display = 'block';
+            });
+          });
+  
+          confirmDeleteButton.addEventListener('click', async () => {
+            if (deleteTargetRow) {
+              const userId = deleteTargetRow.querySelector('td:first-child').textContent;
+  
+              try {
+                const accessToken = getAccessTokenFromLocalStorage();
+                const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/where-to-go/${userId}?role=ADMIN`, {
+                  method: 'DELETE',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`
+                  }
+                });
+  
+                if (response.ok) {
+                  deleteTargetRow.remove();
+                } else {
+                  const responseData = await response.text();
+                  console.error(`Error deleting user: ${response.status} ${response.statusText}`, responseData);
+                }
+              } catch (error) {
+                console.error('Error deleting user:', error.message);
+              } finally {
+                // Hide the confirmation modal
+                confirmationModal.style.display = 'none';
+              }
+            }
+          });
+  
+          cancelDeleteButton.addEventListener('click', () => {
+            // Hide the confirmation modal
+            confirmationModal.style.display = 'none';
+          });
+  
+          const editButtons = document.querySelectorAll('.edit-button');
+          editButtons.forEach(button => {
+            button.addEventListener('click', editRow);
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching or processing data:', error);
+          // You can handle the error here, e.g., display an error message to the user
         });
-
-        cancelDeleteButton.addEventListener('click', () => {
-          // Hide the confirmation modal
-          confirmationModal.style.display = 'none';
-        });
-
-        const editButtons = document.querySelectorAll('.edit-button');
-        editButtons.forEach(button => {
-          button.addEventListener('click', editRow);
-        });
-      })
-      .catch(error => {
-        console.error('Error fetching or processing data:', error);
-        // You can handle the error here, e.g., display an error message to the user
-      });
-  }
+    }
 
   // handles image uploads
   const addForm = document.getElementById('add-user-form');
-  async function editRow(event) {
+  // Modified editRow function
+  function editRow(event) {
     const button = event.target;
     const row = button.closest('tr');
     const userId = row.querySelector('td:first-child').textContent;
-  
-    try {
-      const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/where-to-go/${userId}`, {
-        headers: {
-          'Authorization': `Bearer ${getAccessTokenFromLocalStorage()}`,
-        },
-      });
-  
-      if (!response.ok) {
-        throw new Error(`Error fetching user data. Status: ${response.status}`);
-      }
-  
-      const user = await response.json();
-      console.log('Fetched Data for Editing Row:', JSON.stringify(user, null, 2));
-  
-      editForm.elements.id.value = user.id;
-      editForm.elements.title.value = user.title;
-      editForm.elements.description.value = user.description;
-  
-      const existingImageURL = user.images;
-      const imagePreview = document.getElementById('edit-image-preview');
-      imagePreview.src = existingImageURL;
-  
-      editForm.elements.existingImage.value = existingImageURL;
-  
-      await displayHotlinesInEditForm(user.hotlines);
-  
-      updatedUser.id = user.id;
-      editModal.show();
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-    }
-  }
-  
-  async function displayHotlinesInEditForm(hotlines) {
-    const hotlinesContainer = document.getElementById('emergencyHotlinesContainer');
-    hotlinesContainer.innerHTML = '';
-  
-    if (hotlines && typeof hotlines === 'object') {
-      let index = 0;
-  
-      for (const [name, number] of Object.entries(hotlines)) {
-        const entry = document.createElement('div');
-        entry.classList.add('emergency-hotline-entry', 'mb-3');
-  
-        entry.innerHTML = `
-          <input type="text" class="form-control edit-hotline-name" name="hotlineName" value="${name}" placeholder="Name">
-          <input type="text" class="form-control edit-hotline-number" name="hotlineNumber" value="${number}" placeholder="Number">
-        `;
-  
-        hotlinesContainer.appendChild(entry);
-        index++;
-      }
-    }
-  
-    // Log the generated HTML for debugging
-    console.log('Generated HTML:', hotlinesContainer.innerHTML);
-  }
-  
 
+    fetch(`${API_PROTOCOL}://${API_HOSTNAME}/where-to-go/${userId}`, {
+      headers: {
+        'Authorization': `Bearer ${getAccessTokenFromLocalStorage()}`,
+      },
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Error fetching user data. Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(user => {
+        editForm.elements.id.value = user.id;
+        editForm.elements.title.value = user.title;
+        editForm.elements.description.value = user.description;
+
+        // Display the existing image URL
+        const existingImageURL = user.images;
+        const imagePreview = document.getElementById('edit-image-preview');
+        imagePreview.src = existingImageURL;
+
+        // Store the existing image URL in a hidden input field
+        editForm.elements.existingImage.value = existingImageURL;
+
+        // Set the id property in the updatedUser object
+        updatedUser.id = user.id;
+        editModal.show();
+      })
+      .catch(error => {
+        console.error('Error fetching user data:', error);
+      });
+  }
 
   // Handle edit form submission
   editForm.addEventListener('submit', async (event) => {
@@ -380,7 +354,6 @@ document.addEventListener('DOMContentLoaded', function () {
     return converted;
   };
 
-
   const addEmergencyHotlineButton = document.getElementById('addEmergencyHotline');
   addEmergencyHotlineButton.addEventListener('click', function () {
     const emergencyHotlineEntry = document.querySelector('.emergency-hotline-entry');
@@ -393,14 +366,35 @@ document.addEventListener('DOMContentLoaded', function () {
     emergencyHotlinesContainer.appendChild(clonedEmergencyHotlineEntry);
   });
 
-
-  addAccountButton.addEventListener('click', async () => {
+  addAccountButton.addEventListener('click', () => {
     const form = document.getElementById('add-user-form');
     const formData = new FormData(form);
     const imageInput = form.querySelector('#images');
     const imageFile = imageInput.files[0];
 
-    // Get the access token from localStorage
+    const emergencyHotlineEntries = document.querySelectorAll('.emergency-hotline-entry');
+    const emergencyHotlines = {};
+
+    emergencyHotlineEntries.forEach((entry, index) => {
+      const nameInput = entry.querySelector('.emergency-hotline-name');
+      const numberInput = entry.querySelector('.emergency-hotline-number');
+
+      if (nameInput) {
+        emergencyHotlines[`${nameInput.value}`] = numberInput.value;
+      }
+    });
+
+    formData.delete('name');
+    formData.delete('number');
+
+    const user = {
+      ...renameObjProperty(Object.fromEntries(formData.entries()), 'city', 'title'),
+      images: [],
+      hotlines: emergencyHotlines,
+    };
+
+    console.log('User data to be sent:', user);
+
     const accessToken = getAccessTokenFromLocalStorage();
 
     if (!accessToken) {
@@ -408,120 +402,73 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    // Handle image upload
-    let images = [];
     if (imageFile) {
-      try {
-        const imageFormData = new FormData();
-        imageFormData.append('photo', imageFile);
+      const imageFormData = new FormData();
+      imageFormData.append('photo', imageFile);
 
-        const imageUploadResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/images`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-          },
-          body: imageFormData,
-        });
-
-        if (!imageUploadResponse.ok) {
-          console.error('Image upload failed. Status:', imageUploadResponse.status);
-          const errorText = await imageUploadResponse.text();
-          console.error('Image upload error response:', errorText);
-          throw new Error('Image upload failed.');
-        }
-
-        const imageData = await imageUploadResponse.json();
-        console.log('Uploaded image URL:', imageData.http_img_url);
-        images = [imageData.http_img_url];
-      } catch (error) {
-        console.error('Image upload error:', error);
-        return;
-      }
-    }
-
-    // Handle emergency hotlines
-    const emergencyHotlines = {};
-    const emergencyHotlineEntries = document.querySelectorAll('.emergency-hotline-entry');
-    emergencyHotlineEntries.forEach(entry => {
-      const name = entry.querySelector('.emergency-hotline-name').value;
-      const number = entry.querySelector('.emergency-hotline-number').value;
-      if (name && number) {
-        emergencyHotlines[name] = number;
-      }
-    });
-
-    // Include emergency hotlines in the user object
-    const user = {
-      ...renameObjProperty(Object.fromEntries(formData.entries()), 'city', 'title'),
-      images,
-      hotlines: emergencyHotlines,
-    };
-
-    // Remove the 'name' and 'number' properties if they exist
-    delete user.name;
-    delete user.number;
-    // Handle user creation
-    try {
-      console.log('User data to be sent to the server:', JSON.stringify(user)); // Add this line for logging
-      const userCreateResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/where-to-go`, {
+      fetch(`${API_PROTOCOL}://${API_HOSTNAME}/images`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(user),
-      });
+        body: imageFormData,
+      })
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            console.error('Image upload failed. Status:', response.status);
+            return response.text().then(text => {
+              console.error('Image upload error response:', text);
+              throw new Error('Image upload failed.');
+            });
+          }
+        })
+        .then(imageData => {
+          console.log('Uploaded image URL:', imageData.http_img_url);
 
-      if (!userCreateResponse.ok) {
-        console.error('User data could not be added. Status:', userCreateResponse.status);
-        const errorText = await userCreateResponse.text();
-        console.error('User data error response:', errorText);
-        throw new Error('User data could not be added.');
-      }
+          user.images = [imageData.http_img_url];
 
-      const userData = await userCreateResponse.json();
-      console.log('User response:', userData);
-      form.reset();
-      this.location.reload();
-      populateTable();
-    } catch (error) {
-      console.error('Error adding user data:', error);
+          sendUserDataToServer(user, accessToken);
+        })
+        .catch(error => {
+          console.error('Image upload error:', error);
+        });
+    } else {
+      sendUserDataToServer(user, accessToken);
     }
   });
 
-
-
-
-
-  // Handle delete button
-  async function deleteRow(event) {
-    const button = event.target;
-    const row = button.closest('tr');
-    const userId = row.querySelector('td:first-child').textContent;
-
-    try {
-      const accessToken = getAccessTokenFromLocalStorage();
-      const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/where-to-go/${userId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
-        },
-      });
-
-      if (response.ok) {
-        row.remove();
-      } else {
-        const responseData = await response.text();
-        console.error(`Error deleting user: ${response.status} ${response.statusText}`, responseData);
-      }
-    } catch (error) {
-      console.error('Error deleting user:', error.message);
-    }
+  function sendUserDataToServer(user, accessToken) {
+    fetch(`${API_PROTOCOL}://${API_HOSTNAME}/where-to-go`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(user),
+    })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          console.error('User data could not be added. Status:', response.status);
+          return response.text().then(text => {
+            console.error('User data error response:', text);
+            throw new Error('User data could not be added.');
+          });
+        }
+      })
+      .then(userData => {
+        console.log('User response:', userData);
+        const form = document.getElementById('add-user-form');
+        form.reset();
+        this.location.reload();
+        populateTable();
+      })
+      .catch(error => console.error('Error adding user data:', error));
   }
 
-
-  // Populate the table on page load
   populateTable();
 
 });
