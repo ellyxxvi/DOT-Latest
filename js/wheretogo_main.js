@@ -29,6 +29,8 @@ function generateServiceCard(service) {
   `;
 }
 
+
+
 // Function to generate service cards using fetched data
 function generateServiceCards() {
   fetchServicesData().then(function (servicesData) {
@@ -49,15 +51,4 @@ function generateServiceCards() {
   });
 }
 
-// cityOptions.forEach(option => {
-//   option.addEventListener('click', () => {
-//     const selectedCity = option.getAttribute('data-city');
-//     localStorage.setItem('selectedCity', selectedCity);
-//     // Clear existing cards in the carousel
-//     carousel.innerHTML = '';
-//     fetchAndGenerateCardsForCity(selectedCity);
-//   });
-// });
-
-// Call the function to generate service cards
 generateServiceCards();

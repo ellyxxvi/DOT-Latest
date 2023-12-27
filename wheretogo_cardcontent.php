@@ -37,6 +37,9 @@
   <div class="iframe">
     <iframe src="wheretogo_carousel.html" width="100%" height="585" frameborder="0" background="transparent"></iframe>
   </div>
+  <div class="iframe">
+    <iframe iframe id="recommendedIframe" src="famousthings-carousel.html" width="100%" height="585" frameborder="0" background="transparent"></iframe>
+  </div>
 
   <!-- <div class="iframe">
     <iframe src="wheretogo_maps.html" width="100%" height="585" frameborder="0" background="transparent"></iframe>

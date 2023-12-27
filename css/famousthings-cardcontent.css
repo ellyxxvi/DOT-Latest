@@ -1,0 +1,177 @@
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/Poppins-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Poppins Bold';
+    src: url('../fonts/Poppins-Bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Lemon Milk';
+    src: url('../fonts/LemonMilk.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    margin: 0px;
+    font-family: 'Poppins';
+    background-color: rgb(255, 255, 255);
+  }
+  
+  .bg-image {
+    height: 450px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .overlay {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  
+  .overlay-title {
+    color: white;
+    font-size: 70px;
+    text-align: center;
+    font-family: 'Lemon Milk';
+  }
+  
+  .festival-details {
+    padding: 50px;
+    margin-left: 200px;
+    margin-right: 200px;
+    text-align: center;
+  }
+  
+  .festival-title {
+    background-color: #F2C327;
+    color: black;
+    font-size: 18px;
+    font-weight: bold;
+    margin-left: 300px;
+    padding: 15px;
+    display: inline-block;
+  }
+  
+  .festival-description {
+    font-size: 18px;
+    /* margin-top: 10px; */
+  }
+  
+  .wheretostay-container {
+    background-color: rgb(46, 46, 46);
+  }
+  
+  .where-to-stay {
+    background-color: #F2C327;
+    color: black;
+    font-size: 18px;
+    font-weight: bold;
+    margin-left: 300px;
+    padding: 15px;
+    display: inline-block;
+  }
+  
+  /* Start Gallery CSS */
+  .container {
+    padding: 50px;
+  }
+  
+  .thumb {
+    margin-bottom: 15px;
+  }
+  
+  .thumb:last-child {
+    margin-bottom: 0;
+  }
+  
+  /* .thumb 
+  figure img {
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+    -webkit-transition: .3s ease-in-out;
+    transition: .3s ease-in-out;
+  }
+  .thumb 
+  figure:hover img {
+    -webkit-filter: grayscale(0);
+    filter: grayscale(0);
+  } */
+  
+  .image-gallery {
+    height: 400px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: url('../image/places-bg2.png');
+    background-position: center;
+  }
+  #dynamic-gallery {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  #dynamic-gallery .col-lg-3,
+  #dynamic-gallery .col-md-4,
+  #dynamic-gallery .col-xs-6,
+  #dynamic-gallery .thumb {
+      margin: 0 auto; 
+      display: flex;
+      justify-content: center;
+  }
+  
+  
+  
+  
+  @media screen and (max-width: 768px) {
+    .festival-details {
+      padding: 20px;
+      margin: 0;
+    }
+  
+    .festival-title,
+    .where-to-stay {
+      margin-left: 0;
+      text-align: center;
+    }
+  
+    .overlay-title {
+      font-size: 70px;
+    }
+    .image-gallery{
+      height: 1034px;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-image: url('../image/places-bg2.png');
+      background-position: center;
+    }
+  }
+  
+  @media screen and (max-width: 315px) {
+    .overlay-title {
+      font-size: 20px;
+    }
+    .image-gallery{
+      height: 1034px;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-image: url('../image/places-bg2.png');
+      background-position: center;
+    }
+  }

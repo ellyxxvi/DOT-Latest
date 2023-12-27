@@ -132,36 +132,38 @@ async function addPlacesToSeason(seasonId, placeIds) {
     const accessToken = getAccessTokenFromLocalStorage();
 
     console.log('Adding places to season...');
-    // Use the first element of placeIds as placeId
-    const placeId = placeIds[0];
-    const url = `${API_PROTOCOL}://${API_HOSTNAME}/seasons/place/${placeId}`;
-    console.log('Request URL:', url);
-    console.log('Request Payload:', JSON.stringify({ season_id: seasonId, place_ids: placeIds }));
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ season_id: seasonId, place_ids: placeIds }),
-    });
+    for (const placeId of placeIds) {
+      const url = `${API_PROTOCOL}://${API_HOSTNAME}/seasons/place/${placeId}`;
+      console.log('Request URL:', url);
+      console.log('Request Payload:', JSON.stringify({ season_id: seasonId, place_ids: [placeId] }));
 
-    if (!response.ok) {
-      console.error('Server Response:', await response.text());
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ season_id: seasonId, place_ids: [placeId] }),
+      });
+
+      if (!response.ok) {
+        console.error('Server Response:', await response.text());
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('Response from server:', result);
     }
 
-    const result = await response.json();
-    console.log('Response from server:', result);
-
-    // Reload the window after successful addition
+    // Optionally, you can reload the window after all places are added
     window.location.reload();
 
   } catch (error) {
     console.error('Error adding places to season:', error);
   }
 }
+
 
 
   

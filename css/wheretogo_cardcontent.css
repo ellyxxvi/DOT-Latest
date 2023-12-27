@@ -50,6 +50,13 @@ section {
   filter: brightness(0.8);
   /* z-index: 1; */
   transition: filter 0.5s;
+  background-position: center
+}
+@font-face {
+  font-family: 'Batangas';
+  src: url('../fonts/Batangas.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
 }
 
 .iframe-container h3 {
@@ -59,6 +66,8 @@ section {
   position: absolute;
   /* z-index: 2; */
   margin: 0;
+  font-family: 'Batangas';
+  text-transform: uppercase;
 }
 
 @media only screen and (max-width: 700px) {

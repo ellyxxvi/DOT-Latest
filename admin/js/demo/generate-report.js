@@ -54,19 +54,19 @@ async function fetchMostVisitedPlaces(accessToken) {
 
     const placeData = await placeResponse.json();
 
-
     placeData.forEach(place => {
         const placeId = place.id;
-        place.visits = place.visited_count;
+        place.visits = place.visited_count || 0; // Set to 0 if visited_count is undefined
     });
 
     return placeData;
 }
 
+
 //MOST RATED RESORT
 async function fetchMostRatedResorts(accessToken) {
     try {
-        const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/places/most-rated?category=Hotel`, {
+        const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/places/most-rated?category=hotel`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             }
@@ -84,11 +84,10 @@ async function fetchMostRatedResorts(accessToken) {
             data.forEach(place => {
                 const resort = {
                     name: place.title,
-                    ratings: place.avg_rating
+                    ratings: place.avg_rating || 0 // Set to 0 if avg_rating is undefined
                 };
                 resortsData.push(resort);
             });
-
         }
 
         return resortsData;

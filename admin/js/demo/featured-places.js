@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function populateTable(searchKeyword = '') {
-    const searchUrl = `${API_PROTOCOL}://${API_HOSTNAME}/places`;
+    const searchUrl = `${API_PROTOCOL}://${API_HOSTNAME}/featured-things`;
 
     // Fetch places data
     fetch(searchUrl)
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
       })
       .then(async (data) => {
         // Fetch seasons data
-        const seasonsResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/seasons`);
+        const seasonsResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/featured-things`);
         if (!seasonsResponse.ok) {
           throw new Error(`HTTP error! Status: ${seasonsResponse.status}`);
         }
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
           const lowerKeyword = searchKeyword.toLowerCase();
           const contact = typeof user.contact === 'string' ? user.contact : '';
           return (
-            user.title.toLowerCase().includes(lowerKeyword) ||
+            user.name.toLowerCase().includes(lowerKeyword) ||
             user.category.toLowerCase().includes(lowerKeyword) ||
             user.province.toLowerCase().includes(lowerKeyword) ||
             user.city.toLowerCase().includes(lowerKeyword) ||
@@ -124,47 +124,35 @@ document.addEventListener('DOMContentLoaded', function () {
         if (filteredData.length === 0) {
           const noResultsRow = document.createElement('tr');
           noResultsRow.innerHTML = `
-                    <td colspan="14" style="text-align: center;">There are no relevant search results.</td>
-                `;
+                      <td colspan="14" style="text-align: center;">There are no relevant search results.</td>
+                  `;
           tableBody.appendChild(noResultsRow);
         } else {
           // Populate the table with sorted search results
           filteredData.forEach((user, index) => {
             const row = document.createElement('tr');
             row.innerHTML = `
-                        <td>${user.id}</td>
-                        <td>
-                            <button class="img-button btn-primary btn-sm" data-index="${index}" data-toggle="modal" data-target="#imageModal" data-image-src="${user.photos && user.photos.length > 0 ? user.photos.join(',') : ''}">
-                                <i class="fa fa-image"></i>
-                            </button>
-                        </td>
-                        <td>${user.title}</td>
-                        <td>${user.description}</td>
-                        <td>${user.category}</td>
-                        <td>${user.province}</td>
-                        <td>${user.city}</td>
-                        <td>${user.barangay}</td>
-                        <td>${user.contact}</td>
-                        <td>
-                            <ul>
-                                <li>Facebook: <a href="${user.social_links ? user.social_links.fb : ''}" target="_blank">${user.social_links ? user.social_links.fb : ''}</a></li>
-                                <li>Website: <a href="${user.social_links ? user.social_links.website : ''}" target="_blank">${user.social_links ? user.social_links.website : ''}</a></li>
-                            </ul>
-                        </td>
-                        <td>${user.longitude}</td>
-                        <td>${user.latitude}</td>
-                        <td>${getSeasonNameById(user.season_id, seasonsData)}</td>
-                        <td>${user.created_at}</td>
-                        <td>${user.updated_at}</td>
-                        <td>
-                            <button class="btn btn-primary btn-sm edit-button" data-user-id="${user.id}">
-                                <i class="fa fa-pen"></i>
-                            </button>
-                            <button class="btn btn-danger btn-sm delete-button">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </td>
-                    `;
+                <td>${user.id}</td>
+                <td>
+                    <button class="img-button btn-primary btn-sm" data-index="${index}" data-toggle="modal" data-target="#imageModal" data-image-src="${user.photos && user.photos.length > 0 ? user.photos.join(',') : ''}">
+                        <i class="fa fa-image"></i>
+                    </button>
+                </td>
+                <td>${user.name}</td>
+                <td>${user.description}</td>
+                <td>${user.category}</td>
+                <td>${user.whereToGo.title}</td> <!-- Display the title instead of the ID -->
+                <td>${user.created_at}</td>
+                <td>${user.updated_at}</td>
+                <td>
+                    <button class="btn btn-primary btn-sm edit-button" data-user-id="${user.id}">
+                        <i class="fa fa-pen"></i>
+                    </button>
+                    <button class="btn btn-danger btn-sm delete-button">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </td>
+            `;
             tableBody.appendChild(row);
           });
         }
@@ -195,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             try {
               const accessToken = getAccessTokenFromLocalStorage();
-              const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places/${userId}?role=ADMIN`, {
+              const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/featured-things/${userId}?role=ADMIN`, {
                 method: 'DELETE',
                 headers: {
                   'Content-Type': 'application/json',
@@ -296,236 +284,227 @@ document.addEventListener('DOMContentLoaded', function () {
     const userId = row.querySelector('td:first-child').textContent;
     const accessToken = getAccessTokenFromLocalStorage();
 
-    // Check if the form and elements exist before accessing them
     if (!editForm) {
-      console.error('editForm not found.');
-      return;
+        console.error('editForm not found.');
+        return;
     }
 
-    fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places/${userId}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-      }
-    })
-      .then(response => {
-        if (!response.ok) {
-          if (response.status === 401) {
-            console.error('Unauthorized access.');
-          } else {
-            console.error('Error fetching user data:', response.status, response.statusText);
-          }
-          throw new Error('Network response was not ok.');
-        }
-
-        // Check the response content type
-        const contentType = response.headers.get('content-type');
-        if (contentType && contentType.includes('application/json')) {
-          return response.json();
-        } else {
-          // Handle non-JSON response (e.g., display an error message)
-          console.error('Invalid response content type:', contentType);
-          throw new Error('Invalid response content type.');
-        }
-      })
-      .then(user => {
-        // Check if the form and elements exist before accessing them
-        if (!editForm.elements) {
-          console.error('Form elements not found.');
-          return;
-        }
-
-        // Update form elements with user data
-        editForm.elements.id.value = user.id;
-        editForm.elements.title.value = user.title;
-        editForm.elements.description.value = user.description;
-        editForm.elements.category.value = user.category;
-        editForm.elements.province.value = user.province;
-        editForm.elements.city.value = user.city;
-        editForm.elements.barangay.value = user.barangay;
-        editForm.elements.contact.value = user.contact;
-        editForm.elements.longitude.value = user.longitude;
-        editForm.elements.latitude.value = user.latitude;
-
-        // Adapt social_links to match your form structure
-        editForm.elements.fb_link.value = user.social_links.fb;
-        editForm.elements.website_link.value = user.social_links.website;
-
-        // Display existing images
-        const existingImages = user.photos; // Replace with the correct property name for existing images
-        const imagePreviewsContainer = document.getElementById('image-previews');
-
-        imagePreviewsContainer.innerHTML = '';
-
-        for (let i = 0; i < existingImages.length; i++) {
-          const existingImageURL = existingImages[i];
-
-          const imagePreview = document.createElement('img');
-          imagePreview.src = existingImageURL;
-          imagePreview.classList.add('existing-image-preview');
-
-          imagePreviewsContainer.appendChild(imagePreview);
-        }
-
-        editModal.show();
-      })
-      .catch(error => console.error('Error fetching user data:', error));
-  }
-
-  // Handle edit form submission
-editForm.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  const formData = new FormData(editForm);
-  const updatedUser = {};
-  formData.delete('created_at');
-  formData.delete('existingImage');
-
-  updatedUser.contact = formData.get('contact').split(',').map((contact) => contact.trim());
-
-// Parse longitude and latitude as numbers
-updatedUser.longitude = Number(formData.get('longitude').replace(',', ''));
-updatedUser.latitude = Number(formData.get('latitude').replace(',', ''));
-
-// Remove unrecognized keys
-delete updatedUser.id;
-delete updatedUser.updated_at;
-
-// Log the edited user data
-console.log('Edited User Data:', updatedUser);
-
-
-  console.log('Longitude type:', typeof updatedUser.longitude);
-console.log('Latitude type:', typeof updatedUser.latitude);
-
-
-  updatedUser.social_links = {
-    fb: formData.get('fb_link').trim(),
-    website: formData.get('website_link').trim(),
-  };
-
-  formData.delete('contact');
-  formData.delete('fb_link');
-  formData.delete('website_link');
-
-  formData.forEach((value, key) => {
-    if (value !== '[object Object]') {
-      updatedUser[key] = value;
-    }
-  });
-
-  // Log the edited user data
-  console.log('Edited User Data:', updatedUser);
-
-  // Define accessToken - replace this with your actual access token retrieval logic
-  const accessToken = getAccessTokenFromLocalStorage();
-
-  const imageInput = editForm.querySelector('input[type="file"]');
-  const imageFiles = imageInput.files;
-
-  try {
-    const uploadedImageUrls = [];
-
-    for (const imageFile of imageFiles) {
-      const formDataForImage = new FormData();
-      formDataForImage.append('photo', imageFile);
-
-      const imageUploadResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/images`, {
-        method: 'POST',
+    // Fetch user data
+    fetch(`${API_PROTOCOL}://${API_HOSTNAME}/featured-things/${userId}`, {
+        method: 'GET',
         headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: formDataForImage,
-      });
+            'Authorization': `Bearer ${accessToken}`,
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                if (response.status === 401) {
+                    console.error('Unauthorized access.');
+                } else {
+                    console.error('Error fetching user data:', response.status, response.statusText);
+                }
+                throw new Error('Network response was not ok.');
+            }
 
-      if (!imageUploadResponse.ok) {
-        throw new Error('Image upload failed.');
-      }
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                return response.json();
+            } else {
+                console.error('Invalid response content type:', contentType);
+                throw new Error('Invalid response content type.');
+            }
+        })
+        .then(user => {
+            if (!editForm.elements) {
+                console.error('Form elements not found.');
+                return;
+            }
 
-      const imageUploadData = await imageUploadResponse.json();
-      console.log('Uploaded image URL:', imageUploadData.http_img_url);
-      uploadedImageUrls.push(imageUploadData.http_img_url);
-    }
+            // Populate user data in the form
+            editForm.elements.id.value = user.id;
+            editForm.elements.name.value = user.name;
+            editForm.elements.description.value = user.description;
+            editForm.elements.category.value = user.category;
 
-    // Preserve existing image URLs in updatedUser.photos
-    const existingImages = formData.getAll('existingImage');
-    updatedUser.photos = existingImages;
+            // Fetch "Where to Go" data
+            fetch(`${API_PROTOCOL}://${API_HOSTNAME}/where-to-go`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        console.error('Error fetching Where to Go data:', response.status, response.statusText);
+                        throw new Error('Network response was not ok.');
+                    }
+                    return response.json();
+                })
+                .then(whereToGoData => {
+                    // Populate the "Where to Go" dropdown options
+                    const wheretogoDropdown = editForm.elements.wheretogo_id;
+                    wheretogoDropdown.innerHTML = '<option value="">Select a Where to Go Municipality</option>';
 
-    if (uploadedImageUrls.length > 0) {
-      updatedUser.photos.push(...uploadedImageUrls);
-    }
+                    whereToGoData.forEach(whereToGo => {
+                        const option = document.createElement('option');
+                        option.value = whereToGo.id;
+                        option.textContent = whereToGo.title;
+                        wheretogoDropdown.appendChild(option);
+                    });
 
-    // Update the user ID
-    updatedUser.id = formData.get('id');
+                    // Set the selected option based on user data
+                    editForm.elements.wheretogo_id.value = user.whereToGo.id;
 
-    sendEditRequest(updatedUser, accessToken);
-  } catch (error) {
-    console.error('There was a problem with image uploads:', error);
-  }
-});
+                    // Populate image previews
+                    const imagePreviewsContainer = document.getElementById('image-previews');
+                    imagePreviewsContainer.innerHTML = '';
 
-async function sendEditRequest(updatedUser, accessToken) {
-  console.log('EDIT:', JSON.stringify(updatedUser));
-  try {
-    if (!updatedUser.id) {
-      console.error('Error updating item data: Invalid ID');
-      return;
-    }
+                    const existingImages = user.photos || [];
 
-    console.log('Sending PUT request with updatedUser:', updatedUser);
+                    existingImages.forEach(existingImageURL => {
+                        const imagePreview = document.createElement('img');
+                        imagePreview.src = existingImageURL;
+                        imagePreview.classList.add('existing-image-preview');
+                        imagePreviewsContainer.appendChild(imagePreview);
+                    });
 
-    // Convert longitude and latitude to numbers
-    updatedUser.longitude = Number(updatedUser.longitude);
-    updatedUser.latitude = Number(updatedUser.latitude);
-
-    // Log the data being sent to the server
-    console.log('Data being sent to the server:', JSON.stringify(updatedUser));
-
-    const existingUserData = await fetchExistingUserData(updatedUser.id, accessToken);
-
-    if (existingUserData) {
-      if (existingUserData.photos && existingUserData.photos.length > 0) {
-        updatedUser.photos = [
-          ...existingUserData.photos,
-          ...updatedUser.photos,
-        ];
-      }
-    } else {
-      console.error('Error fetching existing user data.');
-      return;
-    }
-
-    const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places/${updatedUser.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify(updatedUser),
-    });
-
-    if (!response.ok) {
-      console.error('Error updating item data:', response.status);
-      console.error(await response.text());
-      return;
-    }
-
-    if (response.status === 201) {
-      editForm.reset();
-      editModal.hide();
-      populateTable();
-    } else {
-      console.error('Error updating item data:', response.status);
-    }
-  } catch (error) {
-    console.error('Error updating item data:', error);
-    console.log('User Inputs:', updatedUser);
-  }
+                    // Show the modal after fetching data
+                    editModal.show();
+                })
+                .catch(error => console.error('Error fetching Where to Go data:', error));
+        })
+        .catch(error => console.error('Error fetching user data:', error));
 }
 
 
+  // Handle edit form submission
+  editForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const formData = new FormData(editForm);
+    const updatedUser = {};
+    formData.delete('created_at');
+    formData.delete('existingImage');
+
+    formData.forEach((value, key) => {
+      if (value !== '[object Object]') {
+        updatedUser[key] = value;
+      }
+    });
+
+    console.log('Edited User Data:', updatedUser);
+
+    const accessToken = getAccessTokenFromLocalStorage();
+
+    const imageInput = editForm.querySelector('input[type="file"]');
+    const imageFiles = imageInput.files;
+
+    try {
+      const uploadedImageUrls = [];
+
+      for (const imageFile of imageFiles) {
+        const formDataForImage = new FormData();
+        formDataForImage.append('photo', imageFile);
+
+        const imageUploadResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/images`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: formDataForImage,
+        });
+
+        if (!imageUploadResponse.ok) {
+          throw new Error('Image upload failed.');
+        }
+
+        const imageUploadData = await imageUploadResponse.json();
+        console.log('Uploaded image URL:', imageUploadData.http_img_url);
+        uploadedImageUrls.push(imageUploadData.http_img_url);
+      }
+
+      const existingImages = formData.getAll('existingImage');
+      updatedUser.photos = existingImages;
+
+      if (uploadedImageUrls.length > 0) {
+        updatedUser.photos.push(...uploadedImageUrls);
+      }
+
+      updatedUser.id = formData.get('id');
+
+      sendEditRequest(updatedUser, accessToken);
+    } catch (error) {
+      console.error('There was a problem with image uploads:', error);
+    }
+  });
+  async function sendEditRequest(updatedUser, accessToken) {
+    console.log('EDIT: ' + JSON.stringify(updatedUser));
+  
+    try {
+      if (!updatedUser.id) {
+        console.error('Error updating item data: Invalid ID');
+        return;
+      }
+  
+      // Remove unwanted keys, including 'id'
+      const { id, ...patchData } = updatedUser;
+  
+      // Remove unwanted keys
+      delete patchData.updated_at;
+  
+      console.log('Sending PATCH request with patchData:', patchData);
+  
+      const existingUserData = await fetchExistingUserData(updatedUser.id, accessToken);
+  
+      if (existingUserData) {
+        if (existingUserData.photos && existingUserData.photos.length > 0) {
+          patchData.photos = [
+            ...existingUserData.photos,
+            ...patchData.photos,
+          ];
+        }
+      } else {
+        console.error('Error fetching existing user data.');
+        return;
+      }
+  
+      const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/featured-things/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(patchData),
+      });
+  
+      const responseBody = await response.json();
+      console.log('Server Response Body:', responseBody);
+  
+      if (!response.ok) {
+        console.error('Error updating item data:', response.status);
+        return;
+      }
+  
+      // Handle success (status code 200)
+      if (response.status === 200) {
+        console.log('Item updated successfully:', responseBody);
+        editForm.reset();
+        editModal.hide();
+        populateTable();
+      } else {
+        console.error('Unexpected status code:', response.status);
+      }
+    } catch (error) {
+      console.error('Error updating item data:', error);
+      console.log('User Inputs:', updatedUser);
+    }
+  }
+  
+  
+  
+
   async function fetchExistingUserData(userId, accessToken) {
     try {
-      const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places/${userId}`, {
+      const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/featured-things/${userId}`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -580,23 +559,23 @@ async function sendEditRequest(updatedUser, accessToken) {
     const form = document.getElementById('add-user-form');
     const formData = new FormData(form);
     const imageInput = document.querySelector('#photos');
-    const images = imageInput.files; 
+    const images = imageInput.files;
     const accessToken = getAccessTokenFromLocalStorage();
-  
-    if (images.length > 5) { 
+
+    if (images.length > 5) {
       alert('Please select no more than 5 image files.');
       console.error('Please select no more than 5 image files.');
       return;
     }
-    
-  
+
+
     const uploadedImageUrls = [];
-  
+
     try {
       for (const imageFile of images) {
         const formDataForImage = new FormData();
         formDataForImage.append('photo', imageFile);
-  
+
         const imageUploadResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/images`, {
           method: 'POST',
           headers: {
@@ -604,43 +583,26 @@ async function sendEditRequest(updatedUser, accessToken) {
           },
           body: formDataForImage,
         });
-  
+
         if (!imageUploadResponse.ok) {
           throw new Error('Image upload failed.');
         }
-  
+
         const imageUploadData = await imageUploadResponse.json();
         console.log('Uploaded image URL:', imageUploadData.http_img_url);
         uploadedImageUrls.push(imageUploadData.http_img_url);
       }
-  
-  
-      const contact = formData.get('contact').split(',').map(contact => contact.trim());
-  
-      const longitude = parseFloat(formData.get('longitude'));
-      const latitude = parseFloat(formData.get('latitude'));
 
-      const socialLinks = {
-        fb: formData.get('fb_link').trim(),
-        website: formData.get('website_link').trim()
-      };
-  
       const user = {
         ...Object.fromEntries(formData.entries()),
-        photos: uploadedImageUrls, 
-        contact: contact,
-        social_links: socialLinks,
-        longitude: longitude, 
-        latitude: latitude  
+        photos: uploadedImageUrls
+
       };
-  
-      delete user.fb_link;
-      delete user.website_link;
-  
+
       // Log user inputs
       console.log('User Inputs:', user);
-  
-      const addUserResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places`, {
+
+      const addUserResponse = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/featured-things`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${accessToken}`,
@@ -648,14 +610,14 @@ async function sendEditRequest(updatedUser, accessToken) {
         },
         body: JSON.stringify(user),
       });
-  
+
       console.log('Data Sent to Server:', JSON.stringify(user));
-  
-  
+
+
       console.log('Response from server:', addUserResponse.status, addUserResponse.statusText);
       const responseBody = await addUserResponse.text();
       console.log('Response body:', responseBody);
-  
+
       if (addUserResponse.ok) {
         form.reset();
         window.location.reload();
@@ -667,7 +629,39 @@ async function sendEditRequest(updatedUser, accessToken) {
       console.error('Error:', error.message);
     }
   });
-  
+
+  async function fetchWhereToGoData() {
+    try {
+      const accessToken = getAccessTokenFromLocalStorage();
+      const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/where-to-go`, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch Where to Go data.');
+      }
+
+      const whereToGoData = await response.json();
+
+      const dropdown = document.getElementById('WheretogoCategory');
+      dropdown.innerHTML = '<option value="">Select a municipality</option>';
+      whereToGoData.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.id;
+        option.textContent = item.title;
+        dropdown.appendChild(option);
+      });
+
+    } catch (error) {
+      console.error('Error fetching Where to Go data:', error);
+    }
+  }
+
+  fetchWhereToGoData();
+
+
 
 
   // Handle delete button

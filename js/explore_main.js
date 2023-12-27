@@ -49,46 +49,42 @@ function generateServiceCard(service) {
   `;
 }
 
-// Function to fetch and display search results
-function searchPlaces() {
+// Event listener for search button
+searchButton.addEventListener('click', function() {
   const searchValue = searchInput.value.trim();
 
   if (searchValue !== '') {
-    fetch(`${API_PROTOCOL}://${API_HOSTNAME}/search/place?q=${searchValue}`)
-      .then(response => response.json())
-      .then(data => {
-        console.log('Search results:', data);
+    const searchUrl = `${API_PROTOCOL}://${API_HOSTNAME}/search/place?q=${searchValue}`;
 
-        // Create a container for services
-        const servicesContainer = document.createElement('div');
-        servicesContainer.classList.add('services-container');
+// Fetch services data based on the search URL
+fetch(searchUrl)
+  .then(response => response.json())
+  .then(data => {
+    const searchedPlaces = data.searchedPlaces;
 
-        if (data.searchedPlaces && Array.isArray(data.searchedPlaces)) {
-          data.searchedPlaces.forEach(item => {
-            if (typeof item === 'object') {
-              const cardHTML = generateServiceCard(item);
-              servicesContainer.innerHTML += cardHTML;
-            } else {
-              console.error('Invalid data format for item:', item);
-            }
-          });
+    if (Array.isArray(searchedPlaces)) {
+      // Process and display the search results
+      const mappedData = searchedPlaces.map(place => {
+        return {
+          id: place.id,
+          category: place.category,
+          title: place.title,
+          description: place.description,
+          backgroundImage: place.photos,
+        };
+      });
 
-          // Append the container to the main content
-          servicesContent.innerHTML = ''; // Clear existing content
-          servicesContent.appendChild(servicesContainer);
-        } else {
-          console.error('Invalid data format or no search results:', data);
-        }
+      // Display the search results
+      displayServiceCards(mappedData);
+      // Log the fetched data to the console
+      console.log('Fetched Data in search:', mappedData);
+    } else {
+      console.error('Invalid data format received for search results:', data);
+    }
       })
       .catch(error => console.error('Error fetching search results:', error));
   }
-}
-
-// Event listener for search button click
-searchButton.addEventListener('click', searchPlaces);
-
-
-
+});
 
 function fetchServicesData() {
   fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places`)
@@ -149,12 +145,20 @@ function toggleLoadMore() {
     : servicesData;
 
   if (currentPage * itemsPerPage + initialItems >= filteredServices.length) {
-    currentPage = 0; 
+    currentPage = 0;
   } else {
     currentPage++;
   }
 
-  displayServiceCards(filteredServices);
+  const searchValue = searchInput.value.trim();
+  const filteredSearchResults = searchValue !== ''
+    ? filteredServices.filter(service =>
+        service.title.toLowerCase().includes(searchValue.toLowerCase()) ||
+        service.description.toLowerCase().includes(searchValue.toLowerCase())
+      )
+    : filteredServices;
+
+  displayServiceCards(filteredSearchResults);
 
   // Scroll when "Load More" is clicked
   const contentContainer = document.getElementById('load-more-btn');
@@ -162,8 +166,6 @@ function toggleLoadMore() {
 }
 
 
-// const contentContainer = document.getElementById('load-more-btn');
-// contentContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
 
 function resetContent() {

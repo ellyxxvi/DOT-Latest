@@ -147,6 +147,7 @@
                         <a class="collapse-item" href="learnmore.html">Learn More</a>
                         <a class="collapse-item" href="places_cities.html">Where to Go</a>
                         <a class="collapse-item" href="season.html">Seasons</a>
+                        <a class="collapse-item" href="featured-places.html">Featured Things</a>
                     </div>
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Love Our Planet:</h6>
@@ -269,6 +270,7 @@
                                             <th>Image</th>
                                             <th>Municipality</th>
                                             <th>Description</th>
+                                            <th>Emergency Hotlines</th>
                                             <th>Date Created</th>
                                             <th>Date Updated</th>
                                             <th>Actions</th>
@@ -284,7 +286,8 @@
                 </div>
                 <!-- /.container-fluid -->
 
-                <div class="modal fade" id="addEventModal" tabindex="-1" aria-labelledby="addEventModalLabel" aria-hidden="true">
+                <div class="modal fade" id="addEventModal" tabindex="-1" aria-labelledby="addEventModalLabel"
+                    aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -298,7 +301,8 @@
                                 <form id="add-user-form" enctype="multipart/form-data">
                                     <div class="mb-3">
                                         <label for="eventImage" class="form-label">Places Image</label>
-                                        <input type="file" class="form-control" id="images" name="images" accept="images/*">
+                                        <input type="file" class="form-control" id="images" name="images"
+                                            accept="images/*">
                                     </div>
                                     <div class="mb-3">
                                         <label for="eventCity" class="form-label">Municipality</label>
@@ -338,22 +342,43 @@
                                             <option value="Tingloy">Tingloy</option>
                                             <option value="Tuy">Tuy</option>
                                         </select>
-                                        
+
                                     </div>
                                     <div class="mb-3">
                                         <label for="eventDescription" class="form-label">Description</label>
-                                        <textarea class="form-control" id="PlacesDescription" name="description" rows="3" required></textarea>
+                                        <textarea class="form-control" id="PlacesDescription" name="description"
+                                            rows="3" required></textarea>
+                                    </div>
+                                    <!-- Emergency Hotlines -->
+                                    <div class="mb-3">
+                                        <label class="form-label">Emergency Hotlines</label>
+
+                                        <!-- Container for dynamic input fields -->
+                                        <div id="emergencyHotlinesContainer">
+                                            <!-- Initial input fields -->
+                                            <div class="emergency-hotline-entry mb-3">
+                                                <input type="text" class="form-control emergency-hotline-name"
+                                                    placeholder="Name" name="name">
+                                                <input type="text" class="form-control emergency-hotline-number"
+                                                    placeholder="Number" name="number">
+                                            </div>
+                                        </div>
+
+                                        <!-- "Add More" button to dynamically add input fields -->
+                                        <button type="button" class="btn btn-sm btn-primary"
+                                            id="addEmergencyHotline">Add More</button>
                                     </div>
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" id="btn-cancel" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button type="button" id="btn-cancel" class="btn btn-secondary"
+                                    data-dismiss="modal">Cancel</button>
                                 <button type="button" id="btn-add-account" class="btn btn-primary">Add</button>
                             </div>
                         </div>
                     </div>
                 </div>
-                
+
             </div>
             <div class="modal fade" id="editModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
                 aria-labelledby="editModalLabel" aria-hidden="true">
@@ -424,6 +449,23 @@
                                     <textarea class="form-control" id="PlacesDescription" name="description" rows="3"
                                         required></textarea>
                                 </div>
+                                <!-- Emergency Hotlines -->
+                                <div class="mb-3">
+                                    <label class="form-label">Emergency Hotlines</label>
+
+                                    <!-- Container for dynamic input fields -->
+                                    <div id="emergencyHotlinesContainer">
+                                        <!-- Initial input fields -->
+                                        <div class="emergency-hotline-entry mb-3">
+                                            <input type="text" class="form-control edit-hotline-name" name="hotlineName">
+                                            <input type="text" class="form-control edit-hotline-number" name="hotlineNumber">
+                                          </div>                     
+                                    </div>
+
+                                    <!-- "Add More" button to dynamically add input fields -->
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                        id="addEmergencyHotline">Add More</button>
+                                </div>
 
                                 <input type="hidden" name="created_at">
                                 <input type="hidden" name="updated_at">
@@ -437,50 +479,50 @@
 
                 </div>
             </div>
-                <!-- End of Page Wrapper -->
+            <!-- End of Page Wrapper -->
 
-                <!-- Scroll to Top Button-->
-                <a class="scroll-to-top rounded" href="#page-top">
-                    <i class="fas fa-angle-up"></i>
-                </a>
+            <!-- Scroll to Top Button-->
+            <a class="scroll-to-top rounded" href="#page-top">
+                <i class="fas fa-angle-up"></i>
+            </a>
 
-                <!-- Logout Modal-->
-                <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">Select "Logout" below if you are ready to end your current session.
-                            </div>
-                            <div class="modal-footer">
-                                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                                <a class="btn btn-primary" href="login.html">Logout</a>
-                            </div>
+            <!-- Logout Modal-->
+            <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">Select "Logout" below if you are ready to end your current session.
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                            <a class="btn btn-primary" href="login.html">Logout</a>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Bootstrap core JavaScript-->
-                <script src="vendor/jquery/jquery.min.js"></script>
-                <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+            <!-- Bootstrap core JavaScript-->
+            <script src="vendor/jquery/jquery.min.js"></script>
+            <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-                <!-- Core plugin JavaScript-->
-                <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+            <!-- Core plugin JavaScript-->
+            <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-                <!-- Custom scripts for all pages-->
-                <script src="js/sb-admin-2.min.js"></script>
+            <!-- Custom scripts for all pages-->
+            <script src="js/sb-admin-2.min.js"></script>
 
-                <!-- Page level plugins -->
-                <script src="vendor/datatables/jquery.dataTables.min.js"></script>
-                <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
+            <!-- Page level plugins -->
+            <script src="vendor/datatables/jquery.dataTables.min.js"></script>
+            <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
-                <!-- Page level custom scripts -->
-                <script src="js/demo/places_cities.js"></script>
+            <!-- Page level custom scripts -->
+            <script src="js/demo/places_cities.js"></script>
 
 </body>
 

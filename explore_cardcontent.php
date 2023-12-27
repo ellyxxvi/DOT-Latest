@@ -22,7 +22,6 @@
 
     <link rel="icon" href="image/LOGO (2).png" type="image/png">
 
-
 </head>
 
 <body>
@@ -134,8 +133,11 @@
             </div>
             <div class="row">
                 <div class="col-md-6 map-placement">
-                    <div class="iframe">
-                        <iframe src="wheretogo_maps.html" width="100%" height="585" frameborder="0" background="transparent"></iframe>
+                    <div class="map-container" id="mapContainer">
+                        <div class="map-header">
+                            <h2>Explore the Batangas</h2>
+                        </div>
+                        <div id="map"></div>
                     </div>
                 </div>
                 <div id="nearbyPlacesContainer" class="col-md-6 list-nearby-places">
@@ -158,7 +160,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.5/popper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
-
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
 </body>
 

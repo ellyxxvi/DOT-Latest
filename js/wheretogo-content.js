@@ -376,30 +376,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 } else {
                     for (const comment of placeComments) {
                         const replies = await fetchReplies(comment.id);
-                        const repliesHtml = replies.map((reply) => {
-                            // Set profile photo for reply comment
-                            let profilePhotoReply = reply.profile_photo ? `<img src="${reply.profile_photo}" alt="Profile Photo" class="profile-photo-reply">` : "";
-                            if (!profilePhotoReply) {
-                                if (reply.gender === "male") {
-                                    profilePhotoReply = `<img src="image/male.png" alt="Male Profile Photo" class="profile-photo-reply">`;
-                                } else if (reply.gender === "female") {
-                                    profilePhotoReply = `<img src="image/female.png" alt="Female Profile Photo" class="profile-photo-reply">`;
-                                }
-                            }
-                        
-                            return `
-                                <div class="reply-container">
-                                    <div class="reply-user-info">
-                                        ${profilePhotoReply}
-                                        <div class="user-details">
-                                            <p class="user-fullname-reply">${reply.first_name} ${reply.last_name}</p>
-                                            <p class="user-created-reply">${calculateRelativeTime(reply.created_at)}</p>
-                                        </div>
+                        const repliesHtml = replies.map((reply) => `
+                            <div class="reply-container">
+                                <div class="reply-user-info">
+                                    <img src="${reply.profile_photo}" alt="Profile Photo" class="profile-photo-reply">
+                                    <div class="user-details">
+                                        <p class="user-fullname-reply">${reply.first_name} ${reply.last_name}</p>
+                                        <p class="user-created-reply">${calculateRelativeTime(reply.created_at)}</p>
                                     </div>
-                                    <p class="reply-text" style="margin-left: 20px;">${reply.reply_comment}</p>
                                 </div>
-                            `;
-                        }).join('');
+                                <p class="reply-text" style="margin-left: 20px;">${reply.reply_comment}</p>
+                            </div>
+                        `).join('');
 
                         const repliesContainer = document.createElement('div');
                         repliesContainer.classList.add('replies-container');
@@ -644,192 +632,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 return null;
             });
     }
-// Function to fetch places from the API and load them on the map
-async function loadPlacesOnMap() {
-    try {
-        const desiredPlaceId = queryParams.get("id");
+   
 
-        const fetchedPlaceData = await fetchPlaceData(desiredPlaceId);
-
-        if (fetchedPlaceData && fetchedPlaceData.latitude && fetchedPlaceData.longitude) {
-            const map = L.map('map').setView([fetchedPlaceData.latitude, fetchedPlaceData.longitude], 15);
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-            }).addTo(map);
-
-            const marker = L.marker([fetchedPlaceData.latitude, fetchedPlaceData.longitude]).addTo(map);
-
-            // Create a link to open Google Maps with the specified latitude and longitude
-            const googleMapsLink = document.createElement('a');
-            googleMapsLink.href = `https://www.google.com/maps?q=${fetchedPlaceData.latitude},${fetchedPlaceData.longitude}`;
-            googleMapsLink.target = '_blank';
-            googleMapsLink.textContent = 'See directions in Google Maps';
-
-            // Add the link to the marker's popup
-            marker.bindPopup(`<b>${fetchedPlaceData.title}</b><br>${googleMapsLink.outerHTML}`).openPopup();
-
-            document.getElementById('mapContainer').style.opacity = 1;
-            document.getElementById('mapContainer').style.transform = 'translateY(0)';
-        } else {
-            console.error('Error: Invalid place data.');
-        }
-    } catch (error) {
-        console.error('Error loading places on the map:', error);
-    }
-}
-
-window.onload = function () {
-    loadPlacesOnMap();
-};
-
-
-
-    // Wrap the code in an async function
-    async function loadContactDetails() {
-        // Contact section
-        const contactDetails = document.querySelector(".contact-details");
-
-        if (!contactDetails) {
-            console.error("Contact details section not found on the page.");
-        } else {
-            try {
-                const desiredPlaceId = queryParams.get("id");
-
-                const fetchedPlaceData = await fetchPlaceData(desiredPlaceId);
-
-                if (fetchedPlaceData) {
-                    const contact = fetchedPlaceData.contact;
-                    if (contact && contact.length > 0) {
-                        contactDetails.innerHTML += `<h5>Contact Details</h5>`;
-                        // contactDetails.innerHTML += `<p>Phone:</p>`;
-
-                        // Display each phone number with the fas icon on a new line
-                        for (const phoneNumber of contact) {
-                            contactDetails.innerHTML += `<p><i class="fas fa-phone"></i> ${phoneNumber}</p>`;
-                        }
-                    } else {
-                        console.warn("Contact numbers not available.");
-                        alert("Contact numbers not available.");
-                    }
-                } else {
-                    console.warn("Error fetching contact data.");
-                    alert("Error fetching contact data.");
-                }
-            } catch (error) {
-                console.error("Error occurred during fetching contact data:", error);
-                alert("Error fetching contact data.");
-            }
-        }
-    }
-
-
-    // Function to load address (now declared as async)
-    async function loadAddress() {
-        // Address section
-        const addressSection = document.querySelector(".address");
-
-        if (!addressSection) {
-            console.error("Address section not found on the page.");
-            return;
-        }
-
-        try {
-            const desiredPlaceId = queryParams.get("id");
-
-            const fetchedPlaceData = await fetchPlaceData(desiredPlaceId);
-
-            if (fetchedPlaceData) {
-                const address = `${fetchedPlaceData.barangay}, ${fetchedPlaceData.city}, ${fetchedPlaceData.province}`;
-
-                // Display address
-                addressSection.innerHTML += `<h5>Address</h5>`;
-                addressSection.innerHTML += `<p>${address}</p>`;
-            } else {
-                console.warn("Error fetching place data.");
-                alert("Error fetching place data.");
-            }
-        } catch (error) {
-            console.error("Error occurred during fetching data:", error);
-            alert("Error fetching data.");
-        }
-    }
-
-    // Call the functions
-    loadContactDetails();
-    loadAddress();
-
-
-
-    const facebookButton = document.getElementById("facebookIcon");
-
-    if (!facebookButton) {
-        console.error("Facebook button not found on the page.");
-    } else {
-        facebookButton.addEventListener("click", async function () {
-
-            try {
-                const desiredPlaceId = queryParams.get("id");
-
-
-                const fetchedPlaceData = await fetchPlaceData(desiredPlaceId);
-
-
-
-                if (fetchedPlaceData?.social_links?.fb &&
-                    fetchedPlaceData.social_links.fb !== 'undefined' &&
-                    fetchedPlaceData.social_links.fb !== 'none' &&
-                    fetchedPlaceData.social_links.fb !== '' &&
-                    fetchedPlaceData.social_links.fb !== null) {
-
-                    window.open(fetchedPlaceData.social_links.fb, "_blank");
-                } else {
-                    console.warn("Facebook link not available, is 'undefined', 'none', or is a falsy value.");
-                    window.alert("Facebook link not available.");
-                }
-            } catch (error) {
-                console.error("Error occurred during fetching place data:", error);
-                window.alert("Error fetching Facebook link.");
-            }
-        });
-    }
-
-
-    // Website button
-    const websiteButton = document.getElementById("websiteIcon");
-
-    if (!websiteButton) {
-        console.error("Website button not found on the page.");
-    } else {
-        websiteButton.addEventListener("click", async function () {
-
-            try {
-                const desiredPlaceId = queryParams.get("id");
-
-                const fetchedPlaceData = await fetchPlaceData(desiredPlaceId);
-
-
-
-                if (fetchedPlaceData?.social_links?.website &&
-                    fetchedPlaceData.social_links.website !== 'undefined' &&
-                    fetchedPlaceData.social_links.website !== 'none') {
-                    let websiteUrl = fetchedPlaceData.social_links.website;
-                    if (!websiteUrl.startsWith('http://') && !websiteUrl.startsWith('https://')) {
-                        websiteUrl = `https://${websiteUrl}`;
-                    }
-
-                    window.open(websiteUrl, "_blank");
-                } else {
-                    console.warn("Website link not available, or it is 'undefined' or 'none'.");
-                    alert("Website link not available.");
-                }
-            } catch (error) {
-                console.error("Error occurred during fetching website data:", error);
-                alert("Error fetching website link.");
-            }
-        });
-    }
-
+    
     const dynamicData = [];
 
     function fetchServicesData() {
@@ -968,118 +773,266 @@ window.onload = function () {
             });
     }
 
-    // Fetch data from the API
-    fetch(`${API_PROTOCOL}://${API_HOSTNAME}/places`)
-        .then(response => response.json())
-        .then(data => {
-            console.log('All Places:', data);
+// EMERGENCY HOTLINES
+fetch(`${API_PROTOCOL}://${API_HOSTNAME}/where-to-go`)
+  .then(response => response.json())
+  .then(data => {
+    console.log('All Where to go contents:', data);
 
-            const ulNearbyPlaces = document.getElementById('ul-nearby-places');
+    const ulNearbyPlaces = document.getElementById('ul-nearby-places');
+    const nearbyPlacesContainer = document.getElementById('nearbyPlacesContainer');
 
-            if (!ulNearbyPlaces) {
-                console.error('UL element not found.');
-                return;
-            }
+    if (!ulNearbyPlaces || !nearbyPlacesContainer) {
+      console.error('UL element or container not found.');
+      return;
+    }
 
-            const desiredPlaceId = queryParams.get("id");
+    const desiredPlaceId = queryParams.get("id");
 
-            // Fetch data for the desired place to get its city
-            fetchPlaceData(desiredPlaceId)
-                .then(desiredPlaceData => {
-                    if (!desiredPlaceData) {
-                        console.error('Error fetching data for the desired place.');
-                        return;
-                    }
+    // Fetch data for the desired place to get its city
+    fetchPlaceData(desiredPlaceId)
+      .then(desiredPlaceData => {
+        if (!desiredPlaceData) {
+          console.error('Error fetching data for the desired place.');
+          return;
+        }
+        console.log('Desired Place ID:', desiredPlaceId);
+        console.log('Desired Place Data:', desiredPlaceData);
 
-                    const desiredCity = desiredPlaceData.city;
+        const desiredCity = desiredPlaceData.city;
 
-                    // Filter places with the same city as the desired place
-                    const filteredPlaces = data.filter(place => place.city === desiredCity);
+        const filteredPlaces = data.filter(place => place.title === desiredCity);
 
-                    filteredPlaces.forEach(place => {
-                        const li = document.createElement('li');
-                        li.className = 'li-nearby-places';
+        if (filteredPlaces.length === 0 || !filteredPlaces[0].hotlines) {
+          // If no hotlines or hotlines is null, hide the container
+          nearbyPlacesContainer.style.display = 'none';
+          return;
+        }
 
-                        // Add an event listener to each list item
-                        li.addEventListener('click', () => {
-                            // Redirect to explore_cardcontent.php with the selected place ID
-                            window.location.href = `explore_cardcontent.php?id=${place.id}`;
-                        });
+        filteredPlaces.forEach(place => {
+          const li = document.createElement('li');
+          li.className = 'li-nearby-places';
+          const divRow = document.createElement('div');
+          divRow.className = 'row';
 
-                        const divRow = document.createElement('div');
-                        divRow.className = 'row';
+          const divContent = document.createElement('div');
+          divContent.className = 'col-md-12';
 
-                        const divImage = document.createElement('div');
-                        divImage.className = 'col-md-2';
+          // Assuming hotlines is an object with key-value pairs
+          Object.entries(place.hotlines).forEach(([key, value]) => {
+            divContent.innerHTML += `<p><strong>${key}:</strong> ${value}</p>`;
+          });
 
-                        const firstImage = place.photos && place.photos.length > 0 ? place.photos[0] : '';
-                        divImage.innerHTML = `<div style="background-image: url('${firstImage}'); background-size: cover; height: 40px; width: 40px; background-position: center center;"></div>`;
+          divRow.appendChild(divContent);
 
-                        const divContent = document.createElement('div');
-                        divContent.className = 'col-md-10';
-                        divContent.innerHTML = `<h5 class="h5-nearby-places">${place.title}</h5><p class="p-nearby-places">${place.city}, ${place.province}</p>`;
+          li.appendChild(divRow);
 
-                        divRow.appendChild(divImage);
-                        divRow.appendChild(divContent);
-
-                        li.appendChild(divRow);
-
-                        ulNearbyPlaces.appendChild(li);
-                    });
-                })
-                .catch(error => console.error('Error fetching data for the desired place:', error));
-        })
-        .catch(error => console.error('Error fetching data:', error));
-
+          ulNearbyPlaces.appendChild(li);
+        });
+      })
+      .catch(error => console.error('Error fetching data for the desired place:', error));
+  })
+  .catch(error => console.error('Error fetching data:', error));
 
 
 
 });
 
-// function initMap() {
-//     var map = L.map('map').setView([13.9450, 121.1312], 9);
-
-//     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-//         maxZoom: 19,
-//     }).addTo(map);
-
-//     // Define an array of places with their coordinates
-//     var places = [
-//         { lat: 13.7291, lon: 120.8859, name: "Camp Netanya Resort and Spa" },
-//         { lat: 13.7264, lon: 120.8832, name: "Aquaventure Reef Club" },
-//         { lat: 13.7070, lon: 120.8776, name: "Casita Ysabel" },
-//         { lat: 13.7212, lon: 120.8748, name: "Eagle Point Beach and Dive Resort" },
-//         { lat: 13.7309, lon: 120.8863, name: "La Chevrerie resort and Spa" },
-//         { lat: 13.7973, lon: 120.9196, name: "Sadayo Beach Resort" },
-//         { lat: 13.8037, lon: 120.9123, name: "Camp Raya Adventure Resort" },
-//         { lat: 13.7832, lon: 120.9273, name: "Destino Beach Club Dive Resort and Hotel" },
-//         { lat: 13.7967, lon: 120.9201, name: "New Yorkers Resort" },
-//         { lat: 13.7953, lon: 120.9207, name: "La Thalia Beach Resort" },
-//         { lat: 13.8001, lon: 120.6338, name: "Stilts Calatagan Resort" },
-//         { lat: 13.7986, lon: 120.6376, name: "Manuel Uy Beach Resort" },
-//         { lat: 14.1334, lon: 120.5797, name: "Punta Fuego" },
-//         { lat: 13.5512, lon: 121.0700, name: "Verde Island" },
-//         { lat: 14.0568, lon: 120.4920, name: "Fortune Island" },
-//         { lat: 13.6872, lon: 120.8323, name: "Sepoc Beach" },
-//         { lat: 14.1252, lon: 120.5988, name: "Tali Beach" },
-//         { lat: 14.1940, lon: 120.5873, name: "Santelmo Cove" },
-//         { lat: 13.7560, lon: 120.9186, name: "Anilao Beach Club" },
-//         { lat: 13.6462, lon: 120.8664, name: "Masasa Beach" },
-
-//     ];
-
-//     // Loop through the places array and create markers for each place
-//     places.forEach(function (place) {
-//         var marker = L.marker([place.lat, place.lon]).addTo(map);
-//         marker.bindPopup(place.name);
-//     });
-
-//     // Show the map container with animation
-//     document.getElementById('mapContainer').style.opacity = 1;
-//     document.getElementById('mapContainer').style.transform = 'translateY(0)';
-// }
-
-// window.onload = function () {
-//     initMap();
-// };
-
+const categoryToIcon = {
+    'swim and beaches': 'fas fa-water',
+    'nature trip': 'fas fa-leaf',
+    'tourist spots': 'fas fa-location-dot',
+    'hotel': 'fas fa-hotel',
+    'churches': 'fas fa-church',
+    'events': 'fas fa-calendar-days',
+  
+  };
+  
+  const carousel = document.querySelector('.carousel');
+  
+  async function fetchAndGenerateCards(url, isFestival = false, city) {
+    console.log('Function called');
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch ${isFestival ? 'festival' : 'card'} data`);
+      }
+  
+      const cardData = await response.json();
+  
+      if (cardData.length === 0) {
+  
+        const noDataText = document.createElement('p');
+        noDataText.textContent = 'THERE IS NO RELEVANT PLACES/EVENTS TO SHOW';
+        noDataText.className = 'no-data-text';
+        carousel.appendChild(noDataText);
+        return;
+      }
+  
+      let firstCardWidth = 0; 
+  
+      cardData.forEach(card => {
+        if (card.city.toLowerCase() === city.toLowerCase()) {
+          const cardElement = document.createElement('li');
+          cardElement.className = 'card';
+      
+          const imageUrl = Array.isArray(card.images) && card.images.length > 0
+            ? card.images[0]
+            : Array.isArray(card.photos) && card.photos.length > 0
+              ? card.photos[0]
+              : '';
+      
+          cardElement.style.backgroundImage = `url('${imageUrl}')`;
+          cardElement.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
+      
+          const iconClass = isFestival ? 'fas fa-calendar-days' : categoryToIcon[card.category];
+      
+          const modifiedCity = card.city.toLowerCase().includes('city') ? card.city : `${card.city} City`;
+      
+          cardElement.innerHTML = `
+            <div class="icon card-icon ${iconClass}"></div>
+            <h2>${card.title}</h2>
+            <span> ${modifiedCity}, ${card.province}</span>
+          `;
+      
+          if (isFestival) {
+            const redirectUrl = card.id ? `festival_content.php?item_id=${card.id}` : '#';
+            cardElement.dataset.redirectUrl = redirectUrl;
+          } else {
+            const redirectUrl = card.id ? `wheretogo-content.php?id=${card.id}` : '#';
+            cardElement.dataset.redirectUrl = redirectUrl;
+          }
+      
+          cardElement.addEventListener('click', () => {
+            const redirectUrl = cardElement.dataset.redirectUrl;
+            console.log('Redirect URL:', redirectUrl);
+            if (redirectUrl && redirectUrl !== '#') {
+              window.top.location.href = redirectUrl;
+            }
+          });
+      
+          carousel.appendChild(cardElement);
+        }
+      });
+      
+      
+  
+      // Get the first card's width if there are cards
+      const firstCard = carousel.querySelector('.card');
+      if (firstCard) {
+        firstCardWidth = firstCard.offsetWidth;
+      }
+  
+      const wrapper = document.querySelector('.wrapper');
+      let isDragging = false,
+        isAutoPlay = true,
+        startX,
+        startScrollLeft,
+        timeoutId;
+  
+      carousel.addEventListener('mousedown', dragStart);
+      carousel.addEventListener('mousemove', dragging);
+      document.addEventListener('mouseup', dragStop);
+      carousel.addEventListener('scroll', infiniteScroll);
+      wrapper.addEventListener('mouseenter', () => clearTimeout(timeoutId));
+      wrapper.addEventListener('mouseleave', autoPlay);
+  
+      const arrowBtns = document.querySelectorAll('.wrapper i');
+      arrowBtns.forEach(btn => {
+        btn.addEventListener('click', () => handleArrowButtonClick(btn));
+      });
+  
+      function handleArrowButtonClick(btn) {
+        carousel.scrollLeft += btn.id === 'left' ? -firstCardWidth : firstCardWidth;
+      }
+  
+      function dragStart(e) {
+        isDragging = true;
+        carousel.classList.add('dragging');
+        startX = e.pageX;
+        startScrollLeft = carousel.scrollLeft;
+      }
+  
+      function dragging(e) {
+        if (!isDragging) return;
+        carousel.scrollLeft = startScrollLeft - (e.pageX - startX);
+      }
+  
+      function dragStop() {
+        isDragging = false;
+        carousel.classList.remove('dragging');
+      }
+  
+      function infiniteScroll() {
+        if (carousel.scrollLeft === 0) {
+  
+        } else if (Math.ceil(carousel.scrollLeft) === carousel.scrollWidth - carousel.offsetWidth) {
+  
+        }
+        clearTimeout(timeoutId);
+        if (!wrapper.matches(':hover')) autoPlay();
+      }
+  
+      function autoPlay() {
+        if (window.innerWidth < 800 || !isAutoPlay) return;
+        timeoutId = setTimeout(() => carousel.scrollLeft += firstCardWidth, 2500);
+      }
+  
+      autoPlay();
+    } catch (error) {
+      console.error(`Error fetching ${isFestival ? 'festival' : 'card'} data:`, error);
+    }
+  }
+  
+  async function fetchAndGenerateCardsForCity(city) {
+    try {
+      const festivalUrl = `${API_PROTOCOL}://${API_HOSTNAME}/events`;
+      const placesUrl = `${API_PROTOCOL}://${API_HOSTNAME}/places`;
+  
+      carousel.innerHTML = '';
+  
+      await Promise.all([
+        fetchAndGenerateCards(festivalUrl, true, city),
+        fetchAndGenerateCards(placesUrl, false, city)
+      ]);
+  
+      if (carousel.childElementCount === 0) {
+        const noDataTextContainer = document.createElement('div');
+        noDataTextContainer.className = 'no-data-container';
+        const noDataText = document.createElement('p');
+        noDataText.textContent = 'There is no relevant events/places to show.';
+        noDataText.className = 'no-data-text';
+        noDataTextContainer.appendChild(noDataText);
+        carousel.appendChild(noDataTextContainer);
+      }
+  
+    } catch (error) {
+      console.error('Error fetching city data or cards data:', error);
+    }
+  }
+  
+  
+  function refreshContent() {
+    const clickedTitle = localStorage.getItem('clickedTitle') || 'DefaultCity';
+    fetchAndGenerateCardsForCity(clickedTitle);
+  }
+  
+  window.addEventListener('load', refreshContent);
+  
+  window.addEventListener('storage', event => {
+    if (event.key === 'clickedTitle') {
+      refreshContent();
+    }
+  });
+  
+  const cityOptions = document.querySelectorAll('.city-option');
+  
+  cityOptions.forEach(option => {
+    option.addEventListener('click', () => {
+      const selectedCity = localStorage.getItem('selectedCity') || 'DefaultCity';
+      carousel.innerHTML = '';
+      fetchAndGenerateCardsForCity(selectedCity);
+      refreshContent();
+    });
+  });
+  

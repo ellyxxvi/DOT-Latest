@@ -233,7 +233,7 @@ function calculateAverageRating(ratings) {
 // Function to fetch resort names
 async function fetchResortNames(accessToken) {
     try {
-        const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/places/most-rated?category=Hotel&limit=5`, {
+        const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/places/most-rated?category=hotel&limit=5`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             }
@@ -281,7 +281,7 @@ async function populateAndSortResorts() {
     const resortNames = await fetchResortNames(accessToken);
 
     try {
-        const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/places/most-rated?category=Hotel&limit=5`, {
+        const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/analytics/places/most-rated?category=hotel&limit=5`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             }
