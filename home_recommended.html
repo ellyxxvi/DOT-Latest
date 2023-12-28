@@ -43,7 +43,7 @@ async function fetchUserPreferences(type = 'most-visited') {
         const endpoints = {
             'most-visited': '/recommendation/user/preferences?type=most-visited',
             'most-rated': '/recommendation/user/history?type=most-rated',
-            'history': '/recommendation/user/history?type=most-visited', // Default to 'most-visited'
+            'history': '/recommendation/user/history?type=most-visited',
         };
 
         const endpoint = endpoints[type] || endpoints['most-visited']; // Use the specified endpoint or default to 'most-visited'
