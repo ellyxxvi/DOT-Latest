@@ -23,9 +23,6 @@ async function fetchAndGenerateCards(url, cardID, clickedTitle) {
 
     console.log('Fetched Data for Famous Things:', cardData);
 
-    // Clear previous content
-    carousel.innerHTML = '';
-
     if (cardData.length === 0) {
       const noDataText = document.createElement('p');
       noDataText.textContent = 'THERE IS NO RELEVANT PLACES TO SHOW';
@@ -42,8 +39,8 @@ async function fetchAndGenerateCards(url, cardID, clickedTitle) {
           card.whereToGo.title :
           `${card.whereToGo.title}`;
 
-        // Check if both modifiedCity and card ID match clickedTitle and selectedCardId
-        if (modifiedCity === clickedTitle && card.id === cardID) {
+        // Check if modifiedCity matches clickedTitle
+        if (modifiedCity === clickedTitle) {
           const cardElement = document.createElement('li');
           cardElement.className = 'card';
 
@@ -70,12 +67,9 @@ async function fetchAndGenerateCards(url, cardID, clickedTitle) {
             const redirectUrl = cardElement.dataset.redirectUrl;
             console.log('Redirect URL:', redirectUrl);
             if (redirectUrl && redirectUrl !== '#') {
-              localStorage.setItem('selectedCardId', card.id); // Save the selected card ID
-              localStorage.setItem('clickedTitle', clickedTitle); // Save the clicked title
               window.top.location.href = redirectUrl;
             }
           });
-
           console.log('Card being displayed:', card);
           carousel.appendChild(cardElement);
         }
@@ -129,9 +123,9 @@ async function fetchAndGenerateCards(url, cardID, clickedTitle) {
 
     function infiniteScroll() {
       if (carousel.scrollLeft === 0) {
-        // Handle left boundary
+
       } else if (Math.ceil(carousel.scrollLeft) === carousel.scrollWidth - carousel.offsetWidth) {
-        // Handle right boundary
+
       }
       clearTimeout(timeoutId);
       if (!wrapper.matches(':hover')) autoPlay();
