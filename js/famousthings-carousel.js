@@ -158,7 +158,7 @@ async function fetchAndGenerateCardsForCity(city) {
       const noDataTextContainer = document.createElement('div');
       noDataTextContainer.className = 'no-data-container';
       const noDataText = document.createElement('p');
-      noDataText.textContent = 'There is no relevant events/places to show.';
+      noDataText.textContent = 'There is no relevant featured things to show.';
       noDataText.className = 'no-data-text';
       noDataTextContainer.appendChild(noDataText);
       carousel.appendChild(noDataTextContainer);
