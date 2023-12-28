@@ -537,11 +537,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     async function sendReply(commentId, replyText) {
         const accessToken = localStorage.getItem('access_token');
+    
+        if (!accessToken) {
+            alert("Login/Register your account first to reply to this comment.");
+            return;
+        }
+    
         try {
             const replyData = {
                 reply_comment: replyText,
             };
-
+    
             const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/feedbacks/${commentId}/replies`, {
                 method: 'POST',
                 headers: {
@@ -550,20 +556,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 },
                 body: JSON.stringify(replyData),
             });
-
+    
             if (!response.ok) {
                 throw Error(`Error sending reply: ${response.status} ${response.statusText}`);
             }
-
+    
             const responseData = await response.json();
             console.log('Reply sent successfully:', responseData);
-
+    
             // Reload the page after successful reply
             window.location.reload();
         } catch (error) {
             console.error('Error sending reply:', error);
         }
     }
+    
 
 
     async function fetchReplies(commentId) {
@@ -589,11 +596,6 @@ document.addEventListener("DOMContentLoaded", function () {
             return [];
         }
     }
-
-
-
-
-
 
 
     filterButtons.forEach(button => {

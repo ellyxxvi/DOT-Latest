@@ -55,8 +55,9 @@ searchButton.addEventListener('click', function() {
 
   if (searchValue !== '') {
     const searchUrl = `${API_PROTOCOL}://${API_HOSTNAME}/search/place?q=${searchValue}`;
+   
+    console.log('Search endpoint:', searchUrl);
 
-// Fetch services data based on the search URL
 fetch(searchUrl)
   .then(response => response.json())
   .then(data => {
@@ -71,7 +72,9 @@ fetch(searchUrl)
           title: place.title,
           description: place.description,
           backgroundImage: place.photos,
-        };
+          province: place.province,
+          city: place.city,
+         };
       });
 
       // Display the search results

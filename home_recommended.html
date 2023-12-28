@@ -32,14 +32,23 @@ if (!token) {
 const API_PROTOCOL = 'https';
 const API_HOSTNAME = 'goexplorebatangas.com/api';
 
-async function fetchUserPreferences() {
+async function fetchUserPreferences(type = 'most-visited') {
     try {
         const token = localStorage.getItem('access_token');
         const headers = {
             Authorization: `Bearer ${token}`,
         };
 
-        const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}/recommendation/user/preferences?type=most-visited`, {
+        // Define the available endpoints
+        const endpoints = {
+            'most-visited': '/recommendation/user/preferences?type=most-visited',
+            'most-rated': '/recommendation/user/history?type=most-rated',
+            'history': '/recommendation/user/history?type=most-visited', // Default to 'most-visited'
+        };
+
+        const endpoint = endpoints[type] || endpoints['most-visited']; // Use the specified endpoint or default to 'most-visited'
+
+        const response = await fetch(`${API_PROTOCOL}://${API_HOSTNAME}${endpoint}`, {
             headers: headers,
         });
 
@@ -48,7 +57,11 @@ async function fetchUserPreferences() {
         }
 
         const data = await response.json();
-        return Array.isArray(data) ? data : [];
+        const formattedData = Array.isArray(data) ? data : [];
+
+        console.log('Fetched all data :', formattedData); // Log the fetched data
+
+        return formattedData;
     } catch (error) {
         console.error('Error fetching user preferences:', error);
         return [];
